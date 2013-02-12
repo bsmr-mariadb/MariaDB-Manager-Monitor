@@ -1,0 +1,79 @@
+/*
+ * This file is distributed as part of the SkySQL Cloud Data Suite.  It is free
+ * software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation,
+ * version 2.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Copyright SkySQL Ab
+ */
+
+package com.skysql.monitor;
+
+/*
+** A basic monitor class that implements ICMP pings as a monitor mechanism
+**
+** The only action of this monitor is to set the state of the node to Stopped
+** if it does not respond to 2 or more succesive pings
+*/
+
+public class pingMonitor extends monitor {
+
+	int	m_failcnt;
+
+	public pingMonitor(mondata db, int id, node mon_node)
+	{
+		super(db, id, mon_node);
+		m_failcnt = 0;
+	}
+
+	/*
+	** Execute a probe. Not that this monitor does not update the state after
+	** a single failure, 2 or more successive failures are required.
+	*/	
+	public void probe(boolean verbose)
+	{
+		String value = "0";
+		
+		if (m_node.isReachable())
+		{
+			value = "1";
+			m_failcnt = 0;
+		}
+		else
+		{
+			m_failcnt++;
+		}
+		if (m_failcnt > 1)
+		{
+			int state = m_confdb.getStateValue("Slave Stopped");
+			m_confdb.setNodeState(m_node.getID(), state);	// Stopped - update this to something better
+		}
+	
+		/*
+		** Update the history of the probe results. Note that we only
+		** insert new rows on change of state, not for every probe. If
+		** the state has remained the same we merely update the last 
+		** observed timestamp for the state.
+		*/	
+		if (m_lastValue != null && m_lastValue.equals(value))
+		{
+			m_confdb.updateMonitorData(m_node.getID(), m_monitor_id, value);
+		}
+		else
+		{
+			if (m_lastValue != null)
+				m_confdb.updateMonitorData(m_node.getID(), m_monitor_id, m_lastValue);
+			m_confdb.insertMonitorData(m_node.getID(), m_monitor_id, value);
+			m_lastValue = value;
+		}
+	}
+}
