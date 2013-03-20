@@ -17,9 +17,10 @@
  */
 
 package com.skysql.monitor;
+import java.text.DecimalFormat;
 
 public class deltaMonitor extends monitor {
-	private		Integer		lastAbsValue = null;
+	private		Long		lastAbsValue = null;
 	
 	public deltaMonitor(mondata db, int id, node mon_node)
 	{
@@ -40,9 +41,10 @@ public class deltaMonitor extends monitor {
 		{
 			if (lastAbsValue != null)
 			{
-				Integer	absValue = new Integer(value);
-				Integer delta = absValue - lastAbsValue;
-				String deltaStr = delta.toString();
+				Long	absValue = new Long(value);
+				Long delta = absValue - lastAbsValue;
+				DecimalFormat format = new DecimalFormat("###############0");
+				String deltaStr = format.format(delta.longValue());
 				
 				if (m_lastValue != null && m_lastValue.equals(deltaStr))
 				{
@@ -59,7 +61,7 @@ public class deltaMonitor extends monitor {
 			}
 			else
 			{
-				lastAbsValue = new Integer(value);
+				lastAbsValue = new Long(value);
 			}
 		}
 	}
