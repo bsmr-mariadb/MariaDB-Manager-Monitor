@@ -46,7 +46,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		System.err.println("Starting ClusterMonitor v1.2.1");
+		System.err.println("Starting ClusterMonitor v1.2.3");
 		System.err.println("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -122,8 +122,13 @@ public class ClusterMonitor extends Thread {
 		if (m_confdb.IPMonitor())
 		{
 			mondata confdb = new mondata(m_systemID, m_dbfile);
-			PublicIPMonitor ipmon = new PublicIPMonitor(confdb, m_verbose);
-			ipmon.start();
+			try {
+				PublicIPMonitor ipmon = new PublicIPMonitor(confdb, m_verbose);
+				ipmon.start();
+			} catch (NoClassDefFoundError ex) {
+				System.err.println("Unable to run IPMonitor: Class " + ex.getLocalizedMessage() + " is not available.");
+				System.err.println("IP Monitoring functionality has been suspended.");
+			}
 		}
 	}
 	
@@ -146,6 +151,15 @@ public class ClusterMonitor extends Thread {
 		}
 		if (m_verbose)
 			System.out.println(nodeIDList.size() + " nodes to monitor");
+		if (m_nodeList != null)
+		{
+			Iterator<node> node_it = m_nodeList.iterator();
+			while (node_it.hasNext())
+			{
+				node n = node_it.next();
+				n.close();
+			}
+		}
 		m_nodeList = new ArrayList<node>();
 		Iterator<Integer> it = nodeIDList.iterator();
 		while (it.hasNext())
