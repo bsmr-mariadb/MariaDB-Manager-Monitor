@@ -27,8 +27,8 @@ import java.sql.ResultSet;
 
 
 public class mondata {
-	private int			m_systemID;
 	private String		m_dbfile;
+	private int			m_systemID;
 	static private int	CONNECT_TRIES = 20;	
 	
 	/*
@@ -340,12 +340,12 @@ public class mondata {
 		String query = "update MonitorData set Latest = datetime('now') where SystemID = " + m_systemID
 							+ " and MonitorID =" + monitor_id
 							+ " and NodeID = " + node_id
-							+ " and Value = " + value
+							+ " and Value = \"" + value + "\""
 							+ " and Start = (select Max(Start) from MonitorData where"
 							+ " SystemID = " + m_systemID
 							+ " and MonitorID =" + monitor_id
 							+ " and NodeID = " + node_id
-							+ " and Value = " + value + ")";
+							+ " and Value = \"" + value + "\")";
 		try {
 			Connection connection = connect();
 			Statement statement = connection.createStatement();
