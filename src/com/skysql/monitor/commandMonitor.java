@@ -46,7 +46,7 @@ public class commandMonitor extends monitor {
 		
 		String value = null;
 		try {
-			Process proc = Runtime.getRuntime().exec(m_sql + " + " + m_nodeIP);
+			Process proc = Runtime.getRuntime().exec(m_sql + " + " + m_node);
 			BufferedInputStream buffer = new BufferedInputStream(proc.getInputStream());
 			BufferedReader commandOutput= new BufferedReader(new InputStreamReader(buffer));
 	
