@@ -27,7 +27,7 @@ SkySQL monitor
 %build
 
 javac -d . -classpath `find /usr/local/skysql/skysql_aws/*.jar | tr '\n' ':' `  `find src/com/skysql/monitor | grep \.java`
-jar cf ClusterMonitor.jar *.class
+jar cf ClusterMonitor.jar src/com/skysql/monitor/*.class
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
