@@ -32,7 +32,7 @@ jar cf ClusterMonitor.jar com/skysql/monitor/*.class
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar  $RPM_BUILD_ROOT%{install_path}
-cp ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
+cp monitor/ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
 cp jars/aws-java-sdk-1.3.16.jar  $RPM_BUILD_ROOT%{install_path}
 export AWS_JAVA_SDK_PATH="%{install_path}aws-java-sdk-1.3.16.jar"
 export SQLITE_JDBC_JAR_PATH="%{install_path}sqlite-jdbc-3.7.2.jar"
