@@ -136,7 +136,7 @@ public class node implements Runnable {
 				// Ignore failures
 			}
 		}
-		return "0";	// If we can't probe return 0 for now
+		return null;	// If we can't probe return null
 	}
 	
 	public int getID()
