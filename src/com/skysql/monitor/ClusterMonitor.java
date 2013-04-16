@@ -46,7 +46,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		System.err.println("Starting ClusterMonitor v1.2.3");
+		System.err.println("Starting ClusterMonitor v1.3.0");
 		System.err.println("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -74,8 +74,26 @@ public class ClusterMonitor extends Thread {
 		}
 		else
 		{
-
-			ClusterMonitor monitor = new ClusterMonitor(new Integer(args[off]).intValue(), args[off + 1], verbose);
+			int targetSystem = new Integer(args[off]).intValue();
+			mondata db = new mondata(args[off+1]);
+			List<Integer> systems = db.getSystemList();
+			Iterator<Integer> it = systems.iterator();
+			boolean found = false;
+			while (it.hasNext())
+			{
+				Integer i = it.next();
+				if (targetSystem == i.intValue())
+				{
+					found = true;
+				}
+			}
+			if (! found)
+			{
+				System.err.println("Unable to find the target system, " + targetSystem + " in your database.");
+				System.exit(1);
+			}
+			
+			ClusterMonitor monitor = new ClusterMonitor(targetSystem, args[off + 1], verbose);
 			monitor.initialise();
 		
 			monitor.execute();
@@ -206,6 +224,10 @@ public class ClusterMonitor extends Thread {
 				else if (type.equals("COMMAND"))
 				{
 					mlist.add(new commandMonitor(m_confdb, monid, n));
+				}
+				else if (type.equals("SQL_NODE_STATE"))
+				{
+					mlist.add(new nodeStateMonitor(m_confdb, monid, n));
 				}
 				else
 				{
