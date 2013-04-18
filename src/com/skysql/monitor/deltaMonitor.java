@@ -43,6 +43,11 @@ public class deltaMonitor extends monitor {
 			{
 				Long	absValue = new Long(value);
 				Long delta = absValue - lastAbsValue;
+				if (delta < 0)
+				{
+					System.out.println("Negative delta value for probe, absolute value is " + absValue + " last absolute value " + lastAbsValue);
+					delta = new Long(0);
+				}
 				DecimalFormat format = new DecimalFormat("###############0");
 				String deltaStr = format.format(delta.longValue());
 				
