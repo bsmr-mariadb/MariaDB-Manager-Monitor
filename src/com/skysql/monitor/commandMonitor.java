@@ -57,24 +57,7 @@ public class commandMonitor extends monitor {
 		{
 			System.err.println("Command monitor exception: " + ex.getMessage() + " in monitor " + m_id);
 		}
-		if (value != null)
-		{
-			if (verbose)
-			{
-				System.out.println("probe: " + m_sql + " Last value " + m_lastValue + " new value " + value);
-			}
-	
-			if (m_lastValue != null && m_lastValue.equals(value))
-			{
-				m_confdb.updateMonitorData(m_node.getID(), m_monitor_id, value);
-			}
-			else
-			{
-				if (m_lastValue != null)
-					m_confdb.updateMonitorData(m_node.getID(), m_monitor_id, m_lastValue);
-				m_confdb.insertMonitorData(m_node.getID(), m_monitor_id, value);
-				m_lastValue = value;
-			}
-		}
+		saveObservation(value);
+		m_lastValue = value;
 	}
 }

@@ -28,6 +28,7 @@ import java.net.InetAddress;
 
 public class node implements Runnable {
 	private String		m_URL;
+	private int			m_systemID;
 	private int			m_nodeNo;
 	private Connection 	m_mondb;		// The database being monitored
 	private boolean 	m_connected;
@@ -35,10 +36,11 @@ public class node implements Runnable {
 	private boolean		m_connecting;
 	private mondata		m_confdb;
 	
-	public node(mondata confDB, int nodeNo)
+	public node(mondata confDB, int systemID, int nodeNo)
 	{
 		m_connected = false;
 		m_connecting = false;
+		m_systemID = systemID;
 		m_nodeNo = nodeNo;
 		m_confdb = confDB;
 		String address = confDB.getNodePrivateIP(nodeNo);
@@ -142,6 +144,11 @@ public class node implements Runnable {
 	public int getID()
 	{
 		return m_nodeNo;
+	}
+	
+	public int getSystemID()
+	{
+		return m_systemID;
 	}
 	
 	public boolean isReachable()

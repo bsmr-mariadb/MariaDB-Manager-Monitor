@@ -24,11 +24,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import com.skysql.monitor.monAPI;
 
 
 public class mondata {
 	private String		m_dbfile;
 	private int			m_systemID;
+	private monAPI		m_api;
 	static private int	CONNECT_TRIES = 20;	
 	
 	/*
@@ -46,6 +48,7 @@ public class mondata {
 			  System.err.println("Unable to load SQLite JDBC driver.");
 			  System.exit(1);
 		}
+		m_api = new monAPI();
 	}
 	
 	/*
@@ -819,6 +822,16 @@ public class mondata {
 			System.err.println("SQL Failed: " + query + ": " + sqlex.getMessage());
 			return true;
 		}
+	}
+	
+	public boolean monitorData(int systemID, int nodeID, int monitorID, String observation)
+	{
+		return m_api.MonitorValue(systemID, nodeID, monitorID, observation);
+	}
+	
+	public boolean monitorData(int systemID, int monitorID, String observation)
+	{
+		return m_api.MonitorValue(systemID, monitorID, observation);
 	}
 	
 }

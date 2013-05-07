@@ -32,7 +32,7 @@ public class monitor {
 		m_monitor_id = id;
 		m_node = mon_node;
 		m_sql = db.getMonitorSQL(id);
-		m_lastValue = db.getLatestMonitorData(id, m_node.getID());
+		m_lastValue = null;
 		m_systemAverage = db.getMonitorSystemAverage(id);
 	}
 	
@@ -45,20 +45,18 @@ public class monitor {
 		{
 			System.out.println("probe: " + m_sql + " Last value " + m_lastValue + " new value " + value);
 		}
-		if (value != null)
+		if (value == null)
 		{
-			if (m_lastValue != null && m_lastValue.equals(value))
-			{
-				m_confdb.updateMonitorData(m_node.getID(), m_monitor_id, value);
-			}
-			else
-			{
-				if (m_lastValue != null)
-					m_confdb.updateMonitorData(m_node.getID(), m_monitor_id, m_lastValue);
-				m_confdb.insertMonitorData(m_node.getID(), m_monitor_id, value);
-				m_lastValue = value;
-			}
+			value = "0";
 		}
+		saveObservation(value);
+		m_lastValue = value;
+	
+	}
+	
+	protected boolean saveObservation(String observation)
+	{
+		return m_confdb.monitorData(m_node.getSystemID(), m_node.getID(), m_monitor_id, observation);
 	}
 	
 	public String getValue()

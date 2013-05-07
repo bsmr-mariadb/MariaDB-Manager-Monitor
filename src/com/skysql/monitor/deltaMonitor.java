@@ -50,19 +50,9 @@ public class deltaMonitor extends monitor {
 				}
 				DecimalFormat format = new DecimalFormat("###############0");
 				String deltaStr = format.format(delta.longValue());
-				
-				if (m_lastValue != null && m_lastValue.equals(deltaStr))
-				{
-					m_confdb.updateMonitorData(m_node.getID(), m_monitor_id, deltaStr);
-				}
-				else
-				{
-					if (m_lastValue != null)
-						m_confdb.updateMonitorData(m_node.getID(), m_monitor_id, m_lastValue);
-					m_confdb.insertMonitorData(m_node.getID(), m_monitor_id, deltaStr);
-					m_lastValue = deltaStr;
-					lastAbsValue = absValue;
-				}
+				saveObservation(deltaStr);
+				m_lastValue = deltaStr;
+				lastAbsValue = absValue;
 			}
 			else
 			{

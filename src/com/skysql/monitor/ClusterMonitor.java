@@ -18,6 +18,7 @@
 
 package com.skysql.monitor;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 
@@ -46,7 +47,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		System.err.println("Starting ClusterMonitor v1.3.0");
+		System.err.println("Starting ClusterMonitor v1.4.0");
 		System.err.println("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -183,7 +184,7 @@ public class ClusterMonitor extends Thread {
 		while (it.hasNext())
 		{
 			Integer i = it.next();
-			m_nodeList.add(new node(m_confdb, i.intValue()));
+			m_nodeList.add(new node(m_confdb, m_systemID, i.intValue()));
 		}
 		List<Integer> monitorIDList = m_confdb.getMonitorList();
 		if (monitorIDList == null)
@@ -253,6 +254,8 @@ public class ClusterMonitor extends Thread {
 		while (true)
 		{
 			try {
+				// Every 10th time we reread the config, so do 10 probes
+				// here and then read the config
 				for (int i = 0; i < 10; i++)
 				{
 					if (m_verbose)
@@ -275,6 +278,8 @@ public class ClusterMonitor extends Thread {
 						boolean validSystemProbe = false;
 						boolean systemAverage = false;
 						int id = 0;
+						
+						// Iterate on the instances of the monitors, ie probe the machines
 						while (it.hasNext())
 						{
 							monitor m = it.next();
@@ -295,13 +300,25 @@ public class ClusterMonitor extends Thread {
 									System.out.println("    Probe " + id + " returns value " + m.getValue());
 							}
 						}
+						
+						// This monitor is valid for the system as well
 						if (validSystemProbe)
 						{
+							String format;
 							if (systemAverage)
 							{
 								system_value = system_value / m_nodeList.size();
+								format = "############.##";
 							}
-							m_confdb.updateSystemMonitorData(id, (new Double(system_value)).toString());
+							else if (system_value > 100)
+								format = "#############";
+							else if (system_value > 10)
+								format = "##.#";
+							else
+								format = "#.##";
+							DecimalFormat fmt = new DecimalFormat(format);
+							m_confdb.monitorData(m_systemID, id, fmt.format(system_value));
+							// m_confdb.updateSystemMonitorData(id, fmt.format(system_value));
 							if (m_verbose)
 								System.out.println("    Probe system value " + system_value);
 						}

@@ -63,17 +63,8 @@ public class pingMonitor extends monitor {
 		** insert new rows on change of state, not for every probe. If
 		** the state has remained the same we merely update the last 
 		** observed timestamp for the state.
-		*/	
-		if (m_lastValue != null && m_lastValue.equals(value))
-		{
-			m_confdb.updateMonitorData(m_node.getID(), m_monitor_id, value);
-		}
-		else
-		{
-			if (m_lastValue != null)
-				m_confdb.updateMonitorData(m_node.getID(), m_monitor_id, m_lastValue);
-			m_confdb.insertMonitorData(m_node.getID(), m_monitor_id, value);
-			m_lastValue = value;
-		}
+		*/
+		saveObservation(value);
+		m_lastValue = value;
 	}
 }

@@ -36,6 +36,10 @@ public class nodeStateMonitor extends monitor {
 			return;
 		String value = m_node.execute(m_sql);
 		int nodeNo = m_node.getID();
+		if (value == null) 	/* Failed to get status return from node */
+		{
+			value = "100";	/* Temporary kludge to have a stopped state - need to get this from config */
+		}
 		if (verbose)
 		{
 			System.out.println("probe: " + m_sql + " new value " + value);
@@ -45,6 +49,8 @@ public class nodeStateMonitor extends monitor {
 		} catch (Exception ex) {
 			System.err.println("Can not set node state of " + value + " or node " + nodeNo);
 		}
+		saveObservation(value);
+		m_lastValue = value;
 	}
 	
 	public boolean hasSystemValue()
