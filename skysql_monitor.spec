@@ -47,12 +47,12 @@ cp monitor/ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
 %{install_path}ClusterMonitor.sh
 
 %changelog
-* Wed Apr 03 2013 Timofey Turenko <timofey.turenko@skysql.com> - 0.1-2
-- first packaged version
-* Wed Apr 17 2013 Mark Riddoch <mark.riddoch@skysql.com> - 1.3-1
-- Addition of SQL_NODE_STATE monitor type
-- Fix for a bug that caused delta monitors to go negative after a failure for the server to respond
 * Wed  1 May 2013 19:45:37 BST Mark Riddoch <mark.riddoch@skysql.com> - 1.4-0
 - Use the SkySQL Management REST interface for adding monitor values
 - There are three Java Properties that must now be set, SKYSQL_API_HOST,
 - SKYSQL_API_KEY, SKYSQL_API_KEYID
+* Wed Apr 17 2013 Mark Riddoch <mark.riddoch@skysql.com> - 1.3-1
+- Addition of SQL_NODE_STATE monitor type
+- Fix for a bug that caused delta monitors to go negative after a failure for the server to respond
+* Wed Apr 03 2013 Timofey Turenko <timofey.turenko@skysql.com> - 0.1-2
+- first packaged version
