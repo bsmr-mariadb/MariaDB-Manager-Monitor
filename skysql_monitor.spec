@@ -47,7 +47,7 @@ cp monitor/ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
 %{install_path}ClusterMonitor.sh
 
 %changelog
-* Wed  1 May 2013 19:45:37 BST Mark Riddoch <mark.riddoch@skysql.com> - 1.4-0
+* Wed May 01 2013 Mark Riddoch <mark.riddoch@skysql.com> - 1.4-0
 - Use the SkySQL Management REST interface for adding monitor values
 - There are three Java Properties that must now be set, SKYSQL_API_HOST,
 - SKYSQL_API_KEY, SKYSQL_API_KEYID
