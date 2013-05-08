@@ -1,0 +1,70 @@
+In order to test the SkySQL Monitor in a standalone environment
+there are a number of steps that you will need to do.
+
+1. Install a suitable Java Runtime Environment if you do not already
+have one
+
+2. Install the Apache web server, this is required to run the API
+to the sqlite database.
+
+3. Install the sqlite database schema from the SkySQL admin_schema
+respository. Execute admin_schema to get a "standard" MySQL setup.
+If you wish to monitor a Galera cluster then run the admin_schema.Galera
+script after the admin_schema script.
+
+4. Configure the Apache rewrite rules to allow access to the RESTful API
+
+5. Setup api.ini with an API key for the monitor, e.g.
+
+	# cat /etc/scdsapi/api.ini 
+	; This is the INI file for the SkySQL Cloud Data Suite API
+	[database]
+	; path should become obsolete when all DB access is via the API
+	path = "/usr/local/skysql/SQLite/AdminConsole/admin"
+	pdoconnect = "sqlite:/usr/local/skysql/SQLite/AdminConsole/admin"
+	user = ""
+	password = ""
+	[logging]
+	directory = "/usr/local/skysql/log"
+	errorlog = yes
+	erroremail = "mark.riddoch@skysql.com"
+	[shell]
+	path = "shell/"
+	[monitor-defaults]
+	interval = 1800
+	count = 15
+	[apikeys]
+	1 = "1f8d9e040e65d7b105538b1ed0231770"
+
+
+6. Ensure the timezone is set correctly in the php.ini file
+
+7. Start the httpd for the RESTful API
+
+8. Add a system into the system table of the sqlite schema
+
+	insert into System (SystemId, SystemName, State) values
+		(1, 'My Test System', 0);
+
+9. Add nodes into the node table of the sqlite schema
+
+	insert into Node (NodeID, SystemID, NameName, State, Hostname,
+		PublicIP, PrivateIP, Username, passwd) values 
+			(1, 1, 'Node 1', 0, 'hostname', 'xxx.xxx.xxx.xxx',
+				'xxx.xxx.xxx.xxx', 'username', 'password');
+
+	PublicIP and PrivateIP may be the same and shoudl be the
+	IP address of the mysql instance you wish to monitor
+
+	hostname is just the hostname of the machine on which it runs
+
+	username and password and the MySQL username and password
+	that the monitor uses to log into the MySQL database
+
+10. Start the monitor application, passing the API key and API keyid
+that you set in api.ini as Java Properties
+
+	java -DSKYSQL_APIKEYID=1 -DSKYSQL_APIKEY=1f8d9e040e65d7b105538b1ed0231770 -classpath ClusterMonitor.jar com.skysql.monitor.ClusterMonitor -v 1 /usr/local/skysql/SQLite/AdminConsole/admin
+
+11. Check the logfile /var/log/SkySQL-ClusterMonitor.log for messages
+on each insert of data or other activitiy
