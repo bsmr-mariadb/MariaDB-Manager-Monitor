@@ -20,22 +20,15 @@ package com.skysql.monitor;
 
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.Date;
 
-import org.apache.http.client.ClientProtocolException;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -46,7 +39,7 @@ public class monAPI {
 	String		m_apiKeyID;
 	
 	/*
-	 * Contruct the monAPI instance. This consists of obtaining the information required
+	 * Construct the monAPI instance. This consists of obtaining the information required
 	 * to contact the API. This information is available via Java System Properties.
 	 */
 	public monAPI()
@@ -62,7 +55,7 @@ public class monAPI {
 	 */
 	public boolean MonitorValue(int systemID, int nodeID, int monitorID, String value)
 	{
-		String parameters = "value=" + value;
+		
 		return restPost("system/" + systemID + "/node/" + nodeID + "/monitor/" + monitorID + "/data", "value", value);
 	}
 	
@@ -71,7 +64,6 @@ public class monAPI {
 	 */
 	public boolean MonitorValue(int systemID, int monitorID, String value)
 	{
-		String parameters = "value=" + value;
 		return restPost("system/" + systemID + "/monitor/" + monitorID + "/data", "value", value);
 	}
 
@@ -81,15 +73,20 @@ public class monAPI {
 	 */
 	private boolean restPost(String restRequest, String pName, String pValue)
 	{
+		String result = null;
+		
+		String value = pName + "=" + pValue;
+		
+		
 		try {
 	 
 			String reqString = "http://" + m_apiHost + "/consoleAPI/api/" + restRequest;
-			ClientRequest request = new ClientRequest(reqString);
-			request.queryParameter(pName, pValue);
-			request.accept("application/json");
+			URL postURL = new URL(reqString);
+			HttpURLConnection apiConn = (HttpURLConnection)postURL.openConnection();
+			apiConn.setRequestMethod("POST");
 			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 		    String rfcdate = sdf.format(new Date());
-			request.header("Date", rfcdate);
+			
 			String fullkey = restRequest + m_apiKey + rfcdate;
 			MessageDigest md = MessageDigest.getInstance("MD5");
 
@@ -101,36 +98,31 @@ public class monAPI {
 				sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
 	        }
 
-			request.header("Authorization", "api-auth-" + m_apiKeyID + "-" + sb.toString());
-			request.body("application/x-www-form-urlencoded", pName + "=" + pValue);
-			ClientResponse<String> response = request.post(String.class);
-	 
-			if (response.getStatus() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-					+ response.getStatus());
+			apiConn.addRequestProperty("Date", rfcdate);
+			apiConn.setRequestProperty("Authorization", "api-auth-" + m_apiKeyID + "-" + sb.toString());
+			apiConn.setRequestProperty("Accept", "application/json");
+			apiConn.setDoOutput(true);
+			apiConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			apiConn.setRequestProperty("charset", "utf-8");
+			apiConn.setRequestProperty("Content-Length", "" + Integer.toString(value.getBytes().length));
+			apiConn.setUseCaches(false);
+			apiConn.setRequestMethod("POST");
+			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
+			out.write(value);
+			out.close();
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
+			result = in.readLine();
+			in.close();
+			
+			if (apiConn.getResponseCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error : "
+					+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
-	 
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-				new ByteArrayInputStream(response.getEntity().getBytes())));
-	 
-			String output;
-			System.out.println("Output from Server .... \n");
-			while ((output = br.readLine()) != null) {
-				System.out.println(output);
-			}
-	 
-		  } catch (ClientProtocolException e) {
-	 
-			e.printStackTrace();
-	 
 		  } catch (IOException e) {
-	 
-			e.printStackTrace();
-	 
+					e.printStackTrace();
 		  } catch (Exception e) {
-	 
 			e.printStackTrace();
-	 
 		  }
 		return true;
 	}

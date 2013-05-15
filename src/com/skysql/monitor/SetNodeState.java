@@ -68,17 +68,7 @@ public class SetNodeState {
 			System.exit(1);
 		}
 		String newValue = (new Integer(stateid)).toString();
-		String lastValue = m_confdb.getLatestMonitorData(monid, m_nodeid);
-		if (lastValue != null && lastValue.equals(newValue))
-		{
-			m_confdb.updateMonitorData(m_nodeid, monid, lastValue);
-		}
-		else
-		{
-			if (lastValue != null)
-				m_confdb.updateMonitorData(m_nodeid, monid, lastValue);
-			m_confdb.insertMonitorData(m_nodeid, monid, newValue);
-		}
+		m_confdb.monitorData(m_nodeid, monid, newValue);
 		m_confdb.setNodeState(m_nodeid, stateid);
 	}
 }

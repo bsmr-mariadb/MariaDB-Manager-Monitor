@@ -139,7 +139,6 @@ public class crmMonitor extends monitor {
 	
 	private void crmSetState(int nodeNo, String state, boolean verbose)
 	{
-		String lastValue = m_confdb.getLatestMonitorData(this.m_monitor_id, nodeNo);
 		String value = m_confdb.mapCRMStatus(state);
 		
 		if (value == null)
@@ -149,16 +148,8 @@ public class crmMonitor extends monitor {
 		}
 		if (verbose)
 			System.out.println("Set Node State: Node: " + nodeNo + " State: " + value + "(mapped from " + state + ")");
-		if (lastValue != null && lastValue.equals(value))
-		{
-			m_confdb.updateMonitorData(nodeNo, m_monitor_id, value);
-		}
-		else
-		{
-			if (lastValue != null)
-				m_confdb.updateMonitorData(nodeNo, m_monitor_id, lastValue);
-			m_confdb.insertMonitorData(nodeNo, m_monitor_id, value);
-		}
+
+		m_confdb.monitorData(nodeNo, m_monitor_id, value);
 		try {
 			m_confdb.setNodeState(nodeNo, (new Integer(value)).intValue());
 		} catch (Exception ex) {

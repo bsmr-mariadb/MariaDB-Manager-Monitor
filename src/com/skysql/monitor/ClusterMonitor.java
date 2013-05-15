@@ -47,7 +47,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		System.err.println("Starting ClusterMonitor v1.4.0");
+		System.err.println("Starting ClusterMonitor v1.4.1");
 		System.err.println("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))

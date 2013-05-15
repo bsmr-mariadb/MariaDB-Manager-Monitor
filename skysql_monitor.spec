@@ -1,6 +1,6 @@
 %define _topdir	 	%(echo $PWD)/
 %define name		skysql_monitor
-%define release		0
+%define release		1
 %define version 	1.4
 %define buildroot %{_topdir}/%{name}-%{version}-%{release}-root
 %define install_path	/usr/local/skysql/monitor/
@@ -47,6 +47,9 @@ cp monitor/ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
 %{install_path}ClusterMonitor.sh
 
 %changelog
+* Wed May 15 2013 Mark Riddoch <mark.riddoch@skysql.com> - 1.4-1
+- Fix for clash with RestEasy and the AWS API.
+- Updated CRM monitor and SetNodeState to use the new API
 * Wed May 01 2013 Mark Riddoch <mark.riddoch@skysql.com> - 1.4-0
 - Use the SkySQL Management REST interface for adding monitor values
 - There are three Java Properties that must now be set, SKYSQL_API_HOST,

@@ -26,14 +26,14 @@ public class commandMonitor extends monitor {
 	private int			m_id;
 	private int 		m_rate;
 	static	private		int POLERATIO = 5;
-	private String		m_nodeIP;
+	// private String		m_nodeIP;
 	
 	public commandMonitor(mondata db, int id, node mon_node)
 	{
 		super(db, id, mon_node);
 		m_id = id;
 		m_rate = POLERATIO;
-		m_nodeIP = db.getNodePrivateIP(mon_node.getID());
+		// m_nodeIP = db.getNodePrivateIP(mon_node.getID());
 	}
 	
 	public void probe(boolean verbose)
@@ -46,7 +46,7 @@ public class commandMonitor extends monitor {
 		
 		String value = null;
 		try {
-			Process proc = Runtime.getRuntime().exec(m_sql + " + " + m_node);
+			Process proc = Runtime.getRuntime().exec(m_sql + " " + m_node);
 			BufferedInputStream buffer = new BufferedInputStream(proc.getInputStream());
 			BufferedReader commandOutput= new BufferedReader(new InputStreamReader(buffer));
 	
