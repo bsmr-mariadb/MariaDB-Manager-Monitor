@@ -14,7 +14,8 @@ Release: 		%{release}
 Source: 		%{name}-%{version}-%{release}.tar.gz
 Prefix: 		/
 Group: 			Development/Tools
-Requires:		java-1.6.0-openjdk aws-apitools-ec2 skysql_aws_tools mariadb-java-client sqlite-jdbc aws-java-sdk
+Requires:		java-1.6.0-openjdk skysql_aws_tools mariadb-java-client sqlite-jdbc aws-java-sdk
+# aws-apitools-ec2
 BuildRequires:		java-1.6.0-openjdk skysql_aws_tools sqlite-jdbc aws-java-sdk mariadb-java-client
 
 %description
