@@ -1,6 +1,6 @@
 %define _topdir	 	%(echo $PWD)/
 %define name		skysql_monitor
-%define release		1
+%define release		2
 %define version 	1.4
 %define buildroot %{_topdir}/%{name}-%{version}-%{release}-root
 %define install_path	/usr/local/skysql/monitor/
@@ -48,6 +48,9 @@ cp monitor/ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
 %{install_path}ClusterMonitor.sh
 
 %changelog
+* Wed May 22 2013 Timofey Turenko <timofey.turenko@skysql.com> - 1.4-2
+- add sleep for 10 seconds before trying again to get systems
+
 * Wed May 15 2013 Mark Riddoch <mark.riddoch@skysql.com> - 1.4-1
 - Fix for clash with RestEasy and the AWS API.
 - Updated CRM monitor and SetNodeState to use the new API
