@@ -47,29 +47,41 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		System.err.println("Starting ClusterMonitor v1.4.1");
+		System.err.println("Starting ClusterMonitor v1.4.2");
 		System.err.println("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
 		{
-			mondata db = new mondata(args[off+1]);
-			List<Integer> systems = db.getSystemList();
-			Iterator<Integer> it = systems.iterator();
-			ClusterMonitor monitor = null;
-			while (it.hasNext())
+			while (true)
 			{
-				Integer i = it.next();
-				monitor = new ClusterMonitor(i.intValue(), args[off + 1], verbose);
-				monitor.initialise();
+				mondata db = new mondata(args[off+1]);
+				List<Integer> systems = db.getSystemList();
+				Iterator<Integer> it = systems.iterator();
+				ClusterMonitor monitor = null;
+				while (it.hasNext())
+				{
+					Integer i = it.next();
+					monitor = new ClusterMonitor(i.intValue(), args[off + 1], verbose);
+					monitor.initialise();
 				
-				monitor.start();
-			}
-			if (monitor != null)	
-			{
-				try {
-					monitor.join();
-				} catch (Exception ex) {
-					// Nothing to do
+					monitor.start();
+				}
+				if (monitor != null)	
+				{
+					try {
+						monitor.join();
+					} catch (Exception ex) {
+						// Nothing to do
+					}
+				}
+				if (systems.isEmpty())
+				{
+					System.out.println("No systems found to monitor, waiting for systems to be deployed.");
+					try {
+						Thread.sleep(10000);
+					} catch (Exception e) {
+						System.err.println("Sleep on current thread failed: " + e.getLocalizedMessage());
+					}
 				}
 			}
 		}
