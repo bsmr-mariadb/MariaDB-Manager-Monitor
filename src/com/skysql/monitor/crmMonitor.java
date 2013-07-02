@@ -49,6 +49,7 @@ import java.io.*;
  * 	console-fs	(ocf::custom:Filesystem) Started 
  * 	Tomcat7	(ocf::heartbeat:tomcat) Started 
  * 
+ * Fix to account for different output from pacemaker 1.1.9
  */
 public class crmMonitor extends monitor {
 	
@@ -111,8 +112,10 @@ public class crmMonitor extends monitor {
 					}
 					else
 					{
-						int beginIndex = line.lastIndexOf(") ");
-						state = line.substring(beginIndex + 2).trim();
+						String	tline = line.trim();
+						String	words[] = tline.split("\\s");
+						state = words[words.length-1];
+
 						if (verbose)
 							System.out.println(">>> Node is: " + nodeNo +". State is: " + state);
 					}
