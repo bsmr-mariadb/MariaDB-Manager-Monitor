@@ -13,7 +13,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright SkySQL Ab
+ * Copyright 2012, 2013 SkySQL Ab
  */
 
 package com.skysql.monitor;
@@ -21,15 +21,37 @@ package com.skysql.monitor;
 import java.text.DecimalFormat;
 import java.util.*;
 
-
+/**
+ * The main class of the query router, this comprises the main function itself,
+ * the handling of the configuration and creation of the monitor probes and
+ * the monitoring main loop.
+ * 
+ * The cluster monitor class is designed to monitor one system, a system being a 
+ * collection of one or more nodes. When multiple systems must be monitored new
+ * threads are created to monitor each system. These threads each have a unique
+ * instance of the ClusterMonitor class.
+ * 
+ * @author Mark Riddoch
+ *
+ */
 public class ClusterMonitor extends Thread {
-	private int					m_systemID;
-	private mondata 			m_confdb;
-	private List<node> 			m_nodeList;
+	/** The ID of the system we are monitoring */
+	private int					m_systemID; 
+	/**
+	 *  A handle on the configuration class that handles
+	 *  interaction with the database.
+	 */
+	private mondata 			m_confdb;	
+	/** The list of nodes in the system to monitor */
+	private List<node> 			m_nodeList;	
+	/** The list of the lists of monitors */
 	private List<List<monitor>> m_monitorList;
+	/** Verbose logging flag */
 	private boolean				m_verbose;
-	private int					m_interval;
-	private String				m_dbfile;
+	/** The polling interval to use */
+	private int					m_interval;		
+	/** The  name of the database to connect to */
+	private String				m_dbfile;		
 	
 	public static void main( String[] args )
 	{
@@ -47,7 +69,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		System.err.println("Starting ClusterMonitor v1.4.2");
+		System.err.println("Starting ClusterMonitor v1.5.0");
 		System.err.println("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -113,7 +135,7 @@ public class ClusterMonitor extends Thread {
 		}
 	}
 	
-	/*
+	/**
 	 * Allow the ClusterMonitor to be run in a thread in order to facilitate the monitoring of
 	 * more than one System.
 	 *  
@@ -163,7 +185,7 @@ public class ClusterMonitor extends Thread {
 		}
 	}
 	
-	/*
+	/**
 	 * refreshconfig 
 	 *
 	 * Read the configuration data from the SQLite database, this was moved out of the initialise
@@ -241,6 +263,10 @@ public class ClusterMonitor extends Thread {
 				else if (type.equals("SQL_NODE_STATE"))
 				{
 					mlist.add(new nodeStateMonitor(m_confdb, monid, n));
+				}
+				else if (type.equals("GLOBAL"))
+				{
+					mlist.add(new globalMonitor(m_confdb, monid, n, m_confdb.monitorIsDelta(monid)));
 				}
 				else
 				{

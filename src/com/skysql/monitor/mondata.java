@@ -26,15 +26,25 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import com.skysql.monitor.monAPI;
 
-
+/**
+ * Interface to the monitoring database, this is the database that holds
+ * the definition of what to monitor and into which the monitored values
+ * are written.
+ * 
+ * @author Mark Riddoch
+ *
+ */
 public class mondata {
 	private String		m_dbfile;
 	private int			m_systemID;
 	private monAPI		m_api;
 	static private int	CONNECT_TRIES = 20;	
 	
-	/*
+	/**
 	 * Constructor for the monitor data class
+	 * 
+	 * @param systemID	The System ID being monitored
+	 * @param dbfile	The SQLite database file
 	 */
 	public mondata(int systemID, String dbfile)
 	{
@@ -51,8 +61,10 @@ public class mondata {
 		m_api = new monAPI();
 	}
 	
-	/*
+	/**
 	 * Constructor used when the monitor is being used for when the system id is not known.
+	 * 
+	 * @param dbfile	The SQLite database file
 	 */
 	public mondata(String dbfile)
 	{
@@ -68,7 +80,7 @@ public class mondata {
 		}
 	}
 	
-	/*
+	/**
 	 * Connect to the SQLite database.
 	 * 
 	 * This routine connects to a SQLite database, returning the new connection to the caller.
@@ -104,8 +116,10 @@ public class mondata {
 		return connection;
 	}
 
-	/*
+	/**
 	 * Return the list of System ID's to monitor
+	 * 
+	 * @return The list of SystemIDs defined in the database
 	 */
 	public List<Integer> getSystemList()
 	{
@@ -132,8 +146,10 @@ public class mondata {
 		  }
 	}
 	
-	/*
+	/**
 	 * Return the list of node numbers to monitor
+	 * 
+	 * @return The list of nodes in the database
 	 */
 	public List<Integer> getNodeList()
 	{
@@ -160,8 +176,10 @@ public class mondata {
 		  }
 	}
 	
-	/*
+	/**
 	 * Return the list of monitors
+	 * 
+	 * @return The list of monitorID's defined in the database
 	 */
 	public List<Integer> getMonitorList()
 	{
@@ -188,8 +206,11 @@ public class mondata {
 		  }
 	}
 	
-	/*
+	/**
 	 * Get the private IP address of the specified node
+	 * 
+	 * @param NodeNo	The node number
+	 * @return The private IP address as a string
 	 */
 	public String getNodePrivateIP(int NodeNo)
 	{
@@ -215,8 +236,11 @@ public class mondata {
 		}
 	}
 	
-	/*
-	 * Get the private IP address of the specified node
+	/**
+	 * Get the credentials for the specified node
+	 * 
+	 * @param NodeNo The node number to return the credentials of
+	 * @return The Credentials for the node
 	 */
 	public Credential getNodeMonitorCredentials(int NodeNo)
 	{
@@ -244,8 +268,14 @@ public class mondata {
 		}
 	}
 	
-	/*
-	 * Get the SQL command (or command string) associated with a particular monitor
+	/**
+	 * Get the SQL command (or command string) associated with a particular monitor.
+	 * 
+	 * Although originally a simple SQL string for a monitor to execute, other
+	 * monitor types have reused the string to contain monitor specific data.
+	 * 
+	 * @param monitor_id The monitor ID to return the SQL data string for
+	 * @return The "SQL" field of the monitor
 	 */
 	public String getMonitorSQL(int monitor_id)
 	{
@@ -271,10 +301,13 @@ public class mondata {
 		}
 	}
 
-	/*
+	/**
 	 * Is the monitored value a cumulative number or a snapshot value. This allows monitors
 	 * to return values that are either the value in the database or the difference between
 	 * the current value and the previous value.
+	 * 
+	 * @param monitor_id	The monitor ID to check
+	 * @return True of the monitor is a delta of observed values
 	 */
 	public Boolean monitorIsDelta(int monitor_id)
 	{
@@ -303,8 +336,10 @@ public class mondata {
 	}
 
 	
-	/*
+	/**
 	 * Fetch the monitor probe interval
+	 * 
+	 * @return The monitor interval in seconds
 	 */
 	public int monitorInterval()
 	{
@@ -331,8 +366,11 @@ public class mondata {
 		}
 	}
 	
-	/*
+	/**
 	 * Fetch the name of a particular monitor
+	 * 
+	 * @param name	The monitor name
+	 * @return The monitor_id of the named monitor or -1 if the monitor was not found
 	 */
 	public int getNamedMonitor(String name)
 	{
@@ -358,8 +396,11 @@ public class mondata {
 		}
 	}
 	
-	/*
+	/**
 	 * Return the type, and hence monitor class, of a particular monitor.
+	 * 
+	 * @param id	The monitor ID
+	 * @return The type field for the monitor, e.g. SQL, CMD, CRM etc.
 	 */
 	public String getMonitorType(int id)
 	{
@@ -385,8 +426,11 @@ public class mondata {
 		}
 	}
 	
-	/*
+	/**
 	 * Is the system monitor value cumulative or an average of all the nodes in the system
+	 * 
+	 * @param id	The Monitor ID
+	 * @return		True if the system value of a monitor is an average of all the nodes in the system
 	 */
 	public boolean getMonitorSystemAverage(int id)
 	{
@@ -412,8 +456,11 @@ public class mondata {
 		}
 	}
 	
-	/*
-	 * Return the current state of a node
+	/**
+	 * Map a node state string to a state value
+	 * 
+	 * @param Name The name of the node state
+	 * @return The Node State
 	 */
 	public int getStateValue(String Name)
 	{
@@ -438,8 +485,10 @@ public class mondata {
 		}
 	}
 	
-	/*
+	/**
 	 * Return the list of valid node states
+	 * 
+	 * @return The set of defined node states
 	 */
 	public List<String> getValidStates()
 	{
@@ -466,8 +515,11 @@ public class mondata {
 		}
 	}
 	
-	/*
+	/**
 	 * Set the state of a node
+	 * 
+	 * @param nodeid	The node to set the state of
+	 * @param stateid	The state to set for the node
 	 */
 	public void setNodeState(int nodeid, int stateid)
 	{
@@ -498,8 +550,11 @@ public class mondata {
 		}
 	}
 	
-	/*
+	/**
 	 * Map a CRM state string to a valid node state.
+	 * 
+	 * @param state	The CRM state
+	 * @return The node state
 	 */
 	public String mapCRMStatus(String state)
 	{
@@ -524,7 +579,7 @@ public class mondata {
 		}
 	}
 	
-	/*
+	/**
 	 * Set the status of the system
 	 */
 	public void setSystemStatus()
@@ -567,8 +622,10 @@ public class mondata {
 		
 	}	
 	
-	/*
-	 * Get the instance ID list for this cluster
+	/**
+	 * Get the list of instance ID for this cluster
+	 * 
+	 * @return The lsit of instance IDs
 	 */
 	public List<String> getInstances()
 	{
@@ -594,8 +651,12 @@ public class mondata {
 		}
 	}
 	
-	/*
+	/**
 	 * Update the public IP address of a node if it has changed
+	 * 
+	 * @param	instanceID The instance ID
+	 * @param	publicIP 	The public IP addres of the instance
+	 * @return	True if the IP address was updated
 	 */
 	public boolean setPublicIP(String instanceID, String publicIP)
 	{
@@ -672,7 +733,7 @@ public class mondata {
 	}
 
 
-	/*
+	/**
 	 * IPMonitor
 	 * 
 	 * Get the system property IPMonitor - this controls the running of the IPMonitor for
@@ -705,11 +766,30 @@ public class mondata {
 		}
 	}
 	
+	/**
+	 * Interface to record monitor observed values. This differs from the other 
+	 * entry points in that it passes the data onto the API.
+	 * 
+	 * @param systemID		The SystemID to update
+	 * @param nodeID		The NodeID to update
+	 * @param monitorID		The moitorID the value is associated with
+	 * @param observation	The observed value
+	 * @return True if the monitor observation was written
+	 */
 	public boolean monitorData(int systemID, int nodeID, int monitorID, String observation)
 	{
 		return m_api.MonitorValue(systemID, nodeID, monitorID, observation);
 	}
 	
+	/**
+	 * Interface to record observed values for a system. This differs from the other 
+	 * entry points in that it passes the data onto the API.
+	 * 
+	 * @param systemID		The SystemID to update
+	 * @param monitorID		The MonitorID the value is associated with
+	 * @param observation	The observed value
+	 * @return True if the monitor observation was written
+	 */
 	public boolean monitorData(int systemID, int monitorID, String observation)
 	{
 		return m_api.MonitorValue(systemID, monitorID, observation);

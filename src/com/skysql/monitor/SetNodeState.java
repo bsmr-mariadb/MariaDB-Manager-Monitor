@@ -21,7 +21,12 @@ package com.skysql.monitor;
 import java.util.*;
 import com.skysql.monitor.mondata;
 
-
+/**
+ * Standalone program for setting the node state. No longer used.
+ * 
+ * @author Mark Riddoch
+ *
+ */
 public class SetNodeState {
 	
 	mondata		m_confdb;

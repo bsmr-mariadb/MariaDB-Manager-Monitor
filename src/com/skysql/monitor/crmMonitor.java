@@ -19,8 +19,10 @@
 package com.skysql.monitor;
 
 import java.io.*;
-/*
- * Monitors the output of crm status bynode
+/**
+ * Monitors the output of crm status bynode. This is a specialist monitor
+ * class designed for use with the SkySQL Data Suite environment with a master
+ * slave MySQL cluster under the control of pacemaker.
  * 
  * [root@node1 skysql_aws]# crm status bynode
  * ============
@@ -50,13 +52,29 @@ import java.io.*;
  * 	Tomcat7	(ocf::heartbeat:tomcat) Started 
  * 
  * Fix to account for different output from pacemaker 1.1.9
+ * 
+ * @author Mark Riddoch
  */
 public class crmMonitor extends monitor {
 	
+	/**
+	 * Constructor - all work is done by the superclass
+	 * @param db		The database handler
+	 * @param id		The ID of the monitor
+	 * @param mon_node	The node to monitor
+	 */
 	public crmMonitor(mondata db, int id, node mon_node)
 	{
 		super(db, id, mon_node);
 	}
+	
+	/**
+	 * The probe method, called once per probe cycle.
+	 * 
+	 * This is a system only probe, so only runs if the node number is -1
+	 * 
+	 * @param verbose The verbosity to log with
+	 */
 	public void probe(boolean verbose)
 	{
 		if (m_node.getID() != 1)
@@ -140,6 +158,14 @@ public class crmMonitor extends monitor {
 		}
 	}
 	
+	/**
+	 * Set the node state by mapping the state parsed from the crm command
+	 * into an internal state
+	 *  
+	 * @param nodeNo	The node number to set state for
+	 * @param state		CRM state string
+	 * @param verbose	Logging verbosity
+	 */
 	private void crmSetState(int nodeNo, String state, boolean verbose)
 	{
 		String value = m_confdb.mapCRMStatus(state);
@@ -160,7 +186,9 @@ public class crmMonitor extends monitor {
 		}
 	}
 
-	
+	/**
+	 * Disables system values for this monitor
+	 */
 	public boolean hasSystemValue()
 	{
 		return false;

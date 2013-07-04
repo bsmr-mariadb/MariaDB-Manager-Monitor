@@ -19,15 +19,36 @@
 package com.skysql.monitor;
 import java.text.DecimalFormat;
 
+/**
+ * The deltaMonitor is an monitor class that monitors SQL values, the recorded
+ * value is the difference from the previous value monitored and the current
+ * monitor.
+ * 
+ * @author Mark Riddoch
+ *
+ */
 public class deltaMonitor extends monitor {
+	/**
+	 * The last value that the monitor monitored
+	 */
 	private		Long		lastAbsValue = null;
 	
+	/**
+	 * Monitor constructor - all the work is done in the super class
+	 * @param db		Handle on the database
+	 * @param id		The ID of the monitor
+	 * @param mon_node	The node beign monitored
+	 */
 	public deltaMonitor(mondata db, int id, node mon_node)
 	{
 		super(db, id, mon_node);
 	}
 	
-
+	/**
+	 * The probe function for the monitor
+	 * 
+	 * @param verbose 	Enable verbose logging of true
+	 */
 	public void probe(boolean verbose)
 	{
 		if (m_sql.isEmpty())

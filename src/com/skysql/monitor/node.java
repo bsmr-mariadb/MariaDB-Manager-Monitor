@@ -24,18 +24,60 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.net.InetAddress;
+import java.util.HashMap;
 
-
+/**
+ * The node interface in the monitor. Each instance of a node represents a database that 
+ * is being monitored. This class provides a mechanism to connect to the monitored database,
+ * a means to execute SQL on that database and basic reachability tests for the node.
+ * 
+ * Node connections are implemented as threads in order not to delay the execution of the
+ * main monitor.
+ * 
+ * @author Mark Riddoch
+ *
+ */
 public class node implements Runnable {
+	/**
+	 * The database URL to connect to the node
+	 */
 	private String		m_URL;
+	/**
+	 * System ID of the node
+	 */
 	private int			m_systemID;
+	/**
+	 * The nodes node number
+	 */
 	private int			m_nodeNo;
-	private Connection 	m_mondb;		// The database being monitored
+	/**
+	 * The JDBC connection to the monitored database
+	 */
+	private Connection 	m_mondb;
+	/**
+	 * True if a connection exists
+	 */
 	private boolean 	m_connected;
+	/**
+	 * The thread being used to create the connection
+	 */
 	private Thread		m_conthread;
+	/**
+	 * True if a connection attempt is in progress
+	 */
 	private boolean		m_connecting;
+	/**
+	 * The SQLite monitoring database
+	 */
 	private mondata		m_confdb;
 	
+	/**
+	 * Node constructor
+	 * 
+	 * @param confDB	The SQLite monitoring database
+	 * @param systemID	The System ID
+	 * @param nodeNo	The Node ID
+	 */
 	public node(mondata confDB, int systemID, int nodeNo)
 	{
 		m_connected = false;
@@ -53,6 +95,9 @@ public class node implements Runnable {
 		System.out.println("Created node: " + this);
 	}
 	
+	/**
+	 * Close the connection to the monitored database
+	 */
 	public synchronized void close()
 	{
 		System.out.println("Disconnect from monitored database " + m_URL);
@@ -67,6 +112,11 @@ public class node implements Runnable {
 		m_connected = false;
 	}
 	
+	/**
+	 * Connect to the monitored database. A new thread will be created to establish the connection,
+	 * if a connection already exists, or a connection thread is running, then another
+	 * connection will not be made to the database.
+	 */
 	private synchronized void connect() 
 	{
 		System.out.println("Try to connect to monitored database " + m_URL);
@@ -91,6 +141,10 @@ public class node implements Runnable {
 		m_conthread.start();
 	}
 	
+	/**
+	 * The connection thread entry point. This method gets called on the connection thread
+	 * and will create the connection and then terminate the thread
+	 */
 	public void run()
 	{
 		try {
@@ -113,6 +167,12 @@ public class node implements Runnable {
 		m_connecting = false;
 	}
 	
+	/**
+	 * Execute an SQL statement on the monitored database
+	 * 
+	 * @param sql	The SQL statement to execute
+	 * @return	The single row/column result of the query
+	 */
 	public String execute(String sql)
 	{
 		if (! m_connected)
@@ -141,16 +201,30 @@ public class node implements Runnable {
 		return null;	// If we can't probe return null
 	}
 	
+	/**
+	 * Get the node ID of the node
+	 * 
+	 * @return The node ID
+	 */
 	public int getID()
 	{
 		return m_nodeNo;
 	}
 	
+	/**
+	 * Get the System ID of the node
+	 * 
+	 * @return The System ID
+	 */
 	public int getSystemID()
 	{
 		return m_systemID;
 	}
 	
+	/**
+	 * Perform a basic ICMP Ping reachability test on the node
+	 * @return True if the node is reachable
+	 */
 	public boolean isReachable()
 	{
 		try {
@@ -158,5 +232,50 @@ public class node implements Runnable {
 		} catch (Exception ex) {
 			return false;
 		}
+	}
+	
+	/**
+	 * Execute a SQL statement that will return a result set with two columns 
+	 * and multiple rows. The result set is mapped into a Java HashMap with the
+	 * first column treated as the key and the second the corresponding values 
+	 * in the hash map. This is designed to fetch bulk data in the form of key
+	 * value pairs. 
+	 * 
+	 * The primary use of this method is to fetch all the rows in the global_status
+	 * and global_variables tables.
+	 * 
+	 * @param sql	The SQL to execute
+	 * @return	A hashmap of string pairs for the table
+	 */
+	public HashMap<String, String> fetchTable(String sql)
+	{
+		HashMap<String, String> rval = new HashMap<String, String>();
+		
+		if (! m_connected)
+		{
+			connect();
+			return null;
+		}
+		try {
+			Statement statement = m_mondb.createStatement();
+			statement.setQueryTimeout(60);
+			ResultSet result = statement.executeQuery(sql);
+			while (result.next())
+			{
+				rval.put(result.getString(1), result.getString(2));
+			}
+			return rval;
+		}
+		catch (SQLException sqlex)
+		{
+			System.out.println("Probe failed: " + sql + ": " + sqlex.getMessage());
+			System.out.println("ErrorCode: " + sqlex.getErrorCode() + ": SQLState: " + sqlex.getSQLState());
+			try {
+				this.close();
+			} catch (Exception ex) {
+				// Ignore failures
+			}
+		}
+		return null;	// If we can't probe return null
 	}
 }

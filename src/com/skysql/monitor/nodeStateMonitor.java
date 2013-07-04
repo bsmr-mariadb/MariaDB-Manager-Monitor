@@ -19,17 +19,33 @@
 
 package com.skysql.monitor;
 
-/*
+/**
  * nodeStateMonitor - a monitor class that implements a SQL based method to update the state of a node within
- * the monitored set of systems. The result set will contain a single value which is the state to use for the particular node.
+ * the monitored set of systems. The result set will contain a single value which is the state to use for the
+ * particular node.
+ * 
+ * @author Mark Riddoch
  */
 public class nodeStateMonitor extends monitor {
 	
+	/**
+	 * Constructor for the node state monitor, all the work is done in the
+	 * super class 
+	 * 
+	 * @param db		The monitoring database
+	 * @param id		The ID of the monitor
+	 * @param mon_node	The node being monitored
+	 */
 	public nodeStateMonitor(mondata db, int id, node mon_node)
 	{
 		super(db, id, mon_node);
 	}
 	
+	/**
+	 * The probe entry for the monitor
+	 * 
+	 * @param verbose	The logging verbosity level
+	 */
 	public void probe(boolean verbose)
 	{
 		if (m_sql.isEmpty())
@@ -53,6 +69,11 @@ public class nodeStateMonitor extends monitor {
 		m_lastValue = value;
 	}
 	
+	/**
+	 * The node state has no corresponding system value
+	 * 
+	 * @return false
+	 */
 	public boolean hasSystemValue()
 	{
 		return false;

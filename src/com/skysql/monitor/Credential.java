@@ -18,20 +18,41 @@
 
 package com.skysql.monitor;
 
+/**
+ * A class to bundle username and password information into a single
+ * class.
+ * 
+ * @author Mark Riddoch
+ *
+ */
 public class Credential {
 	private String	m_username, m_passwd;
 	
+	/**
+	 * Constructor for the Credential class
+	 * 
+	 * @param uname			Username
+	 * @param passwd		Password
+	 */
 	public Credential(String uname, String passwd) 
 	{
 		m_username = uname;
 		m_passwd = passwd;
 	}
 	
+	/**
+	 * Return the username from the credentials class
+	 * @return The username
+	 */
 	public String getUsername()
 	{
 		return m_username;
 	}
 	
+	/**
+	 * The password in the Credentials class
+	 * @return The password
+	 */
 	public String getPassword()
 	{
 		return m_passwd;

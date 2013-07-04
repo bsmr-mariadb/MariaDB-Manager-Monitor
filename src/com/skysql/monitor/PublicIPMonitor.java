@@ -30,19 +30,37 @@ import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.Reservation;
 
 
-/*
+/**
  * PublicIP address monitor
  * 
  * This runs as a separate thread to the rest of the monitor and looks for Public IP address changes in
- * the cluster. This is useful for when the elastic IP address migrates between nodes of the clsuter or
+ * the cluster. This is useful for when the elastic IP address migrates between nodes of the cluster or
  * a stopped node returns to the cluster with a new Public IP address.
+ * 
+ * @author Mark Riddoch
  */
 public class PublicIPMonitor extends Thread {
 
+	/**
+	 * The monitoring database
+	 */
 	private mondata			m_db;
+	/**
+	 * The connection to the Amazon API
+	 */
 	private AmazonEC2		m_ec2Client;
+	/**
+	 * The log verbosity level
+	 */
 	private boolean			m_verbose;
 	
+	/**
+	 * Constructor for the IP monitor, the main function of the constructor is to 
+	 * create the connection to the Amazon API
+	 * 
+	 * @param db		Monitoring database
+	 * @param verbose	Logging verbosity
+	 */
 	public PublicIPMonitor(mondata db, boolean verbose)
 	{
 		m_db = db;
@@ -72,6 +90,10 @@ public class PublicIPMonitor extends Thread {
 		m_ec2Client = new AmazonEC2Client(config);
 	}
 	
+	/**
+	 * The thread entry point. Loop around fetching data from the Amazon EC2 API as to the
+	 * current IP addresses of the nods within the cluster and update the monitoring database
+	 */
 	public void run()
 	{
 		System.out.println("PublicIP address monitor for Amazon EC2 instances started.");

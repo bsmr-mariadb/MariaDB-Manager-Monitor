@@ -21,13 +21,34 @@ import java.io.BufferedReader;
 import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 
+/**
+ * The commandMonitor is an instance of a monitor class designed to execute
+ * external programs as sources of monitoring data.
+ * 
+ * @author Mark Riddoch
+ *
+ */
 public class commandMonitor extends monitor {
 	
-	private int			m_id;
-	private int 		m_rate;
-	static	private		int POLERATIO = 5;
+	/** The monitor ID */
+	private int			m_id;	
+	/** The rate to poll, i.e. number of cycles
+	 *  between polls
+	 */
+	private int 		m_rate;	
+	/** Number of polls between command execution */
+	static	private		int POLERATIO = 5;	
 	// private String		m_nodeIP;
 	
+	/**
+	 * The constructor for the command monitor. Must of the work is
+	 * down by the super class, monitor, we only need to set a couple
+	 * of local member variables.
+	 * 
+	 * @param db		The Monitor database
+	 * @param id		The ID of the monitor 
+	 * @param mon_node	The node we are monitoring
+	 */
 	public commandMonitor(mondata db, int id, node mon_node)
 	{
 		super(db, id, mon_node);
@@ -36,6 +57,18 @@ public class commandMonitor extends monitor {
 		// m_nodeIP = db.getNodePrivateIP(mon_node.getID());
 	}
 	
+	/**
+	 * The probe function, called once per probe cycle.
+	 * 
+	 * We only actually execute the command once per POLERATIO calls,
+	 * this allows the command execution to be throttled back as it is
+	 * relatively expensive.
+	 * 
+	 * TODO: The command is run locally currently, it should be run on
+	 * the node m_node
+	 * 
+	 * @param verbose	Verbose or normal logging required
+	 */
 	public void probe(boolean verbose)
 	{
 		if (m_sql.isEmpty())
