@@ -148,7 +148,7 @@ public class node implements Runnable {
 	public void run()
 	{
 		try {
-			  Class.forName("org.skysql.jdbc.Driver").newInstance();
+			  Class.forName("org.mariadb.jdbc.Driver").newInstance();
 			  Credential cred = m_confdb.getNodeMonitorCredentials(m_nodeNo);
 			  m_mondb = DriverManager.getConnection(m_URL, cred.getUsername(), cred.getPassword());
 			  m_connected = true;
