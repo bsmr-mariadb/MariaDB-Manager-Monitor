@@ -311,7 +311,8 @@ public class mondata {
 	{
 		String query = "select delta from Monitors where monitorID = " + monitor_id;
 		String apiRequest = "monitorclass/" + monitor_id;
-		if (ListStringToString(getStringFromQuery(apiRequest, "fields", "delta")) == "0") {
+		String result = ListStringToString(getStringFromQuery(apiRequest, "fields", "delta"));
+		if (result.equalsIgnoreCase("0")) {
 			return false;
 		}
 		else return true;
@@ -355,7 +356,7 @@ public class mondata {
 	{
 		String query = "select MonitorType from Monitors where MonitorID = '" + id + "'";
 		String apiRequest = "monitorclass/" + id;
-		return ListStringToString(getStringFromQuery(apiRequest, "fields", "type"));
+		return ListStringToString(getStringFromQuery(apiRequest, "fields", "monitortype"));
 	}
 	
 	/**
@@ -368,7 +369,9 @@ public class mondata {
 	{
 		String query = "select SystemAverage from Monitors where MonitorID = '" + id + "'";
 		String apiRequest = "monitorclass/" + id;
-		return Boolean.parseBoolean(ListStringToString(getStringFromQuery(apiRequest, "fields", "systemaverage")));
+		String result = ListStringToString(getStringFromQuery(apiRequest, "fields", "systemaverage"));
+		if (result.equalsIgnoreCase("1")) return true;
+		return false;
 	}
 	
 	/**
@@ -416,7 +419,7 @@ public class mondata {
 				// TODO: recognize how many rows have been changed
 			}
 		} catch (Exception e) {
-			System.err.println("APIl Failed: " + apiRequest + ": "+ e.getMessage());
+			System.err.println("API Failed: " + apiRequest + ": "+ e.getMessage());
 		}
 	}
 	
@@ -477,7 +480,7 @@ public class mondata {
 	public List<String> getInstances()
 	{
 		String query = "select instanceID from NodeData where SystemID = " + m_systemID;
-		String apiRequest = "system/" + m_systemID + "node";
+		String apiRequest = "system/" + m_systemID + "/node";
 		return getStringFromQuery(apiRequest, "fields", "instanceID");
 	}
 	
@@ -491,7 +494,7 @@ public class mondata {
 	public boolean setPublicIP(String instanceID, String publicIP)
 	{
 		String query = "select PublicIP from NodeData where InstanceID = '" + instanceID + "'";
-		String apiRequest = "system/" + m_systemID + "node";
+		String apiRequest = "system/" + m_systemID + "/node";
 		String fields = "fields";
 		String values = "id, instanceID, publicIP";
 		String nodeID = new String();
@@ -507,7 +510,7 @@ public class mondata {
 				}
 			}
 			query = "update NodeData set PublicIP = '" + publicIP + "' where InstanceID = '" + instanceID + "'";
-			apiRequest = "system/" + m_systemID + "node" + nodeID;
+			apiRequest = "system/" + m_systemID + "/node/" + nodeID;
 			fields = "publicip";
 			values = publicIP;
 			return m_api.UpdateValue(apiRequest, fields, values);
@@ -529,7 +532,7 @@ public class mondata {
 	public boolean setPrivateIP(String instanceID, String privateIP)
 	{
 		String query = "select PrivateIP from NodeData where InstanceID = '" + instanceID + "'";
-		String apiRequest = "system/" + m_systemID + "node";
+		String apiRequest = "system/" + m_systemID + "/node";
 		String fields = "fields";
 		String values = "id, instanceID, privateIP";
 		String nodeID = new String();
@@ -545,7 +548,7 @@ public class mondata {
 				}
 			}
 			query = "update NodeData set PrivateIP = '" + privateIP + "' where InstanceID = '" + instanceID + "'";
-			apiRequest = "system/" + m_systemID + "node" + nodeID;
+			apiRequest = "system/" + m_systemID + "/node/" + nodeID;
 			fields = "privateip";
 			values = privateIP;
 			return m_api.UpdateValue(apiRequest, fields, values);

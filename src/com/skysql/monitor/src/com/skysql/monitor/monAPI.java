@@ -20,7 +20,6 @@ package com.skysql.monitor;
 
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -291,53 +290,9 @@ public class monAPI {
 	 */
 	private boolean restPost(String restRequest, String pName, String pValue)
 	{
-		String result = null;
-		
-		String value = pName + "=" + pValue;
-		
-		
-		try {
-	 
-			String reqString = "http://" + m_apiHost + "/consoleAPI/api/" + restRequest + "&" + value;
-			URL postURL = new URL(reqString);
-			HttpURLConnection apiConn = (HttpURLConnection)postURL.openConnection();
-			apiConn.setRequestMethod("POST");
-			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
-		    String rfcdate = sdf.format(new Date());
-		    String sb = this.setAuth(restRequest, rfcdate);
-
-			apiConn.addRequestProperty("Date", rfcdate);
-			apiConn.setRequestProperty("Authorization", "api-auth-" + m_apiKeyID + "-" + sb);
-			apiConn.setRequestProperty("Accept", "application/json");
-			apiConn.setDoOutput(true);
-			apiConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			apiConn.setRequestProperty("charset", "utf-8");
-			apiConn.setRequestProperty("Content-Length", "" + Integer.toString(value.getBytes().length));
-			apiConn.setUseCaches(false);
-			apiConn.setRequestMethod("POST");
-			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
-			out.write(value);
-			out.close();
-			
-			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
-			result = in.readLine();
-			in.close();
-			
-			if (apiConn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error : "
-					+ apiConn.getResponseMessage() + ": returned data: " + result);
-			}
-		} catch (FileNotFoundException e) {
-			System.out.println("FileNotFound: configure the apache for RESTful api.");
-			return false;
-		} catch (IOException e) {
-			e.printStackTrace();			
-			return false;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
+		String[] newpName = {pName};
+		String[] newpValue = {pValue};
+		return restPost(restRequest, newpName, newpValue);
 	}
 	
 	/**
@@ -347,69 +302,68 @@ public class monAPI {
 	 * @param pName			The parameter names for the post request
 	 * @param pValue		The parameter values for the port request
 	 */
-	private boolean restPost(String restRequest, String pName[], String pValue[])
-	{
-		String result = null;
-		
-		/*
-		 * We must have the same number of names as values
-		 */
-		if (pName.length != pValue.length)
-		{
-			return false;
+	private boolean restPost(String restRequest, String[] pName, String[] pValue) {
+		String result = "";
+		String[] _params_name = {"_rfcdate", "_authorization", "_method", "_accept"};
+		String[] _params = new String[_params_name.length];
+		String value = "";
+		for (int i=0; i < pName.length; i++) {
+			value += "&" + pName[i] + "=" + pValue[i];
 		}
-		
-		
-		try {
-	 
-			/*
-			 * Discover the content length by finding the sum of all the pName and pValue
-			 * lengths. Also allow 2 characters per value for the "=" and newline.
-			 */
-			int contentLength = 0;
-			for (int i = 0; i < pName.length; i++)
-			{
-				contentLength += pName[i].length() + pValue[i].length() + 2;
-			}
-			String reqString = "http://" + m_apiHost + "/consoleAPI/api/" + restRequest;
-			URL postURL = new URL(reqString);
-			HttpURLConnection apiConn = (HttpURLConnection)postURL.openConnection();
-			apiConn.setRequestMethod("POST");
-			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
-		    String rfcdate = sdf.format(new Date());
-		    String sb = this.setAuth(restRequest, rfcdate);
 
-			apiConn.addRequestProperty("Date", rfcdate);
-			apiConn.setRequestProperty("Authorization", "api-auth-" + m_apiKeyID + "-" + sb);
+		try {
+			// set up authorization for the redirected webpage (ie, $_POST variable)
+			String reqString = "http://" + m_apiHost + "/consoleAPI/api/" + restRequest;
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
+			sdf.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+			String rfcdate = sdf.format(new Date());
+			String sb = this.setAuth(restRequest, rfcdate);
+			_params[0] = encodeURIComponent(rfcdate);
+			_params[1] = "api-auth-" + m_apiKeyID + "-" + sb;
+			_params[2] = "POST";
+			_params[3] = "application/json";
+			for (int i = 0; i < _params.length; i++) {
+				value += "&" + _params_name[i] + "=" + _params[i];
+			}
+			value = value.substring(1);
+			if (value.substring(0,1).matches("=")) {
+				value = value.substring(2);
+			}
+
+			// set up connection
+			URL postURL = new URL(reqString);
+			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
+			apiConn.setRequestMethod("POST");
 			apiConn.setRequestProperty("Accept", "application/json");
-			apiConn.setDoOutput(true);
+			apiConn.setRequestProperty("Authorization", "api-auth-" + m_apiKeyID + "-" + sb);
 			apiConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			apiConn.setRequestProperty("charset", "utf-8");
-			apiConn.setRequestProperty("Content-Length", "" + contentLength);
+			apiConn.setRequestProperty("Date", rfcdate);
+			apiConn.setRequestProperty("Content-Length", "" + Integer.toString(value.getBytes().length));
+			apiConn.setDoOutput(true);
 			apiConn.setUseCaches(false);
-			apiConn.setRequestMethod("POST");
 			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
-			for (int i = 0; i < pName.length; i++)
-			{
-				out.write(pName[i] + "=" + pValue[i] + "\n");
-			}
+			out.write(value);
+			out.flush();
 			out.close();
-			
+
+			// get output
 			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
-			result = in.readLine();
+			String tmp;
+			while ((tmp = in.readLine()) != null) {
+				result += tmp + "\n";
+			}
 			in.close();
-			
+
 			if (apiConn.getResponseCode() != 200) {
 				throw new RuntimeException("Failed : HTTP error : "
-					+ apiConn.getResponseMessage() + ": returned data: " + result);
+						+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
-		  } catch (IOException e) {
-					e.printStackTrace();
-					return false;
-		  } catch (Exception e) {
-			  		e.printStackTrace();
-			  		return false;
-		  }
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 	
