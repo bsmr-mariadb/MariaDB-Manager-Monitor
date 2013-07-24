@@ -1,11 +1,11 @@
 %define _topdir	 	%(echo $PWD)/
 %define name		skysql_monitor
-%define release		2
-%define version 	1.4
-%define buildroot %{_topdir}/%{name}-%{version}-%{release}-root
+%define release		##RELEASE_TAG##
+%define version 	##VERSION_TAG##
+%define buildroot 	%{_topdir}/%{name}-%{version}-%{release}-root
 %define install_path	/usr/local/skysql/monitor/
 
-BuildRoot:	%{buildroot}
+BuildRoot:		%{buildroot}
 Summary: 		SkySQL monitor
 License: 		GPL
 Name: 			%{name}
@@ -14,9 +14,8 @@ Release: 		%{release}
 Source: 		%{name}-%{version}-%{release}.tar.gz
 Prefix: 		/
 Group: 			Development/Tools
-Requires:		java-1.6.0-openjdk skysql_aws_tools mariadb-java-client sqlite-jdbc aws-java-sdk
-# aws-apitools-ec2
-BuildRequires:		java-1.6.0-openjdk skysql_aws_tools sqlite-jdbc aws-java-sdk mariadb-java-client
+Requires:		java
+#BuildRequires:		java-1.6.0-openjdk skysql_aws_tools sqlite-jdbc aws-java-sdk mariadb-java-client
 
 %description
 SkySQL monitor
@@ -38,6 +37,7 @@ chown apache:apache /var/log/SkySQL-ClusterMonitor.log
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar  $RPM_BUILD_ROOT%{install_path}
 cp monitor/ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
+cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
 
 %clean
 
@@ -46,6 +46,7 @@ cp monitor/ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
 %{install_path}
 %{install_path}ClusterMonitor.jar
 %{install_path}ClusterMonitor.sh
+%{install_path}start_monitor.sh
 
 %changelog
 * Wed May 22 2013 Timofey Turenko <timofey.turenko@skysql.com> - 1.4-2
