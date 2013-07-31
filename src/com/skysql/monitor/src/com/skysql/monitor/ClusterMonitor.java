@@ -206,6 +206,7 @@ public class ClusterMonitor extends Thread {
 			} catch (Exception e) {
 				System.err.println("Failed while waiting for nodes: " + e.getLocalizedMessage());
 			}
+			nodeIDList = m_confdb.getNodeList();
 		}
 		if (m_verbose)
 			System.out.println(nodeIDList.size() + " nodes to monitor");
