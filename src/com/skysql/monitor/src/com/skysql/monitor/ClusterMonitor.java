@@ -78,6 +78,7 @@ public class ClusterMonitor extends Thread {
 			{
 				mondata db = new mondata(args[off+1]);
 				List<Integer> systems = db.getSystemList();
+				if (systems == null) systems = new ArrayList<Integer>();
 				Iterator<Integer> it = systems.iterator();
 				ClusterMonitor monitor = null;
 				while (it.hasNext())
@@ -172,17 +173,17 @@ public class ClusterMonitor extends Thread {
 	public void initialise()
 	{
 		refreshconfig();
-		if (m_confdb.IPMonitor())
-		{
-			mondata confdb = new mondata(m_systemID, m_dbfile);
-			try {
-				PublicIPMonitor ipmon = new PublicIPMonitor(confdb, m_verbose);
-				ipmon.start();
-			} catch (NoClassDefFoundError ex) {
-				System.err.println("Unable to run IPMonitor: Class " + ex.getLocalizedMessage() + " is not available.");
-				System.err.println("IP Monitoring functionality has been suspended.");
-			}
-		}
+//		if (m_confdb.IPMonitor())
+//		{
+//			mondata confdb = new mondata(m_systemID, m_dbfile);
+//			try {
+//				PublicIPMonitor ipmon = new PublicIPMonitor(confdb, m_verbose);
+//				ipmon.start();
+//			} catch (NoClassDefFoundError ex) {
+//				System.err.println("Unable to run IPMonitor: Class " + ex.getLocalizedMessage() + " is not available.");
+//				System.err.println("IP Monitoring functionality has been suspended.");
+//			}
+//		}
 	}
 	
 	/**

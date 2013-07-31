@@ -43,5 +43,117 @@ public class GsonNode {
 	private String task;
 	
 	public GsonNode() {}
+
+	/**
+	 * @return the system
+	 */
+	public int getSystem() {
+		return system;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public int getState() {
+		return state;
+	}
+
+	/**
+	 * @return the hostname
+	 */
+	public String getHostname() {
+		return hostname;
+	}
+
+	/**
+	 * @return the publicIP
+	 */
+	public String getPublicIP() {
+		return publicIP;
+	}
+
+	/**
+	 * @return the privateIP
+	 */
+	public String getPrivateIP() {
+		return privateIP;
+	}
+
+	/**
+	 * @return the instanceID
+	 */
+	public int getInstanceID() {
+		return instanceID;
+	}
+
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * @return the passwd
+	 */
+	public String getPasswd() {
+		return passwd;
+	}
+
+	/**
+	 * @return the commands
+	 */
+	public int[] getCommands() {
+		return commands;
+	}
+
+	/**
+	 * @return the connections
+	 */
+	public String[] getConnections() {
+		return connections;
+	}
+
+	/**
+	 * @return the packets
+	 */
+	public String[] getPackets() {
+		return packets;
+	}
+
+	/**
+	 * @return the health
+	 */
+	public String[] getHealth() {
+		return health;
+	}
+
+	/**
+	 * @return the command
+	 */
+	public String getCommand() {
+		return command;
+	}
+
+	/**
+	 * @return the task
+	 */
+	public String getTask() {
+		return task;
+	}
 	
 }

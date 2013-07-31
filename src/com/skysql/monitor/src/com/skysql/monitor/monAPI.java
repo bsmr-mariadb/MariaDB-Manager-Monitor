@@ -534,7 +534,7 @@ public class monAPI {
 		/**
 		 * Instantiate the unique instance of this class
 		 * 
-		 * @return the instantiate INSTANCE
+		 * @return the instantiated INSTANCE
 		 */
 		private static APIBatchExecution getInstance() {
 			if (INSTANCE == null)
@@ -585,6 +585,7 @@ public class monAPI {
 		/**
 		 * Execute the buffer queue.
 		 */
+		@SuppressWarnings("unchecked")
 		public synchronized static void sendAll() {
 			Method method;
 			Class<String> classRequest;

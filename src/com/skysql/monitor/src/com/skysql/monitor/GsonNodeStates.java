@@ -30,5 +30,26 @@ public class GsonNodeStates {
 	private String icon;
 	
 	public GsonNodeStates() {}
+
+	/**
+	 * @return the state
+	 */
+	public int getState() {
+		return state;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @return the icon
+	 */
+	public String getIcon() {
+		return icon;
+	}
 	
 }

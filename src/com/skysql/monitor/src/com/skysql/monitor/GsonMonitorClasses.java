@@ -37,5 +37,75 @@ public class GsonMonitorClasses {
 	private String unit;
 	
 	public GsonMonitorClasses() {}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the sql
+	 */
+	public String getSql() {
+		return sql;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @return the delta
+	 */
+	public int getDelta() {
+		return delta;
+	}
+
+	/**
+	 * @return the monitortype
+	 */
+	public String getMonitortype() {
+		return monitortype;
+	}
+
+	/**
+	 * @return the systemaverage
+	 */
+	public int getSystemaverage() {
+		return systemaverage;
+	}
+
+	/**
+	 * @return the interval
+	 */
+	public int getInterval() {
+		return interval;
+	}
+
+	/**
+	 * @return the unit
+	 */
+	public String getUnit() {
+		return unit;
+	}
 	
 }

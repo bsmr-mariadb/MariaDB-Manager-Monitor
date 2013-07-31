@@ -40,5 +40,89 @@ public class GsonSystem {
 	private String[] health;
 	
 	public GsonSystem() {}
+
+	/**
+	 * @return the system
+	 */
+	public int getSystem() {
+		return system;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the startDate
+	 */
+	public String getStartDate() {
+		return startDate;
+	}
+
+	/**
+	 * @return the lastAccess
+	 */
+	public String getLastAccess() {
+		return lastAccess;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public int getState() {
+		return state;
+	}
+
+	/**
+	 * @return the nodes
+	 */
+	public int[] getNodes() {
+		return nodes;
+	}
+
+	/**
+	 * @return the lastBackup
+	 */
+	public String getLastBackup() {
+		return lastBackup;
+	}
+
+	/**
+	 * @return the properties
+	 */
+	public String[] getProperties() {
+		return properties;
+	}
+
+	/**
+	 * @return the commands
+	 */
+	public String[] getCommands() {
+		return commands;
+	}
+
+	/**
+	 * @return the connections
+	 */
+	public String[] getConnections() {
+		return connections;
+	}
+
+	/**
+	 * @return the packets
+	 */
+	public String[] getPackets() {
+		return packets;
+	}
+
+	/**
+	 * @return the health
+	 */
+	public String[] getHealth() {
+		return health;
+	}
 	
 }
