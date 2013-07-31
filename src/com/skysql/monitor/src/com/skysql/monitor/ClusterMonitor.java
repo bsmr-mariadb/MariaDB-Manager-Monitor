@@ -198,10 +198,14 @@ public class ClusterMonitor extends Thread {
 		if (m_verbose)
 			System.out.println("Reading configuration data");
 		List<Integer> nodeIDList = m_confdb.getNodeList();
-		if (nodeIDList == null)
+		while (nodeIDList == null)
 		{
 			System.err.println("No nodes configured to monitor.");
-			System.exit(1);
+			try {
+				Thread.sleep(10000);
+			} catch (Exception e) {
+				System.err.println("Failed while waiting for nodes: " + e.getLocalizedMessage());
+			}
 		}
 		if (m_verbose)
 			System.out.println(nodeIDList.size() + " nodes to monitor");
