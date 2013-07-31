@@ -19,21 +19,20 @@
 package com.skysql.monitor;
 
 import java.util.*;
-//import com.skysql.monitor.monAPI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Interface to the monitoring database, this is the database that holds
  * the definition of what to monitor and into which the monitored values
  * are written.
  * 
- * @author Mark Riddoch
+ * @author Mark Riddoch, Massimo Siani
  *
  */
 public class mondata {
-	private String		m_dbfile;
 	private int			m_systemID;
 	private monAPI		m_api;
-//	static private int	CONNECT_TRIES = 20;	
 	
 	/**
 	 * Constructor for the monitor data class
@@ -44,18 +43,8 @@ public class mondata {
 	public mondata(int systemID, String dbfile)
 	{
 		m_systemID = systemID;
-		m_dbfile = dbfile;
-//		try {
-//			  Class.forName("org.sqlite.JDBC");
-//		}
-//		catch (ClassNotFoundException cnf)
-//		{
-//			  System.err.println("Unable to load SQLite JDBC driver.");
-//			  System.exit(1);
-//		}
 		m_api = new monAPI();
 	}
-	
 	/**
 	 * Constructor used when the monitor is being used for when the system id is not known.
 	 * 
@@ -63,54 +52,8 @@ public class mondata {
 	 */
 	public mondata(String dbfile)
 	{
-		m_systemID = -1;
-		m_dbfile = dbfile;
-//		try {
-//			  Class.forName("org.sqlite.JDBC");
-//		}
-//		catch (ClassNotFoundException cnf)
-//		{
-//			  System.err.println("Unable to load SQLite JDBC driver.");
-//			  System.exit(1);
-//		}
-		m_api = new monAPI();
+		this(-1, dbfile);
 	}
-	
-	/**
-	 * Connect to the SQLite database.
-	 * 
-	 * This routine connects to a SQLite database, returning the new connection to the caller.
-	 * Multiple attempts are made to connect to the database, with a back-off algorithm, in order
-	 * to allow for problems connecting due to resource locking issues in SQLite.
-	 */
-//	public Connection connect() throws SQLException
-//	{
-//		Connection connection;
-//		connection = null;
-//		int retries = 0;
-//		while (connection == null && retries++ < CONNECT_TRIES)
-//		{
-//			retries++;
-//			try {
-//				connection = DriverManager.getConnection("jdbc:sqlite:" + m_dbfile);
-//				connection.setAutoCommit(true);
-//			}
-//			catch (SQLException sqlex)
-//			{
-//				System.err.println("Failed to connect to SQLite database: " + sqlex.getMessage());
-//				try {
-//					Thread.sleep(10 * retries);	// Backoff trying to connect
-//				} catch (Exception slex) {
-//					// ignore
-//				}
-//			}
-//		}
-//		if (connection == null)
-//		{
-//			throw new SQLException("Repeated attempts to connect to jdbc:sqlite:" + m_dbfile + " failed");
-//		}
-//		return connection;
-//	}
 	
 	/**
 	 * Returns the result of the query in a list.
@@ -123,7 +66,6 @@ public class mondata {
 		String[] newparValue = {parValue};
 		return getIntegerFromQuery(request, newparName, newparValue);
 	}
-	
 	private List<Integer> getIntegerFromQuery(String request, String parName[], String parValue[]) {
 		try {
 			List<Integer> ilist = new ArrayList<Integer>();
@@ -152,7 +94,6 @@ public class mondata {
 		String[] newparValue = {parValue};
 		return getStringFromQuery(request, newparName, newparValue);
 	}
-	
 	private List<String> getStringFromQuery(String request, String parName[], String parValue[]) {
 		try {
 			List<String> slist = new ArrayList<String>();
@@ -166,7 +107,6 @@ public class mondata {
 		catch (Exception ex)
 		{
 			System.err.println("Failed: " + request + ": " + ex.getMessage());
-			ex.printStackTrace();
 			return null;
 		}
 	}
@@ -210,7 +150,6 @@ public class mondata {
 	 */
 	public List<Integer> getSystemList()
 	{
-		String query = "select systemID from System;";
 		String apiRequest = "system";
 		return getIntegerFromQuery(apiRequest, "fields", "system");
 	}
@@ -222,7 +161,6 @@ public class mondata {
 	 */
 	public List<Integer> getNodeList()
 	{
-		String query = "select nodeID from Node;";
 		String apiRequest = "system/" + m_systemID + "/node";
 		return getIntegerFromQuery(apiRequest, "fields", "id");
 	}
@@ -234,7 +172,6 @@ public class mondata {
 	 */
 	public List<Integer> getMonitorList()
 	{
-		String query = "select MonitorID from Monitors;";
 		String apiRequest = "monitorclass";
 		return getIntegerFromQuery(apiRequest, "fields", "id");
 	}
@@ -247,7 +184,6 @@ public class mondata {
 	 */
 	public String getNodePrivateIP(int NodeNo)
 	{
-		String query = "select PrivateIP from NodeData where NodeID = " + NodeNo + " and SystemID = " + m_systemID;
 		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
 		return ListStringToString(getStringFromQuery(apiRequest, "fields", "privateIP"));
 	}
@@ -260,7 +196,6 @@ public class mondata {
 	 */
 	public Credential getNodeMonitorCredentials(int NodeNo)
 	{
-		String query = "select username, passwd from NodeData where NodeID = " + NodeNo+ " and SystemID = " + m_systemID;
 		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
 		String fields = "fields";
 		String values = "username";
@@ -294,7 +229,6 @@ public class mondata {
 	 */
 	public String getMonitorSQL(int monitor_id)
 	{
-		String query = "select SQL from Monitors where monitorID = " + monitor_id;
 		String apiRequest = "monitorclass/" + monitor_id;
 		return ListStringToString(getStringFromQuery(apiRequest, "fields", "sql"));
 	}
@@ -309,7 +243,6 @@ public class mondata {
 	 */
 	public Boolean monitorIsDelta(int monitor_id)
 	{
-		String query = "select delta from Monitors where monitorID = " + monitor_id;
 		String apiRequest = "monitorclass/" + monitor_id;
 		String result = ListStringToString(getStringFromQuery(apiRequest, "fields", "delta"));
 		if (result.equalsIgnoreCase("0")) {
@@ -325,12 +258,14 @@ public class mondata {
 	 */
 	public int monitorInterval()
 	{
-		String query = "select Value from SystemProperties where SystemID = " + m_systemID;
-		query += " and Property = 'MonitorInterval'";
 		String apiRequest = "system/" + m_systemID + "/property/MonitorInterval";
 		String[] fields = {"system", "propertyname"};
 		String[] values = {Integer.toString(m_systemID), "MonitorInterval"};
-		return ListIntegerToInteger(getIntegerFromQuery(apiRequest, fields, values));
+		Integer result = ListIntegerToInteger(getIntegerFromQuery(apiRequest, fields, values));
+		if (result == null) {
+			return 30;
+		}
+		return result;
 	}
 	
 	/**
@@ -341,7 +276,6 @@ public class mondata {
 	 */
 	public int getNamedMonitor(String name)
 	{
-		String query = "select MonitorID from Monitors where Name = '" + name + "'";
 		String apiRequest = "monitorclass/" + name;
 		return ListIntegerToInteger(getIntegerFromQuery(apiRequest, "fields", "id"));
 	}
@@ -354,7 +288,6 @@ public class mondata {
 	 */
 	public String getMonitorType(int id)
 	{
-		String query = "select MonitorType from Monitors where MonitorID = '" + id + "'";
 		String apiRequest = "monitorclass/" + id;
 		return ListStringToString(getStringFromQuery(apiRequest, "fields", "monitortype"));
 	}
@@ -367,7 +300,6 @@ public class mondata {
 	 */
 	public boolean getMonitorSystemAverage(int id)
 	{
-		String query = "select SystemAverage from Monitors where MonitorID = '" + id + "'";
 		String apiRequest = "monitorclass/" + id;
 		String result = ListStringToString(getStringFromQuery(apiRequest, "fields", "systemaverage"));
 		if (result.equalsIgnoreCase("1")) return true;
@@ -382,7 +314,6 @@ public class mondata {
 	 */
 	public int getStateValue(String Name)
 	{
-		String query = "select State from NodeStates where Description = '" + Name + "'";
 		String apiRequest = "nodestate/" + Name;
 		return ListIntegerToInteger(getIntegerFromQuery(apiRequest, "fields", "state"));
 	}
@@ -394,7 +325,6 @@ public class mondata {
 	 */
 	public List<String> getValidStates()
 	{
-		String query = "select Description from NodeStates";
 		String apiRequest = "nodestate";
 		return getStringFromQuery(apiRequest, "fields", "description");
 	}
@@ -412,7 +342,7 @@ public class mondata {
 		try {
 			boolean results = m_api.UpdateValue(apiRequest, "state", Integer.toString(stateid));
 			if (! results) {
-				System.out.println("Failed to update node state: " + query);
+				System.err.println("Failed to update node state: " + apiRequest + " to state " + stateid);
 				return;
 			}
 			else if (results) {
@@ -479,7 +409,6 @@ public class mondata {
 	 */
 	public List<String> getInstances()
 	{
-		String query = "select instanceID from NodeData where SystemID = " + m_systemID;
 		String apiRequest = "system/" + m_systemID + "/node";
 		return getStringFromQuery(apiRequest, "fields", "instanceID");
 	}
@@ -493,7 +422,6 @@ public class mondata {
 	 */
 	public boolean setPublicIP(String instanceID, String publicIP)
 	{
-		String query = "select PublicIP from NodeData where InstanceID = '" + instanceID + "'";
 		String apiRequest = "system/" + m_systemID + "/node";
 		String fields = "fields";
 		String values = "id, instanceID, publicIP";
@@ -509,7 +437,6 @@ public class mondata {
 					nodeID = secondRequestL.get(i-1);
 				}
 			}
-			query = "update NodeData set PublicIP = '" + publicIP + "' where InstanceID = '" + instanceID + "'";
 			apiRequest = "system/" + m_systemID + "/node/" + nodeID;
 			fields = "publicip";
 			values = publicIP;
@@ -531,7 +458,6 @@ public class mondata {
 	 */
 	public boolean setPrivateIP(String instanceID, String privateIP)
 	{
-		String query = "select PrivateIP from NodeData where InstanceID = '" + instanceID + "'";
 		String apiRequest = "system/" + m_systemID + "/node";
 		String fields = "fields";
 		String values = "id, instanceID, privateIP";
@@ -547,7 +473,6 @@ public class mondata {
 					nodeID = secondRequestL.get(i-1);
 				}
 			}
-			query = "update NodeData set PrivateIP = '" + privateIP + "' where InstanceID = '" + instanceID + "'";
 			apiRequest = "system/" + m_systemID + "/node/" + nodeID;
 			fields = "privateip";
 			values = privateIP;
@@ -570,10 +495,26 @@ public class mondata {
 	 */
 	public boolean IPMonitor()
 	{
-		String query = "select Value from SystemProperties where SystemID = " + m_systemID;
-		query += " and Property = 'IPMonitor'";
 		String apiRequest = "system/" + m_systemID + "/property/IPMonitor";
-		return Boolean.parseBoolean(ListStringToString(getStringFromQuery(apiRequest, "", "")));
+		String IP = ListStringToString(getStringFromQuery(apiRequest, "", ""));
+		if (IP == null) return false;
+		Pattern pattern = Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
+		Matcher matcher = pattern.matcher(IP);
+		if (matcher.matches()) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * bulkMonitorData: batch request to the API.
+	 * 
+	 * @param fields: the names of the variables to be passed to the API
+	 * @param values: the values to the passed to the API
+	 */
+	public void bulkMonitorData(String[] fields, String[] values) {
+		String apiRequest = "monitordata";
+		getStringFromQuery(apiRequest, fields, values);
 	}
 	
 	/**

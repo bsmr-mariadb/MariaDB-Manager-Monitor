@@ -20,16 +20,21 @@ package com.skysql.monitor;
 
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -39,7 +44,7 @@ import java.net.URLEncoder;
  * This is the API that should be used to store all monitor observations and to retrieve 
  * system configuration information rather than access the SQLite monitoring database directly.
  * 
- * @author Mark Riddoch
+ * @author Mark Riddoch, Massimo Siani
  *
  */
 public class monAPI {
@@ -55,17 +60,41 @@ public class monAPI {
 	 * The API key ID as assigned by the API provider
 	 */
 	String		m_apiKeyID;
+	/**
+	 * Execute stored batch commands?
+	 */
+	boolean		m_bufferingExecution;
+	/**
+	 * Count the number of calls, to avoid buffering too often
+	 */
+	int			m_cycles;
+	/**
+	 * Timezone read from the php configuration. Assume /etc/php.ini, default to Europe/London.
+	 */
+	String		m_timeZone = null;
 	
 	/**
 	 * Construct the monAPI instance. This consists of obtaining the information required
 	 * to contact the API. This information is available via Java System Properties.
+	 * Set the buffering to true by default.
 	 */
 	public monAPI()
 	{
+		this(true);
+	}
+	/**
+	 * Construct the monAPI instance. This consists of obtaining the information required
+	 * to contact the API. This information is available via Java System Properties.
+	 *
+	 * @param buffer		true if buffer is active (default).
+	 */
+	public monAPI(boolean buffer) {
 		Properties props = System.getProperties();
 		m_apiHost = props.getProperty("SKYSQL_API_HOST", "localhost");
 		m_apiKey = props.getProperty("SKYSQL_API_KEY", "1f8d9e040e65d7b105538b1ed0231770");
 		m_apiKeyID = props.getProperty("SKYSQL_API_KEYID", "1");
+		m_bufferingExecution = buffer;
+		m_cycles = 0;
 	}
 	
 	/**
@@ -79,10 +108,9 @@ public class monAPI {
 	 */
 	public boolean MonitorValue(int systemID, int nodeID, int monitorID, String value)
 	{
-		
-		return restPost("system/" + systemID + "/node/" + nodeID + "/monitor/" + monitorID + "/data", "value", value);
+		String apiRequest = "system/" + systemID + "/node/" + nodeID + "/monitor/" + monitorID + "/data";
+		return wrapperMonitorValue(apiRequest, value);
 	}
-	
 	/**
 	 * Populate a monitor value for the system
 	 * 
@@ -93,15 +121,44 @@ public class monAPI {
 	 */
 	public boolean MonitorValue(int systemID, int monitorID, String value)
 	{
-		return restPost("system/" + systemID + "/monitor/" + monitorID + "/data", "value", value);
+		String apiRequest = "system/" + systemID + "/monitor/" + monitorID + "/data";
+		return wrapperMonitorValue(apiRequest, value);
+	}
+	/**
+	 * Wrapper to the POST call (update a DB entry)
+	 * 
+	 * @param apiRequest	the request url
+	 * @param value			the value to be passed to the API
+	 * @return True if the update was performed
+	 */
+	private boolean wrapperMonitorValue(String apiRequest, String value) {
+		System.err.println("MONITOR REQUEST: " + apiRequest + " value: " + value);
+		return restPost(apiRequest, new String[] {"value"}, new String[] {value});
 	}
 	
+	/**
+	 * API call which requires to modify something
+	 * 
+	 * @param restRequest
+	 * @param pName
+	 * @param pValue
+	 * @return
+	 */
 	public boolean UpdateValue(String restRequest, String pName, String pValue) {
 		String[] newpName = {pName};
 		String[] newpValue = {pValue};
 		return UpdateValue(restRequest, newpName, newpValue);
 	}
+	/**
+	 * API call which requires to modify something
+	 * 
+	 * @param restRequest
+	 * @param pName
+	 * @param pValue
+	 * @return
+	 */
 	public boolean UpdateValue(String restRequest, String[] pName, String[] pValue) {
+		System.err.println("UPDATE REQUEST: " + restRequest);
 		return restPut(restRequest, pName, pValue);
 	}
 	
@@ -118,7 +175,6 @@ public class monAPI {
 		String[] newpValue = new String[] {pValue};
 		return SystemValue(restRequest, newpName, newpValue);
 	}
-	
 	/**
 	 * Calls the API and parses the resulting JSON
 	 * 
@@ -148,13 +204,10 @@ public class monAPI {
 		for (int i=0; i < pName.length; i++) {
 			value += "&" + pName[i] + "=" + pValue[i];
 		}
-		
 		try {
 			// set up authorization for the redirected webpage (ie, $_POST variable)
-			String reqString = "http://" + m_apiHost + "/consoleAPI/api/" + restRequest;
-			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
-			sdf.setTimeZone(TimeZone.getTimeZone("Europe/London"));
-		    String rfcdate = sdf.format(new Date());
+			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
+			String rfcdate = setDate();
 		    String sb = this.setAuth(restRequest, rfcdate);
 		    _params[0] = encodeURIComponent(rfcdate);
 			_params[1] = "api-auth-" + m_apiKeyID + "-" + sb;
@@ -163,27 +216,11 @@ public class monAPI {
 			for (int i = 0; i < _params.length; i++) {
 				value += "&" + _params_name[i] + "=" + _params[i];
 			}
-			value = value.substring(1);
-			if (value.substring(0,1).matches("=")) {
-				value = value.substring(2);
-			}
 	        
 			// set up connection
 		    URL postURL = new URL(reqString);
 			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-	        apiConn.setRequestMethod("POST");
-			apiConn.setRequestProperty("Accept", "application/json");
-			apiConn.setRequestProperty("Authorization", "api-auth-" + m_apiKeyID + "-" + sb);
-			apiConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			apiConn.setRequestProperty("charset", "utf-8");
-			apiConn.setRequestProperty("Date", rfcdate);
-			apiConn.setRequestProperty("Content-Length", "" + Integer.toString(value.getBytes().length));
-			apiConn.setDoOutput(true);
-			apiConn.setUseCaches(false);
-			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
-			out.write(value);
-			out.flush();
-			out.close();
+			value = setUpConn(apiConn, sb, rfcdate, value);
 			
 			// get output
 			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
@@ -197,10 +234,6 @@ public class monAPI {
 				throw new RuntimeException("Failed : HTTP error : "
 					+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();			
-			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -224,13 +257,10 @@ public class monAPI {
 		for (int i=0; i < pName.length; i++) {
 			value += "&" + pName[i] + "=" + pValue[i];
 		}
-
 		try {
 			// set up authorization for the redirected webpage (ie, $_POST variable)
-			String reqString = "http://" + m_apiHost + "/consoleAPI/api/" + restRequest;
-			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
-			sdf.setTimeZone(TimeZone.getTimeZone("Europe/London"));
-			String rfcdate = sdf.format(new Date());
+			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
+			String rfcdate = setDate();
 			String sb = this.setAuth(restRequest, rfcdate);
 			_params[0] = encodeURIComponent(rfcdate);
 			_params[1] = "api-auth-" + m_apiKeyID + "-" + sb;
@@ -239,27 +269,11 @@ public class monAPI {
 			for (int i = 0; i < _params.length; i++) {
 				value += "&" + _params_name[i] + "=" + _params[i];
 			}
-			value = value.substring(1);
-			if (value.substring(0,1).matches("=")) {
-				value = value.substring(2);
-			}
 
 			// set up connection
 			URL postURL = new URL(reqString);
 			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-			apiConn.setRequestMethod("POST");
-			apiConn.setRequestProperty("Accept", "application/json");
-			apiConn.setRequestProperty("Authorization", "api-auth-" + m_apiKeyID + "-" + sb);
-			apiConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			apiConn.setRequestProperty("charset", "utf-8");
-			apiConn.setRequestProperty("Date", rfcdate);
-			apiConn.setRequestProperty("Content-Length", "" + Integer.toString(value.getBytes().length));
-			apiConn.setDoOutput(true);
-			apiConn.setUseCaches(false);
-			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
-			out.write(value);
-			out.flush();
-			out.close();
+			value = setUpConn(apiConn, sb, rfcdate, value);
 
 			// get output
 			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
@@ -268,33 +282,22 @@ public class monAPI {
 				result += tmp + "\n";
 			}
 			in.close();
+			
+			// run buffer
+			runBuffer();
 
 			if (apiConn.getResponseCode() != 200) {
 				throw new RuntimeException("Failed : HTTP error : "
 						+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
+			pushFailedApi("restPut", restRequest, pName, pValue);
 			return false;
 		}
 		return true;
 	}
 
-	/**
-	 * Send a POST request to the API
-	 * 
-	 * @param restRequest	The URL, excluding the fixed stem
-	 * @param pName			The parameter name for the post request
-	 * @param pValue		The parameter value for the port request
-	 */
-	private boolean restPost(String restRequest, String pName, String pValue)
-	{
-		String[] newpName = {pName};
-		String[] newpValue = {pValue};
-		return restPost(restRequest, newpName, newpValue);
-	}
-	
 	/**
 	 * Send a POST request to the API
 	 * 
@@ -310,13 +313,10 @@ public class monAPI {
 		for (int i=0; i < pName.length; i++) {
 			value += "&" + pName[i] + "=" + pValue[i];
 		}
-
 		try {
 			// set up authorization for the redirected webpage (ie, $_POST variable)
-			String reqString = "http://" + m_apiHost + "/consoleAPI/api/" + restRequest;
-			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
-			sdf.setTimeZone(TimeZone.getTimeZone("Europe/London"));
-			String rfcdate = sdf.format(new Date());
+			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
+			String rfcdate = setDate();
 			String sb = this.setAuth(restRequest, rfcdate);
 			_params[0] = encodeURIComponent(rfcdate);
 			_params[1] = "api-auth-" + m_apiKeyID + "-" + sb;
@@ -325,27 +325,11 @@ public class monAPI {
 			for (int i = 0; i < _params.length; i++) {
 				value += "&" + _params_name[i] + "=" + _params[i];
 			}
-			value = value.substring(1);
-			if (value.substring(0,1).matches("=")) {
-				value = value.substring(2);
-			}
 
 			// set up connection
 			URL postURL = new URL(reqString);
 			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-			apiConn.setRequestMethod("POST");
-			apiConn.setRequestProperty("Accept", "application/json");
-			apiConn.setRequestProperty("Authorization", "api-auth-" + m_apiKeyID + "-" + sb);
-			apiConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			apiConn.setRequestProperty("charset", "utf-8");
-			apiConn.setRequestProperty("Date", rfcdate);
-			apiConn.setRequestProperty("Content-Length", "" + Integer.toString(value.getBytes().length));
-			apiConn.setDoOutput(true);
-			apiConn.setUseCaches(false);
-			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
-			out.write(value);
-			out.flush();
-			out.close();
+			value = setUpConn(apiConn, sb, rfcdate, value);
 
 			// get output
 			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
@@ -354,14 +338,17 @@ public class monAPI {
 				result += tmp + "\n";
 			}
 			in.close();
+			
+			// buffer
+			runBuffer();
 
 			if (apiConn.getResponseCode() != 200) {
 				throw new RuntimeException("Failed : HTTP error : "
 						+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
+			pushFailedApi("restPost", restRequest, pName, pValue);
 			return false;
 		}
 		return true;
@@ -371,6 +358,43 @@ public class monAPI {
 	
 	
 	
+	
+	
+	
+	
+	
+	/**
+	 * Read the timezone configuration and set the appropriate date format.
+	 * 
+	 * @return a string with the appropriate date
+	 * @throws IOException
+	 */
+	private String setDate() throws IOException {
+		SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
+		if (this.m_timeZone == null) {
+			BufferedReader timeZone = new BufferedReader(new FileReader("/etc/php.ini"));
+			String tz;
+			while ((tz = timeZone.readLine()) != null) {
+				Pattern p = Pattern.compile("date\\.timezone\\s*=\\s*(\\w+/\\w+)");
+				Matcher m = p.matcher(tz);
+				if (m.find()) {
+					tz = m.group(1);
+					break;
+				}
+			}
+			this.m_timeZone = tz;
+		}
+		sdf.setTimeZone(TimeZone.getTimeZone(this.m_timeZone));
+		return sdf.format(new Date());
+	}
+	/**
+	 * Compute the authorization string.
+	 * 
+	 * @param restRequest		the URI
+	 * @param rfcdate			the date in rfc format
+	 * @return the authorization string
+	 * @throws NoSuchAlgorithmException
+	 */
 	private String setAuth(String restRequest, String rfcdate) throws NoSuchAlgorithmException {
 		String fullkey = (restRequest.substring(0, 1).matches("/")) ? restRequest.substring(1) : restRequest;
 		fullkey += m_apiKey + rfcdate;
@@ -384,11 +408,14 @@ public class monAPI {
 		}
 		return sb.toString();
 	}
-	
-	
-	public static String encodeURIComponent(String component)   {     
-		String result = null;      
-		
+	/**
+	 * Encode a string to be passed as an URI.
+	 * 
+	 * @param component
+	 * @return
+	 */
+	private String encodeURIComponent(String component)   {     
+		String result = null;
 		try {       
 			result = URLEncoder.encode(component, "UTF-8")   
 				   .replaceAll("\\%28", "(")
@@ -399,8 +426,201 @@ public class monAPI {
 		} catch (Exception e) {       
 			result = component;     
 		}
-		
 		return result;   
-	}  
+	}
+	/**
+	 * Set up the common properties of the connection.
+	 * 
+	 * @param apiConn
+	 * @param sb
+	 * @param rfcdate
+	 * @param value
+	 * @throws IOException
+	 */
+	private String setUpConn(HttpURLConnection apiConn, String sb, String rfcdate, String value)
+	throws IOException {
+		apiConn.setRequestMethod("POST");
+		apiConn.setRequestProperty("Accept", "application/json");
+		apiConn.setRequestProperty("Authorization", "api-auth-" + m_apiKeyID + "-" + sb);
+		apiConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		apiConn.setRequestProperty("charset", "utf-8");
+		apiConn.setRequestProperty("Date", rfcdate);
+		apiConn.setRequestProperty("Content-Length", "" + Integer.toString(value.getBytes().length));
+		apiConn.setDoOutput(true);
+		apiConn.setUseCaches(false);
+		value = value.substring(1);
+		if (value.substring(0,1).matches("=")) {
+			value = value.substring(2);
+		}
+		OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
+		out.write(value);
+		out.flush();
+		out.close();
+		return value;
+	}
+	/**
+	 * Run the buffer queue.
+	 */
+	private void runBuffer() {
+		if (this.m_bufferingExecution && (this.m_cycles >= 5)) {
+			APIBatchExecution.sendAll();
+			this.m_cycles = 0;
+		}
+		this.m_cycles++;
+	}
+	/**
+	 * Save the failed request to the stack.
+	 * 
+	 * @param typeValue			the name of the method to call
+	 * @param restRequest		the request URI
+	 * @param pName				the name of the parameters to pass to the API
+	 * @param pValue			the value of the parameters to pass to the API
+	 */
+	private void pushFailedApi(String typeValue, String restRequest, String[] pName, String[] pValue) {
+		List<Object> toBatch = new ArrayList<Object>();
+		toBatch.add("MonitorValue");
+		toBatch.add(restRequest);
+		toBatch.add(pName);
+		toBatch.add(pValue);
+		APIBatchExecution.push(toBatch);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * "Singleton" to implement the API buffering mechanism.
+	 * 
+	 * @author Massimo Siani
+	 *
+	 */
+	private static class APIBatchExecution {
+		/**
+		 * The "stack" contains the failed calls according to the following logic:
+		 * 		(java method, request URI, name of parameters, value of parameters)
+		 */
+		private List<List<Object>> stack = new ArrayList<List<Object>>();
+		/**
+		 * Backup of the stack, for performing operations on the stack
+		 */
+		private List<List<Object>> stack_bkp = new ArrayList<List<Object>>();
+		/**
+		 * Set a new monAPI instance that will not call the batch queue
+		 * 		(otherwise infinite loop)
+		 */
+		private monAPI mapi = new monAPI(false);
+		/**
+		 * Instance of the present class. To be instantiate only once, thus
+		 * keep it private
+		 */
+		private static volatile APIBatchExecution INSTANCE = null;
+		/**
+		 * Constructor, to be kept private (only one stack may exist)
+		 */
+		private APIBatchExecution() {}
+		/**
+		 * Constructor wrapper, for double-checking the INSTANCE uniqueness
+		 */
+		private synchronized static void APIBatchExecutionHolder() { 
+			if (INSTANCE == null)
+				INSTANCE = new APIBatchExecution();
+		}
+		/**
+		 * Instantiate the unique instance of this class
+		 * 
+		 * @return the instantiate INSTANCE
+		 */
+		private static APIBatchExecution getInstance() {
+			if (INSTANCE == null)
+				APIBatchExecutionHolder();
+			return INSTANCE;
+		}
+		/**
+		 * Transfer the stack into its backup, and clear the stack
+		 */
+		private void backupBatchQueue() {
+			getInstance().stack_bkp.addAll(getInstance().stack);
+			getInstance().stack.clear();
+		}
+		/**
+		 * Return the whole stack list.
+		 * @return
+		 */
+		public static List<List<Object>> getExecutionStack() {
+			return getInstance().stack;
+		}
+		/**
+		 * Push an element, on a LIFO
+		 * @param toBuffer
+		 * @return true if succeeds or false on errors
+		 */
+		public synchronized static boolean push(List<Object> toBuffer) {
+			try {
+				getInstance().stack.add(toBuffer);
+			} catch (Exception e) {
+				return false;
+			}
+			return true;
+		}
+		/**
+		 * Pop on a LIFO
+		 * @return
+		 */
+		public synchronized static List<Object> pop() {
+			try {
+				int lastPos = getInstance().stack.size() -1;
+				List<Object> result = getInstance().stack.get(lastPos);
+				getInstance().stack.remove(lastPos);
+				return result;
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		/**
+		 * Execute the buffer queue.
+		 */
+		public synchronized static void sendAll() {
+			Method method;
+			Class<String> classRequest;
+			Class<? extends String> classOne, classTwo;
+			getInstance().backupBatchQueue();
+			System.err.println("-------------------------------------------------------\n" +
+					"START BUFFERED REQUESTS: " + getInstance().stack_bkp.size() + " queued requests.");
+			for (List<Object> batchCmd : getInstance().stack_bkp) {
+				try {
+					classRequest = (Class<String>) batchCmd.get(1).getClass();
+					classOne = (Class<? extends String>) batchCmd.get(2).getClass();
+					classTwo = (Class<? extends String>) batchCmd.get(3).getClass();
+					method = getInstance().mapi.getClass().getMethod((String) batchCmd.get(0),
+							classRequest, classOne, classTwo);
+					method.invoke(getInstance().mapi,
+							batchCmd.get(1), batchCmd.get(2), batchCmd.get(3));
+				} catch (ClassCastException e) {
+					System.err.println("Method " + (String) batchCmd.get(0)
+							+ ": the parameters must be strings or extensions, got instead "
+							+ batchCmd.get(1).getClass().toString() + " " 
+							+ batchCmd.get(2).getClass().toString() + " "
+							+ batchCmd.get(3).getClass().toString());
+				} catch (NoSuchMethodException e) {
+					System.err.println("No method " + (String) batchCmd.get(0)
+							+ " with parameters of type "
+							+ batchCmd.get(1).getClass().toString() + " "
+							+ batchCmd.get(2).getClass().toString() + " "
+							+ batchCmd.get(3).getClass().toString());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			getInstance().stack_bkp.clear();
+			System.err.println("STOP BUFFERED REQUESTS\n"
+					+ "-------------------------------------------------------");
+		}
+	}
 		
 }
