@@ -45,7 +45,7 @@ cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
 %defattr(-,root,root)
 %{install_path}
 %{install_path}ClusterMonitor.jar
-%{install_path}ClusterMonitor.sh
+#%{install_path}ClusterMonitor.sh
 %{install_path}start_monitor.sh
 
 %changelog
