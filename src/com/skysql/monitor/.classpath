@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry excluding="com/skysql/monitor/PublicIPMonitor.java" kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/massimo/skysql/skysql_monitor/mariadb-java-client-1.1.3.jar"/>
-	<classpathentry kind="lib" path="/home/massimo/skysql/skysql_monitor/json-simple-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/home/massimo/skysql/skysql_monitor/gson-2.2.4.jar"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>

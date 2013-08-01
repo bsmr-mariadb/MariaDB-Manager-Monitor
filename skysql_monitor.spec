@@ -15,7 +15,7 @@ Source: 		%{name}-%{version}-%{release}.tar.gz
 Prefix: 		/
 Group: 			Development/Tools
 Requires:		java-1.6.0
-#BuildRequires:		java-1.6.0-openjdk skysql_aws_tools sqlite-jdbc aws-java-sdk mariadb-java-client
+#BuildRequires:		java-1.6.0-openjdk
 
 %description
 SkySQL monitor
@@ -37,7 +37,7 @@ chown apache:apache /var/log/SkySQL-ClusterMonitor.log
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar  $RPM_BUILD_ROOT%{install_path}
 cp monitor/ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
-cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
+#cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
 
 %clean
 
@@ -46,9 +46,18 @@ cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
 %{install_path}
 %{install_path}ClusterMonitor.jar
 %{install_path}ClusterMonitor.sh
-%{install_path}start_monitor.sh
+#%{install_path}start_monitor.sh
 
 %changelog
+* Wed Aug 1 2013 Massimo Siani <m.siani@digitalp.eu> - 1.5.1
+- Fixed various bugs
+- Use API
+- Keep looking for nodes if systems exist
+- Added buffering
+- Added support for batch execution
+- Json parsing & Gson interface added
+- Code cleanup
+
 * Wed May 22 2013 Timofey Turenko <timofey.turenko@skysql.com> - 1.4-2
 - add sleep for 10 seconds before trying again to get systems
 
