@@ -115,6 +115,7 @@ public class node implements Runnable {
 			System.out.println("ErrorCode: " + sqlex.getErrorCode() + ": SQLState: " + sqlex.getSQLState());
 		}
 		m_connected = false;
+		m_tempts = 1;
 	}
 	
 	/**
@@ -128,9 +129,11 @@ public class node implements Runnable {
 		if (m_connecting)
 		{
 			System.out.println("    Already running connection thread - do not run another.");
+			m_tempts++;
 			System.out.println("	Temptative number " + m_tempts);
 			if (m_tempts >= 10) {
 				System.out.println("	Limit reached: reset this connection.");
+				m_tempts = 1;
 				m_connecting = false;
 			}
 			return;
