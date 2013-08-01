@@ -37,7 +37,7 @@ chown apache:apache /var/log/SkySQL-ClusterMonitor.log
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar  $RPM_BUILD_ROOT%{install_path}
 cp monitor/ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
-cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
+#cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
 
 %clean
 
@@ -45,8 +45,8 @@ cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
 %defattr(-,root,root)
 %{install_path}
 %{install_path}ClusterMonitor.jar
-#%{install_path}ClusterMonitor.sh
-%{install_path}start_monitor.sh
+%{install_path}ClusterMonitor.sh
+#%{install_path}start_monitor.sh
 
 %changelog
 * Wed May 22 2013 Timofey Turenko <timofey.turenko@skysql.com> - 1.4-2
