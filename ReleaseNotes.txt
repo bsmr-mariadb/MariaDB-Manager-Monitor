@@ -25,7 +25,7 @@
 
 CHANGELOG
 
-* Wed Aug 1 2013 Massimo Siani <m.siani@digitalp.eu> - 1.5.1
+* Wed Aug 1 2013 Massimo Siani <massimo.siani@skysql.com> - 1.5.1
 - Fixed various bugs
 - Use API
 - Keep looking for nodes if systems exist

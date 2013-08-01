@@ -70,6 +70,10 @@ public class node implements Runnable {
 	 * The SQLite monitoring database
 	 */
 	private mondata		m_confdb;
+	/**
+	 * Attempts to connect to the database. If more are necessary, reset the connection
+	 */
+	private int			m_tempts;
 	
 	/**
 	 * Node constructor
@@ -85,6 +89,7 @@ public class node implements Runnable {
 		m_systemID = systemID;
 		m_nodeNo = nodeNo;
 		m_confdb = confDB;
+		m_tempts = 1;
 		String address = confDB.getNodePrivateIP(nodeNo);
 		if (address == null)
 		{
@@ -123,6 +128,11 @@ public class node implements Runnable {
 		if (m_connecting)
 		{
 			System.out.println("    Already running connection thread - do not run another.");
+			System.out.println("	Temptative number " + m_tempts);
+			if (m_tempts >= 10) {
+				System.out.println("	Limit reached: reset this connection.");
+				m_connecting = false;
+			}
 			return;
 		}
 		if (m_connected)

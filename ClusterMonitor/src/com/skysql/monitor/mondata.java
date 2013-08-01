@@ -18,9 +18,17 @@
 
 package com.skysql.monitor;
 
+import java.io.FileReader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.SimpleBindings;
 
 /**
  * Interface to the monitoring database, this is the database that holds
@@ -507,7 +515,7 @@ public class mondata {
 	}
 	
 	/**
-	 * bulkMonitorData: batch request to the API.
+	 * Batch request to the API.
 	 * 
 	 * @param fields: the names of the variables to be passed to the API
 	 * @param values: the values to the passed to the API
@@ -515,6 +523,35 @@ public class mondata {
 	public void bulkMonitorData(String[] fields, String[] values) {
 		String apiRequest = "monitordata";
 		getStringFromQuery(apiRequest, fields, values);
+	}
+	
+	/**
+	 * Run a js.
+	 * 
+	 * @param script the script that identifies the cluster state
+	 * @return a string with the state
+	 */
+	public String getClusterState(String script) {
+		try {
+			try {
+				Class.forName("org.mariadb.jdbc.Driver");
+			} catch (ClassNotFoundException e) {
+				System.err.println("ERROR: cannot find MariaDB driver");
+				return null;
+			}
+			ScriptEngine engine = 
+					new ScriptEngineManager().getEngineByName("javascript");
+			Bindings bindings = new SimpleBindings();
+
+			FileReader fr = new FileReader(script);
+			if (engine instanceof Compilable) {
+				Compilable compEngine = (Compilable)engine;
+				CompiledScript cs = compEngine.compile(fr);
+				return (String) cs.eval(bindings);
+			} else return (String) engine.eval(fr, bindings);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	/**
