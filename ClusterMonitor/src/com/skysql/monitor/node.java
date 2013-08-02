@@ -32,9 +32,9 @@ import java.util.HashMap;
  * a means to execute SQL on that database and basic reachability tests for the node.
  * 
  * Node connections are implemented as threads in order not to delay the execution of the
- * main monitor.
+ * main monitor. Connections are closed if the thread is stuck.
  * 
- * @author Mark Riddoch
+ * @author Mark Riddoch, Massimo Siani
  *
  */
 public class node implements Runnable {
@@ -115,7 +115,6 @@ public class node implements Runnable {
 			System.out.println("ErrorCode: " + sqlex.getErrorCode() + ": SQLState: " + sqlex.getSQLState());
 		}
 		m_connected = false;
-		m_tempts = 1;
 	}
 	
 	/**
@@ -128,16 +127,17 @@ public class node implements Runnable {
 		System.out.println("Try to connect to monitored database " + m_URL);
 		if (m_connecting)
 		{
-			System.out.println("    Already running connection thread - do not run another.");
 			m_tempts++;
-			System.out.println("	Temptative number " + m_tempts);
+			System.out.println("\n    Already running connection thread - do not run another."
+					+ "\n	Attempt number " + m_tempts);
 			if (m_tempts >= 10) {
 				System.out.println("	Limit reached: reset this connection.");
-				m_tempts = 1;
 				m_connecting = false;
 			}
+			System.out.println();
 			return;
 		}
+		m_tempts = 1;
 		if (m_connected)
 		{
 			System.out.println("    Still appear to be connected, disconnect first");

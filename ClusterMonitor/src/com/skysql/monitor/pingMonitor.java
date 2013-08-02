@@ -55,7 +55,6 @@ public class pingMonitor extends monitor {
 	public void probe(boolean verbose)
 	{
 		String value = "0";
-		
 		if (m_node.isReachable())
 		{
 			value = "1";

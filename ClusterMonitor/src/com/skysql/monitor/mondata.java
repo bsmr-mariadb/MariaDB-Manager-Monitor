@@ -492,7 +492,6 @@ public class mondata {
 		return true;
 	}
 
-
 	/**
 	 * IPMonitor
 	 * 
@@ -526,12 +525,42 @@ public class mondata {
 	}
 	
 	/**
-	 * Run a js.
+	 * Read a JavaScript from the table Monitors and execute it.
 	 * 
 	 * @param script the script that identifies the cluster state
 	 * @return a string with the state
 	 */
-	public String getClusterState(String script) {
+	public String runJavaScriptString(int monitor_id) {
+		try {
+			try {
+				Class.forName("org.mariadb.jdbc.Driver");
+			} catch (ClassNotFoundException e) {
+				System.err.println("ERROR: cannot find MariaDB driver");
+				return null;
+			}
+			String script = getMonitorSQL(monitor_id);
+			ScriptEngine engine = 
+					new ScriptEngineManager().getEngineByName("javascript");
+			Bindings bindings = new SimpleBindings();
+
+			FileReader fr = new FileReader(script);
+			if (engine instanceof Compilable) {
+				Compilable compEngine = (Compilable)engine;
+				CompiledScript cs = compEngine.compile(fr);
+				return (String) cs.eval(bindings);
+			} else return (String) engine.eval(fr, bindings);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Run a JavaScript file.
+	 * 
+	 * @param script the script that identifies the cluster state
+	 * @return a string with the state
+	 */
+	public String runJavaScript(String scriptFile) {
 		try {
 			try {
 				Class.forName("org.mariadb.jdbc.Driver");
@@ -543,7 +572,7 @@ public class mondata {
 					new ScriptEngineManager().getEngineByName("javascript");
 			Bindings bindings = new SimpleBindings();
 
-			FileReader fr = new FileReader(script);
+			FileReader fr = new FileReader(scriptFile);
 			if (engine instanceof Compilable) {
 				Compilable compEngine = (Compilable)engine;
 				CompiledScript cs = compEngine.compile(fr);
