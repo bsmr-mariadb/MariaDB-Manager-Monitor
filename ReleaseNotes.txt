@@ -25,7 +25,15 @@
 
 CHANGELOG
 
-* Wed Aug 1 2013 Massimo Siani <massimo.siani@skysql.com> - 1.5.1
+* Fri Aug 2 2013 Massimo Siani <massimo.siani@skysql.com> - 1.5.2
+- Added: no quit if no systems and/or nodes found
+- Added: refresh rate set to 10 seconds until at least one node is defined
+- Added: methods for JavaScript calls
+- Fixed: if the connection hangs, close it and reconnect
+- Removed Amazon unused library, size decreased to less than 1MB
+- Known issue: if a node is shutted down while mysql is running, the monitor hangs for 15 minutes, then starts again. No need for manual intervention
+
+* Thu Aug 1 2013 Massimo Siani <massimo.siani@skysql.com> - 1.5.1
 - Fixed various bugs
 - Use API
 - Keep looking for nodes if systems exist

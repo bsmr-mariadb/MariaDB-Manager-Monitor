@@ -235,7 +235,6 @@ public class monAPI {
 					+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 		return result;
@@ -291,7 +290,6 @@ public class monAPI {
 						+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			pushFailedApi("restPut", restRequest, pName, pValue);
 			return false;
 		}
@@ -347,7 +345,6 @@ public class monAPI {
 						+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			pushFailedApi("restPost", restRequest, pName, pValue);
 			return false;
 		}
@@ -616,7 +613,7 @@ public class monAPI {
 							+ batchCmd.get(2).getClass().toString() + " "
 							+ batchCmd.get(3).getClass().toString());
 				} catch (Exception e) {
-					e.printStackTrace();
+					// ignore
 				}
 			}
 			getInstance().stack_bkp.clear();

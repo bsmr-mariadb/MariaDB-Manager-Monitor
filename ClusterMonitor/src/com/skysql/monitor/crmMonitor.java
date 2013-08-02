@@ -154,7 +154,6 @@ public class crmMonitor extends monitor {
 			}
 		} catch (Exception ex) {
 			System.err.println("CRM Probe exception: " + ex.getMessage());
-			ex.printStackTrace();
 		}
 	}
 	

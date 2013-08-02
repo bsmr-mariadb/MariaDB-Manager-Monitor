@@ -381,7 +381,6 @@ public class ClusterMonitor extends Thread {
 				}
 			} catch (Exception ex) {
 				System.err.println("Probe exception: " + ex.getMessage());
-				ex.printStackTrace();
 			}
 			refreshconfig();
 		}

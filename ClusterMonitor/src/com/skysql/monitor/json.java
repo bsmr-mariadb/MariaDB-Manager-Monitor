@@ -61,7 +61,6 @@ public class json {
 			return result;
 		} catch (NullPointerException e) {
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.err.println("Unexpected message returned from API: first line is:\n\t\t"
 					+ inJson.substring(1, inJson.indexOf("\n", 1)));
 		}
