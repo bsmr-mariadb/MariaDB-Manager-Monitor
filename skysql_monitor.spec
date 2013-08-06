@@ -26,9 +26,6 @@ SkySQL monitor
 
 %build
 
-#javac -d . -classpath `find /usr/local/skysql/skysql_aws/*.jar | tr '\n' ':' `  `find src/com/skysql/monitor | grep \.java`
-#jar cf ClusterMonitor.jar com/skysql/monitor/*.class
-
 %post
 touch /var/log/SkySQL-ClusterMonitor.log
 chown apache:apache /var/log/SkySQL-ClusterMonitor.log
@@ -36,7 +33,7 @@ chown apache:apache /var/log/SkySQL-ClusterMonitor.log
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar  $RPM_BUILD_ROOT%{install_path}
-cp monitor/ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
+cp ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
 #cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
 
 %clean
