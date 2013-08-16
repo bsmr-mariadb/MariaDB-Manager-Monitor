@@ -163,7 +163,7 @@ public class node implements Runnable {
 		try {
 			  Class.forName("org.mariadb.jdbc.Driver").newInstance();
 			  Credential cred = m_confdb.getNodeMonitorCredentials(m_nodeNo);
-			  m_mondb = DriverManager.getConnection(m_URL, cred.getUsername(), cred.getPassword());
+			  m_mondb = DriverManager.getConnection(m_URL + "?socketTimeout=60000", cred.getUsername(), cred.getPassword());
 			  m_connected = true;
 			  System.out.println("Connected");
 		}

@@ -476,7 +476,7 @@ public class monAPI {
 	 */
 	private void pushFailedApi(String typeValue, String restRequest, String[] pName, String[] pValue) {
 		List<Object> toBatch = new ArrayList<Object>();
-		toBatch.add("MonitorValue");
+		toBatch.add(typeValue);
 		toBatch.add(restRequest);
 		toBatch.add(pName);
 		toBatch.add(pValue);
@@ -583,35 +583,34 @@ public class monAPI {
 		/**
 		 * Execute the buffer queue.
 		 */
-		@SuppressWarnings("unchecked")
 		public synchronized static void sendAll() {
 			Method method;
-			Class<String> classRequest;
-			Class<? extends String> classOne, classTwo;
+			Class<? extends Object> classRequest;
+			Class<? extends Object> classOne, classTwo;
 			getInstance().backupBatchQueue();
 			System.err.println("-------------------------------------------------------\n" +
 					"START BUFFERED REQUESTS: " + getInstance().stack_bkp.size() + " queued requests.");
 			for (List<Object> batchCmd : getInstance().stack_bkp) {
 				try {
-					classRequest = (Class<String>) batchCmd.get(1).getClass();
-					classOne = (Class<? extends String>) batchCmd.get(2).getClass();
-					classTwo = (Class<? extends String>) batchCmd.get(3).getClass();
-					method = getInstance().mapi.getClass().getMethod((String) batchCmd.get(0),
+					classRequest = batchCmd.get(1).getClass();
+					classOne = batchCmd.get(2).getClass(); classOne =  String[].class;
+					classTwo = batchCmd.get(3).getClass(); classTwo =  String[].class;
+					method = getInstance().mapi.getClass().getDeclaredMethod((String) batchCmd.get(0),
 							classRequest, classOne, classTwo);
 					method.invoke(getInstance().mapi,
 							batchCmd.get(1), batchCmd.get(2), batchCmd.get(3));
 				} catch (ClassCastException e) {
 					System.err.println("Method " + (String) batchCmd.get(0)
 							+ ": the parameters must be strings or extensions, got instead "
-							+ batchCmd.get(1).getClass().toString() + " " 
-							+ batchCmd.get(2).getClass().toString() + " "
-							+ batchCmd.get(3).getClass().toString());
+							+ batchCmd.get(1).getClass().getSimpleName() + ", " 
+							+ batchCmd.get(2).getClass().getSimpleName() + ", "
+							+ batchCmd.get(3).getClass().getSimpleName());
 				} catch (NoSuchMethodException e) {
 					System.err.println("No method " + (String) batchCmd.get(0)
 							+ " with parameters of type "
-							+ batchCmd.get(1).getClass().toString() + " "
-							+ batchCmd.get(2).getClass().toString() + " "
-							+ batchCmd.get(3).getClass().toString());
+							+ batchCmd.get(1).getClass().getSimpleName() + ", "
+							+ batchCmd.get(2).getClass().getSimpleName() + ", "
+							+ batchCmd.get(3).getClass().getSimpleName());
 				} catch (Exception e) {
 					// ignore
 				}
