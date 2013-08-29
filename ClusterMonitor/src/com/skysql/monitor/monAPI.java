@@ -185,6 +185,13 @@ public class monAPI {
 	 */
 	public List<String> SystemValue(String restRequest, String[] pName, String[] pValue) {
 		String outJson = restGet(restRequest, pName, pValue);
+		System.err.println("Output Json: " + outJson);
+		System.err.println("URI request: " + restRequest);
+		System.err.print("Parameters names and values:");
+		for (int i=0; i<pName.length; i++) {
+			System.err.print(" " + pName[i] + " = " + pValue[i]);
+		}
+		System.err.println();
 		return json.getStringField(outJson, pValue[0]);
 	}
 	
@@ -235,6 +242,7 @@ public class monAPI {
 					+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
 		} catch (Exception e) {
+			System.err.println(e.getMessage());
 			return null;
 		}
 		return result;
@@ -480,6 +488,11 @@ public class monAPI {
 		toBatch.add(restRequest);
 		toBatch.add(pName);
 		toBatch.add(pValue);
+		try {
+			toBatch.add(setDate());
+		} catch (IOException e) {
+			// IGNORE
+		}
 		APIBatchExecution.push(toBatch);
 	}
 	

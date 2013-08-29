@@ -41,9 +41,10 @@ import javax.script.SimpleBindings;
 public class mondata {
 	private int			m_systemID;
 	private monAPI		m_api;
+	private String		m_systemType = "galera";
 	
 	/**
-	 * Constructor for the monitor data class
+	 * Constructor for the monitor data class.
 	 * 
 	 * @param systemID	The System ID being monitored
 	 * @param dbfile	The SQLite database file
@@ -74,6 +75,12 @@ public class mondata {
 		String[] newparValue = {parValue};
 		return getIntegerFromQuery(request, newparName, newparValue);
 	}
+	/**
+	 * Returns the result of the query in a list.
+	 * 
+	 * @param query to send
+	 * @return a list of the results, null on errors
+	 */
 	private List<Integer> getIntegerFromQuery(String request, String parName[], String parValue[]) {
 		try {
 			List<Integer> ilist = new ArrayList<Integer>();
@@ -102,6 +109,12 @@ public class mondata {
 		String[] newparValue = {parValue};
 		return getStringFromQuery(request, newparName, newparValue);
 	}
+	/**
+	 * Returns the result of the query in a list.
+	 * 
+	 * @param query to send
+	 * @return a list of the results, null on errors
+	 */
 	private List<String> getStringFromQuery(String request, String parName[], String parValue[]) {
 		try {
 			List<String> slist = new ArrayList<String>();
@@ -159,7 +172,7 @@ public class mondata {
 	public List<Integer> getSystemList()
 	{
 		String apiRequest = "system";
-		return getIntegerFromQuery(apiRequest, "fields", "system");
+		return getIntegerFromQuery(apiRequest, "fields", "systemid");
 	}
 	
 	/**
@@ -170,7 +183,7 @@ public class mondata {
 	public List<Integer> getNodeList()
 	{
 		String apiRequest = "system/" + m_systemID + "/node";
-		return getIntegerFromQuery(apiRequest, "fields", "id");
+		return getIntegerFromQuery(apiRequest, "fields", "nodeid");
 	}
 	
 	/**
@@ -180,8 +193,8 @@ public class mondata {
 	 */
 	public List<Integer> getMonitorList()
 	{
-		String apiRequest = "monitorclass";
-		return getIntegerFromQuery(apiRequest, "fields", "id");
+		String apiRequest = "monitorclass/" + m_systemType + "/key";
+		return getIntegerFromQuery(apiRequest, "fields", "monitorid");
 	}
 	
 	/**
@@ -193,7 +206,7 @@ public class mondata {
 	public String getNodePrivateIP(int NodeNo)
 	{
 		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
-		return ListStringToString(getStringFromQuery(apiRequest, "fields", "privateIP"));
+		return ListStringToString(getStringFromQuery(apiRequest, "fields", "privateip"));
 	}
 	
 	/**
@@ -206,12 +219,12 @@ public class mondata {
 	{
 		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
 		String fields = "fields";
-		String values = "username";
+		String values = "dbusername";
 		try {
 			// we have to call the API twice: json are unordered
 			List<String> result = new ArrayList<String>();
 			result.add(ListStringToString(getStringFromQuery(apiRequest, fields, values)));
-			values = "passwd";
+			values = "dbpassword";
 			result.add(ListStringToString(getStringFromQuery(apiRequest, fields, values))); 
 			Iterator<String> iresults = result.iterator();
 			Credential cred;
@@ -237,7 +250,7 @@ public class mondata {
 	 */
 	public String getMonitorSQL(int monitor_id)
 	{
-		String apiRequest = "monitorclass/" + monitor_id;
+		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
 		return ListStringToString(getStringFromQuery(apiRequest, "fields", "sql"));
 	}
 
@@ -251,7 +264,7 @@ public class mondata {
 	 */
 	public Boolean monitorIsDelta(int monitor_id)
 	{
-		String apiRequest = "monitorclass/" + monitor_id;
+		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
 		String result = ListStringToString(getStringFromQuery(apiRequest, "fields", "delta"));
 		if (result.equalsIgnoreCase("0")) {
 			return false;
@@ -277,15 +290,32 @@ public class mondata {
 	}
 	
 	/**
-	 * Fetch the name of a particular monitor
+	 * Fetch the monitor probe interval
 	 * 
-	 * @param name	The monitor name
+	 * @return The monitor interval in seconds
+	 */
+	public int monitorClassInterval(String monitorKey)
+	{
+		String apiRequest = "monitorclass/" + m_systemType + "/key/" + monitorKey;
+		String[] fields = {"fields"};
+		String[] values = {"interval"};
+		Integer result = ListIntegerToInteger(getIntegerFromQuery(apiRequest, fields, values));
+		if (result == null) {
+			return 30;
+		}
+		return result;
+	}
+	
+	/**
+	 * Fetch the id of a particular monitor.
+	 * 
+	 * @param monitorKey	The monitor name
 	 * @return The monitor_id of the named monitor or -1 if the monitor was not found
 	 */
-	public int getNamedMonitor(String name)
+	public int getNamedMonitor(String monitorKey)
 	{
-		String apiRequest = "monitorclass/" + name;
-		return ListIntegerToInteger(getIntegerFromQuery(apiRequest, "fields", "id"));
+		String apiRequest = "monitorclass/" + m_systemType + "/key/" + monitorKey;
+		return ListIntegerToInteger(getIntegerFromQuery(apiRequest, "fields", "monitorid"));
 	}
 	
 	/**
@@ -294,10 +324,24 @@ public class mondata {
 	 * @param id	The monitor ID
 	 * @return The type field for the monitor, e.g. SQL, CMD, CRM etc.
 	 */
-	public String getMonitorType(int id)
+	public String getMonitorType(int monitor_id)
 	{
-		String apiRequest = "monitorclass/" + id;
+		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
 		return ListStringToString(getStringFromQuery(apiRequest, "fields", "monitortype"));
+	}
+	
+	/**
+	 * Retrieve the Monitor key by knowing the Monitor id.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public String getMonitorKey(int monitor_id) {
+		String apiRequest = "monitorclass/" + m_systemType + "/key";
+		List<String> li = getStringFromQuery(apiRequest, "fields", "monitorid,monitor");
+		if (li.indexOf(Integer.toString(monitor_id)) != -1) {
+			return li.get(li.indexOf(Integer.toString(monitor_id))-1);
+		} else return null;
 	}
 	
 	/**
@@ -306,9 +350,9 @@ public class mondata {
 	 * @param id	The Monitor ID
 	 * @return		True if the system value of a monitor is an average of all the nodes in the system
 	 */
-	public boolean getMonitorSystemAverage(int id)
+	public boolean getMonitorSystemAverage(int monitor_id)
 	{
-		String apiRequest = "monitorclass/" + id;
+		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
 		String result = ListStringToString(getStringFromQuery(apiRequest, "fields", "systemaverage"));
 		if (result.equalsIgnoreCase("1")) return true;
 		return false;
@@ -422,7 +466,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Update the public IP address of a node if it has changed
+	 * Update the public IP address of a node if it has changed.
 	 * 
 	 * @param	instanceID The instance ID
 	 * @param	publicIP 	The public IP addres of the instance
@@ -432,7 +476,7 @@ public class mondata {
 	{
 		String apiRequest = "system/" + m_systemID + "/node";
 		String fields = "fields";
-		String values = "id, instanceID, publicIP";
+		String values = "id, instanceID, publicip";
 		String nodeID = new String();
 		try {
 			List<String> secondRequestL = getStringFromQuery(apiRequest, fields, values);
@@ -525,7 +569,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Read a JavaScript from the table Monitors and execute it.
+	 * Read a JavaScript filename from the table Monitors and execute it.
 	 * 
 	 * @param script the script that identifies the cluster state
 	 * @return a string with the state
@@ -560,7 +604,7 @@ public class mondata {
 	 * @param script the script that identifies the cluster state
 	 * @return a string with the state
 	 */
-	public String runJavaScript(String scriptFile) {
+	public String runJavaScriptFile(String scriptFile) {
 		try {
 			try {
 				Class.forName("org.mariadb.jdbc.Driver");

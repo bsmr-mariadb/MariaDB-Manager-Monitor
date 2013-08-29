@@ -30,13 +30,29 @@ import com.google.gson.Gson;
  */
 public class GsonManager {
 
+	/**
+	 * Gson object.
+	 */
 	private static Gson gson = new Gson();
 
+	/**
+	 * Generate Json from an object.
+	 * 
+	 * @param obj the object.
+	 * @return the Json string.
+	 */
 	public static String toString(Object obj) {
 		String result = gson.toJson(obj);
 		return result;
 	}
 
+	/**
+	 * Convert a Json into a Java object.
+	 * 
+	 * @param inJson the Json as a string.
+	 * @param objClass the class of the object.
+	 * @return the deserialized Json as a Java object.
+	 */
 	public static <T> T fromJson(String inJson, Class<T> objClass) {
 		T resultObj = gson.fromJson(inJson, objClass);
 		return resultObj;

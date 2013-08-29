@@ -57,9 +57,15 @@ public class json {
 					}
 				}
 			}
+			// if any errors
+			if (mainClass.equalsIgnoreCase("errors")) {
+				System.err.println("API returned an error: " + result);
+				return null;
+			}
 			
 			return result;
 		} catch (NullPointerException e) {
+			// IGNORE
 		} catch (Exception e) {
 			System.err.println("Unexpected message returned from API: first line is:\n\t\t"
 					+ inJson.substring(1, inJson.indexOf("\n", 1)));

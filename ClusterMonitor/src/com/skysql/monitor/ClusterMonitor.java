@@ -51,7 +51,7 @@ public class ClusterMonitor extends Thread {
 	/** The polling interval to use */
 	private int					m_interval;		
 	/** The  name of the database to connect to */
-	private String				m_dbfile;		
+	private String				m_dbfile;
 	
 	public static void main( String[] args )
 	{
@@ -69,7 +69,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		System.err.println("Starting ClusterMonitor v1.5.3");
+		System.err.println("Starting ClusterMonitor v1.6.0");
 		System.err.println("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -173,16 +173,21 @@ public class ClusterMonitor extends Thread {
 	public void initialise()
 	{
 		refreshconfig();
-//		if (m_confdb.IPMonitor())
-//		{
-//			mondata confdb = new mondata(m_systemID, m_dbfile);
-//			try {
-//				PublicIPMonitor ipmon = new PublicIPMonitor(confdb, m_verbose);
-//				ipmon.start();
-//			} catch (NoClassDefFoundError ex) {
-//				System.err.println("Unable to run IPMonitor: Class " + ex.getLocalizedMessage() + " is not available.");
-//				System.err.println("IP Monitoring functionality has been suspended.");
+//		try {
+//			Class.forName("PublicIPMonitor");
+//			if (m_confdb.IPMonitor())
+//			{
+//				mondata confdb = new mondata(m_systemID, m_dbfile);
+//				try {
+//					PublicIPMonitor ipmon = new PublicIPMonitor(confdb, m_verbose);
+//					ipmon.start();
+//				} catch (NoClassDefFoundError ex) {
+//					System.err.println("Unable to run IPMonitor: Class " + ex.getLocalizedMessage() + " is not available.");
+//					System.err.println("IP Monitoring functionality has been suspended.");
+//				}
 //			}
+//		} catch (Exception ex) {
+//			// IGNORE
 //		}
 	}
 	
