@@ -49,7 +49,9 @@ public class ClusterMonitor extends Thread {
 	/** Verbose logging flag */
 	private boolean				m_verbose;
 	/** The polling interval to use */
-	private int					m_interval;		
+	private int					m_interval;
+	/** The number of cycles before full refresh */
+	private int					m_refresh = 1;
 	/** The  name of the database to connect to */
 	private String				m_dbfile;
 	
@@ -303,14 +305,10 @@ public class ClusterMonitor extends Thread {
 		while (true)
 		{
 			try {
-				// Every 10th time we reread the config, so do 10 probes
+				// Every m_refresh time we reread the config, so do m_refresh probe(s)
 				// here and then read the config
-				for (int i = 0; i < 10; i++)
+				for (int i = 0; i < m_refresh; i++)
 				{
-					if (m_verbose) {
-						System.out.println("\nNext full refresh in "
-								+ (10-i)*m_interval*1000 + " seconds\n");
-					}
 					if (m_verbose)
 						System.out.println("Probe");
 					
@@ -377,6 +375,10 @@ public class ClusterMonitor extends Thread {
 						}
 					}
 					try {
+						if (m_verbose) {
+							System.out.println("\nNext full refresh in "
+									+ (m_refresh-i)*m_interval + " seconds\n");
+						}
 						Thread.sleep(m_interval * 1000);	// Sleep for 30 seconds
 					}
 					catch (Exception ex)

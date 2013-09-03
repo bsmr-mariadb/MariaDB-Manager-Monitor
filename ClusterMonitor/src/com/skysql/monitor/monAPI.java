@@ -39,6 +39,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.json.simple.parser.ParseException;
+
 /**
  * The interface to the SkySQL Manager API, a REST interface to the monitor database.
  * This is the API that should be used to store all monitor observations and to retrieve 
@@ -169,6 +171,7 @@ public class monAPI {
 	 * @param pName			The parameter name for the GET request
 	 * @param pValue		The parameter value for the GET request
 	 * @return
+	 * @throws ParseException 
 	 */
 	public List<String> SystemValue(String restRequest, String pName, String pValue) {
 		String[] newpName = new String[] {pName};
@@ -182,16 +185,20 @@ public class monAPI {
 	 * @param pName[]		The parameter names for the GET request
 	 * @param pValue[]		The parameter values for the GET request
 	 * @return
+	 * @throws ParseException 
 	 */
 	public List<String> SystemValue(String restRequest, String[] pName, String[] pValue) {
 		String outJson = restGet(restRequest, pName, pValue);
-		System.err.println("Output Json: " + outJson);
-		System.err.println("URI request: " + restRequest);
-		System.err.print("Parameters names and values:");
-		for (int i=0; i<pName.length; i++) {
-			System.err.print(" " + pName[i] + " = " + pValue[i]);
+		if (outJson == null) {
+			System.err.println("Failed: Output Json: " + outJson);
+			System.err.println("URI request: " + restRequest);
+			System.err.print("Parameters names and values:");
+			for (int i=0; i<pName.length; i++) {
+				System.err.print(" " + pName[i] + "=" + pValue[i]);
+			}
+			System.err.println();
+			return null;
 		}
-		System.err.println();
 		return json.getStringField(outJson, pValue[0]);
 	}
 	

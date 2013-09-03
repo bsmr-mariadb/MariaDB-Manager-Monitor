@@ -18,7 +18,13 @@
 
 package com.skysql.monitor;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * Class to manage Json strings, from and to Java objects.
@@ -33,7 +39,9 @@ public class GsonManager {
 	/**
 	 * Gson object.
 	 */
-	private static Gson gson = new Gson();
+	private static Gson			gson = new Gson();
+	private static JsonParser	jsonParser = new JsonParser();
+	private static JSONParser	parser = new JSONParser();
 
 	/**
 	 * Generate Json from an object.
@@ -52,10 +60,18 @@ public class GsonManager {
 	 * @param inJson the Json as a string.
 	 * @param objClass the class of the object.
 	 * @return the deserialized Json as a Java object.
+	 * @throws ParseException 
 	 */
 	public static <T> T fromJson(String inJson, Class<T> objClass) {
-		T resultObj = gson.fromJson(inJson, objClass);
-		return resultObj;
+		try {
+			JSONObject jsonObj = (JSONObject)parser.parse(inJson);
+			String mainClass = (String)jsonObj.keySet().toArray()[0];
+			JsonObject object1 = jsonParser.parse(inJson).getAsJsonObject().getAsJsonObject(mainClass);
+			T resultObj = gson.fromJson(object1, objClass);
+			return resultObj;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

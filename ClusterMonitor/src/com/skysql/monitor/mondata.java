@@ -273,7 +273,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Fetch the monitor probe interval
+	 * Fetch the monitor probe interval.
 	 * 
 	 * @return The monitor interval in seconds
 	 */
@@ -290,7 +290,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Fetch the monitor probe interval
+	 * Fetch the monitor probe interval.
 	 * 
 	 * @return The monitor interval in seconds
 	 */
@@ -359,7 +359,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Map a node state string to a state value
+	 * Map a node state string to a state id.
 	 * 
 	 * @param Name The name of the node state
 	 * @return The Node State
@@ -371,9 +371,24 @@ public class mondata {
 	}
 	
 	/**
-	 * Return the list of valid node states
+	 * Map a node state id to a state string.
 	 * 
-	 * @return The set of defined node states
+	 * @param stateId The id of the node state
+	 * @return The Node State
+	 */
+	public String getStateString(int stateId)
+	{
+		String apiRequest = "nodestate";
+		Integer index = getStringFromQuery(apiRequest, "fields", "stateid").indexOf(Integer.toString(stateId));
+		if (index.equals(-1)) return null;
+		String result = getStringFromQuery(apiRequest, "fields", "state").get(index);
+		return result;
+	}
+	
+	/**
+	 * Return the list of valid node states.
+	 * 
+	 * @return The set of defined node states.
 	 */
 	public List<String> getValidStates()
 	{
@@ -382,7 +397,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Set the state of a node
+	 * Set the state of a node.
 	 * 
 	 * @param nodeid	The node to set the state of
 	 * @param stateid	The state to set for the node
@@ -392,7 +407,9 @@ public class mondata {
 		String query = "update Node set State = " + stateid + " where nodeid = " + nodeid + " and SystemID = " + m_systemID;
 		String apiRequest = "system/" + m_systemID + "/node/" + nodeid;
 		try {
-			boolean results = m_api.UpdateValue(apiRequest, "state", Integer.toString(stateid));
+			String NodeState = getStateString(stateid);
+			if (NodeState == null) throw new RuntimeException("Node State id " + stateid + " not found.");
+			boolean results = m_api.UpdateValue(apiRequest, "state", NodeState);
 			if (! results) {
 				System.err.println("Failed to update node state: " + apiRequest + " to state " + stateid);
 				return;

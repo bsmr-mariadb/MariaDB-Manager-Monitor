@@ -54,7 +54,7 @@ public class nodeStateMonitor extends monitor {
 		int nodeNo = m_node.getID();
 		if (value == null) 	/* Failed to get status return from node */
 		{
-			value = "100";	/* Temporary kludge to have a stopped state - need to get this from config */
+			value = "5";	/* Temporary kludge to have a stopped state - need to get this from config */
 		}
 		if (verbose)
 		{

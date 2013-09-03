@@ -26,7 +26,6 @@ package com.skysql.monitor;
  */
 public class GsonSystem {
 	
-	private static class system {
 	private static int system;
 	private String name;
 	private String startDate;
@@ -39,7 +38,6 @@ public class GsonSystem {
 	private String[] connections;
 	private String[] packets;
 	private String[] health;
-	}
 	
 	public GsonSystem() {}
 
@@ -47,7 +45,7 @@ public class GsonSystem {
 	 * @return the system
 	 */
 	public int getSystem() {
-		return system.system;
+		return system;
 	}
 //
 //	/**
