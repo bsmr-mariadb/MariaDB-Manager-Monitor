@@ -216,7 +216,7 @@ public class ClusterMonitor extends Thread {
 			nodeIDList = m_confdb.getNodeList();
 		}
 		if (m_verbose)
-			System.out.println(nodeIDList.size() + " nodes to monitor");
+			System.out.println(nodeIDList.size() + " node(s) to monitor");
 		if (m_nodeList != null)
 		{
 			Iterator<node> node_it = m_nodeList.iterator();

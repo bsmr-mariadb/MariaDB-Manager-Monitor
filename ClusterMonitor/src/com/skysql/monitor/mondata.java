@@ -185,8 +185,7 @@ public class mondata {
 	public List<Integer> getSystemList() {
 		String apiRequest = "system";
 		GsonSystem gsonSystem = getObjectFromAPI(apiRequest, GsonSystem.class);
-		List<Integer> result = gsonSystem.getSystemIdList();
-		return result;
+		return gsonSystem == null ? null : gsonSystem.getSystemIdList();
 	}
 	
 	/**
@@ -197,7 +196,8 @@ public class mondata {
 	public List<Integer> getNodeList()
 	{
 		String apiRequest = "system/" + m_systemID + "/node";
-		return getIntegerFromQuery(apiRequest, "fields", "nodeid");
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		return gsonNode == null ? null : gsonNode.getNodeIdList();
 	}
 	
 	/**
@@ -208,7 +208,8 @@ public class mondata {
 	public List<Integer> getMonitorList()
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key";
-		return getIntegerFromQuery(apiRequest, "fields", "monitorid");
+		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
+		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorIdList();
 	}
 	
 	/**
@@ -681,23 +682,23 @@ public class mondata {
 	 * @param fields: the names of the variables to be passed to the API
 	 * @param values: the values to the passed to the API
 	 */
-	public boolean bulkMonitorData(String[] monitors, String[] systems, String[] nodes, String[] values) {
+	public boolean bulkMonitorData(Integer[] monitorIDs, Integer[] systemIDs, Integer[] nodeIDs, String[] values) {
 		String apiRequest = "monitordata";
-		if ( !(monitors.length == systems.length && monitors.length == nodes.length && monitors.length == values.length) ) {
+		if ( !(monitorIDs.length == systemIDs.length && monitorIDs.length == nodeIDs.length && monitorIDs.length == values.length) ) {
 			System.err.println("Bulk data failed: arrays must be of the same size: got "
-					+ monitors.length + " monitors, " + systems.length + " systems, "
-					+ nodes.length + " nodes and " + values.length + " values.");
+					+ monitorIDs.length + " monitors, " + systemIDs.length + " systems, "
+					+ nodeIDs.length + " nodes and " + values.length + " values.");
 			return false;
 		}
 		List<String> fi = new ArrayList<String>();
 		List<String> va = new ArrayList<String>();
-		for (int i=0; i<monitors.length; i++) {
+		for (int i=0; i<monitorIDs.length; i++) {
 			fi.add("m[" + Integer.toString(i) + "]");
-			va.add(monitors[i]);
+			va.add(Integer.toString(monitorIDs[i]));
 			fi.add("s[" + Integer.toString(i) + "]");
-			va.add(systems[i]);
+			va.add(Integer.toString(systemIDs[i]));
 			fi.add("n[" + Integer.toString(i) + "]");
-			va.add(nodes[i]);
+			va.add(Integer.toString(nodeIDs[i]));
 			fi.add("v[" + Integer.toString(i) + "]");
 			va.add(values[i]);
 		}

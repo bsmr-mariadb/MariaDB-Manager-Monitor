@@ -110,6 +110,24 @@ public class monAPI {
 	public boolean MonitorValue(int systemID, int nodeID, String monitorKey, String value) {
 		String apiRequest = "system/" + systemID + "/node/" + nodeID + "/monitor/" + monitorKey + "/data";
 		return wrapperMonitorValue(apiRequest, value);
+//		System.err.println("Saving the monitor request into the batch buffer.");
+//		String apiRequest = "monitordata";
+//		List<String> fi = new ArrayList<String>();
+//		List<String> va = new ArrayList<String>();
+//		for (int i=0; i<1; i++) {
+//			fi.add("m[" + Integer.toString(i) + "]");
+//			va.add("18");
+//			fi.add("s[" + Integer.toString(i) + "]");
+//			va.add(Integer.toString(systemID));
+//			fi.add("n[" + Integer.toString(i) + "]");
+//			va.add(Integer.toString(nodeID));
+//			fi.add("v[" + Integer.toString(i) + "]");
+//			va.add(value);
+//		}
+//		String[] fields = fi.toArray(new String[0]);
+//		String[] parameters = va.toArray(new String[0]);
+//		boolean me = bulkMonitorValue(apiRequest, fields, parameters);
+//		return me;
 	}
 	/**
 	 * Populate a monitor value for the system.
@@ -123,10 +141,6 @@ public class monAPI {
 		String apiRequest = "system/" + systemID + "/monitor/" + monitorKey + "/data";
 		return wrapperMonitorValue(apiRequest, value);
 	}
-	public boolean bulkMonitorValue(String apiRequest, String[] fields, String[] values) {
-		System.err.println("MONITOR BULK REQUEST: " + apiRequest);
-		return restPost(apiRequest, fields, values);
-	}
 	/**
 	 * Wrapper to the POST call (update a DB entry).
 	 * 
@@ -136,7 +150,12 @@ public class monAPI {
 	 */
 	private boolean wrapperMonitorValue(String apiRequest, String value) {
 		System.err.println("MONITOR REQUEST: " + apiRequest + " value: " + value);
-		return restPost(apiRequest, new String[] {"value"}, new String[] {value});
+		return restPost(apiRequest, new String[] {"value"}, new String[] {value});		
+	}
+	
+	public boolean bulkMonitorValue(String apiRequest, String[] fields, String[] values) {
+		System.err.println("MONITOR BULK REQUEST: " + apiRequest);
+		return restPost(apiRequest, fields, values);
 	}
 	
 	/**

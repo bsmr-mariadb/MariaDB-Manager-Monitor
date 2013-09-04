@@ -18,6 +18,8 @@
 
 package com.skysql.monitor;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,14 +35,14 @@ public class GsonMonitorClasses {
 	/**
 	 * @return the monitorclass
 	 */
-	public MonitorClasses getMonitorclass() {
+	public MonitorClasses getMonitorClass() {
 		return monitorclass;
 	}
 
 	/**
 	 * @return the monitorclasses
 	 */
-	public List<MonitorClasses> getMonitorclasses() {
+	public List<MonitorClasses> getMonitorClasses() {
 		return monitorclasses;
 	}
 
@@ -61,7 +63,7 @@ public class GsonMonitorClasses {
 		/**
 		 * @return the systemtype
 		 */
-		public String getSystemtype() {
+		public String getSystemType() {
 			return systemtype;
 		}
 		/**
@@ -91,7 +93,7 @@ public class GsonMonitorClasses {
 		/**
 		 * @return the charttype
 		 */
-		public String getCharttype() {
+		public String getChartType() {
 			return charttype;
 		}
 		/**
@@ -103,13 +105,13 @@ public class GsonMonitorClasses {
 		/**
 		 * @return the monitortype
 		 */
-		public String getMonitortype() {
+		public String getMonitorType() {
 			return monitortype;
 		}
 		/**
 		 * @return the systemaverage
 		 */
-		public int getSystemaverage() {
+		public int getSystemAverage() {
 			return systemaverage;
 		}
 		/**
@@ -127,7 +129,7 @@ public class GsonMonitorClasses {
 		/**
 		 * @return the monitorid
 		 */
-		public String getMonitorid() {
+		public String getMonitorId() {
 			return monitorid;
 		}
 	}
@@ -136,5 +138,24 @@ public class GsonMonitorClasses {
 	 * Constructor.
 	 */
 	public GsonMonitorClasses() {}
+	
+	/**
+	 * Get the list of monitor id's.
+	 * 
+	 * @return a list as described above, or null if no system
+	 * if defined.
+	 */
+	public List<Integer> getMonitorIdList() {
+		List<Integer> result = new ArrayList<Integer>();
+		if (this.getMonitorClass() != null) {
+			result.add(Integer.parseInt(getMonitorClass().getMonitorId()));
+		} else if (this.getMonitorClasses() != null) {
+			Iterator<GsonMonitorClasses.MonitorClasses> it = getMonitorClasses().iterator();
+			while (it.hasNext()) {
+				result.add(Integer.parseInt(it.next().getMonitorId()));
+			}
+		} else return null;
+		return result;
+	}
 
 }

@@ -18,6 +18,8 @@
 
 package com.skysql.monitor;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -56,13 +58,13 @@ public class GsonNode {
 		/**
 		 * @return the systemid
 		 */
-		public String getSystemid() {
+		public String getSystemId() {
 			return systemid;
 		}
 		/**
 		 * @return the nodeid
 		 */
-		public String getNodeid() {
+		public String getNodeId() {
 			return nodeid;
 		}
 		/**
@@ -128,7 +130,7 @@ public class GsonNode {
 		/**
 		 * @return the monitorlatest
 		 */
-		public GsonSharedMonitorLatest getMonitorlatest() {
+		public GsonSharedMonitorLatest getMonitorLatest() {
 			return monitorlatest;
 		}
 		/**
@@ -140,7 +142,7 @@ public class GsonNode {
 		/**
 		 * @return the taskid
 		 */
-		public String getTaskid() {
+		public String getTaskId() {
 			return taskid;
 		}
 	}
@@ -181,5 +183,21 @@ public class GsonNode {
 	 * Constructor.
 	 */
 	public GsonNode() {}
+	
+	/**
+	 * Get the list of node id's.
+	 * 
+	 * @return a list of available nodes, or null if no node is found.
+	 */
+	public List<Integer> getNodeIdList() {
+		List<Integer> result = new ArrayList<Integer>();
+		if (this.getNodes() != null) {
+			Iterator<GsonNode.Nodes> it = getNodes().iterator();
+			while (it.hasNext()) {
+				result.add(Integer.parseInt(it.next().getNodeId()));
+			}
+		} else return null;
+		return result;
+	}
 	
 }

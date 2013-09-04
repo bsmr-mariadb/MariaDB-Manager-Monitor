@@ -18,8 +18,6 @@
 
 package com.skysql.monitor;
 
-import java.util.List;
-
 /**
  * Subclass shared among other Gsons.
  * 
@@ -27,7 +25,7 @@ import java.util.List;
  *
  */
 public class GsonSharedMonitorLatest {
-	private List<String> connections;
+	private String connections;
 	private String traffic;
 	private String availability;
 	String nodestate;
@@ -43,7 +41,7 @@ public class GsonSharedMonitorLatest {
 	/**
 	 * @return the connections
 	 */
-	public List<String> getConnections() {
+	public String getConnections() {
 		return connections;
 	}
 	/**
