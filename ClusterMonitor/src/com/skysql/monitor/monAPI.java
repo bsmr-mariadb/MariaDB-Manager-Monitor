@@ -18,7 +18,6 @@
 
 package com.skysql.monitor;
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -108,26 +107,28 @@ public class monAPI {
 	 * @param value		The observed value
 	 * @return True if the update was performed to the API
 	 */
-	public boolean MonitorValue(int systemID, int nodeID, int monitorID, String value)
-	{
-		String apiRequest = "system/" + systemID + "/node/" + nodeID + "/monitor/" + monitorID + "/data";
+	public boolean MonitorValue(int systemID, int nodeID, String monitorKey, String value) {
+		String apiRequest = "system/" + systemID + "/node/" + nodeID + "/monitor/" + monitorKey + "/data";
 		return wrapperMonitorValue(apiRequest, value);
 	}
 	/**
-	 * Populate a monitor value for the system
+	 * Populate a monitor value for the system.
 	 * 
 	 * @param systemID	The ID of the System
 	 * @param monitorID	The ID of the monitor itself
 	 * @param value		The observed value
 	 * @return True if the update was performed to the API
 	 */
-	public boolean MonitorValue(int systemID, int monitorID, String value)
-	{
-		String apiRequest = "system/" + systemID + "/monitor/" + monitorID + "/data";
+	public boolean MonitorValue(int systemID, String monitorKey, String value) {
+		String apiRequest = "system/" + systemID + "/monitor/" + monitorKey + "/data";
 		return wrapperMonitorValue(apiRequest, value);
 	}
+	public boolean bulkMonitorValue(String apiRequest, String[] fields, String[] values) {
+		System.err.println("MONITOR BULK REQUEST: " + apiRequest);
+		return restPost(apiRequest, fields, values);
+	}
 	/**
-	 * Wrapper to the POST call (update a DB entry)
+	 * Wrapper to the POST call (update a DB entry).
 	 * 
 	 * @param apiRequest	the request url
 	 * @param value			the value to be passed to the API
@@ -139,7 +140,7 @@ public class monAPI {
 	}
 	
 	/**
-	 * API call which requires to modify something
+	 * API call which requires to modify something.
 	 * 
 	 * @param restRequest
 	 * @param pName
@@ -152,7 +153,7 @@ public class monAPI {
 		return UpdateValue(restRequest, newpName, newpValue);
 	}
 	/**
-	 * API call which requires to modify something
+	 * API call which requires to modify something.
 	 * 
 	 * @param restRequest
 	 * @param pName
@@ -165,7 +166,7 @@ public class monAPI {
 	}
 	
 	/**
-	 * Reads a value
+	 * Read a value.
 	 * 
 	 * @param restRequest	The URL, excluding the fixed stem
 	 * @param pName			The parameter name for the GET request
@@ -179,7 +180,7 @@ public class monAPI {
 		return SystemValue(restRequest, newpName, newpValue);
 	}
 	/**
-	 * Calls the API and parses the resulting JSON
+	 * Calls the API and parses the resulting JSON.
 	 * 
 	 * @param restRequest	The URL, excluding the fixed stem
 	 * @param pName[]		The parameter names for the GET request
@@ -188,6 +189,22 @@ public class monAPI {
 	 * @throws ParseException 
 	 */
 	public List<String> SystemValue(String restRequest, String[] pName, String[] pValue) {
+		String outJson = getReturnedJson(restRequest, pName, pValue);
+		if (outJson == null) {
+			return null;
+		}
+		return json.getStringField(outJson, pValue[0]);
+	}
+	
+	/**
+	 * Bounce the Json that comes from the API. Only for GET requests.
+	 * 
+	 * @param restRequest
+	 * @param pName
+	 * @param pValue
+	 * @return the Json from the API as is, or null if an error occurred.
+	 */
+	public String getReturnedJson(String restRequest, String[] pName, String[] pValue) {
 		String outJson = restGet(restRequest, pName, pValue);
 		if (outJson == null) {
 			System.err.println("Failed: Output Json: " + outJson);
@@ -199,7 +216,7 @@ public class monAPI {
 			System.err.println();
 			return null;
 		}
-		return json.getStringField(outJson, pValue[0]);
+		return outJson;
 	}
 	
 	/**

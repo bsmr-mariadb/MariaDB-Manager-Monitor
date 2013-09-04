@@ -163,20 +163,34 @@ public class mondata {
 			return null;
 		}
 	}
+	
+	/**
+	 * Fetch the Java object that corresponds to an API URI.
+	 * 
+	 * @param apiRequest
+	 * @param objectClass the class of the Java object, e.g. MyClass.class
+	 * @return the Java object
+	 */
+	private <T> T getObjectFromAPI(String apiRequest, Class<T> objectClass) {
+		String getJson = m_api.getReturnedJson(apiRequest, new String[]{""}, new String[] {""});
+		T object = GsonManager.fromJson(getJson, objectClass);
+		return object;
+	}
 
 	/**
-	 * Return the list of System ID's to monitor
+	 * Fetch the list of System ID's to monitor.
 	 * 
 	 * @return The list of SystemIDs defined in the database
 	 */
-	public List<Integer> getSystemList()
-	{
+	public List<Integer> getSystemList() {
 		String apiRequest = "system";
-		return getIntegerFromQuery(apiRequest, "fields", "systemid");
+		GsonSystem gsonSystem = getObjectFromAPI(apiRequest, GsonSystem.class);
+		List<Integer> result = gsonSystem.getSystemIdList();
+		return result;
 	}
 	
 	/**
-	 * Return the list of node numbers to monitor
+	 * Return the list of node numbers to monitor.
 	 * 
 	 * @return The list of nodes in the database
 	 */
@@ -187,7 +201,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Return the list of monitors
+	 * Return the list of monitors.
 	 * 
 	 * @return The list of monitorID's defined in the database
 	 */
@@ -198,7 +212,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Get the private IP address of the specified node
+	 * Get the private IP address of the specified node.
 	 * 
 	 * @param NodeNo	The node number
 	 * @return The private IP address as a string
@@ -210,7 +224,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Get the credentials for the specified node
+	 * Get the credentials for the specified node.
 	 * 
 	 * @param NodeNo The node number to return the credentials of
 	 * @return The Credentials for the node
@@ -331,7 +345,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Retrieve the Monitor key by knowing the Monitor id.
+	 * Retrieve the Monitor key from the Monitor id.
 	 * 
 	 * @param id
 	 * @return
@@ -345,7 +359,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Is the system monitor value cumulative or an average of all the nodes in the system
+	 * Is the system monitor value cumulative or an average of all the nodes in the system?
 	 * 
 	 * @param id	The Monitor ID
 	 * @return		True if the system value of a monitor is an average of all the nodes in the system
@@ -404,7 +418,6 @@ public class mondata {
 	 */
 	public void setNodeState(int nodeid, int stateid)
 	{
-		String query = "update Node set State = " + stateid + " where nodeid = " + nodeid + " and SystemID = " + m_systemID;
 		String apiRequest = "system/" + m_systemID + "/node/" + nodeid;
 		try {
 			String NodeState = getStateString(stateid);
@@ -436,7 +449,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Set the status of the system
+	 * Set the status of the system.
 	 */
 	public void setSystemStatus()
 	{
@@ -472,7 +485,7 @@ public class mondata {
 	}	
 	
 	/**
-	 * Get the list of instance ID for this cluster
+	 * Get the list of instance ID for this cluster.
 	 * 
 	 * @return The lsit of instance IDs
 	 */
@@ -557,7 +570,7 @@ public class mondata {
 	 * IPMonitor
 	 * 
 	 * Get the system property IPMonitor - this controls the running of the IPMonitor for
-	 * EC2 Cloud based deployments. The default is true for reasons of backward compatibility
+	 * EC2 Cloud based deployments. The default is true for reasons of backward compatibility.
 	 * 
 	 * @return	boolean		True if the IP Monitor should be run
 	 */
@@ -572,17 +585,6 @@ public class mondata {
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * Batch request to the API.
-	 * 
-	 * @param fields: the names of the variables to be passed to the API
-	 * @param values: the values to the passed to the API
-	 */
-	public void bulkMonitorData(String[] fields, String[] values) {
-		String apiRequest = "monitordata";
-		getStringFromQuery(apiRequest, fields, values);
 	}
 	
 	/**
@@ -656,7 +658,7 @@ public class mondata {
 	 */
 	public boolean monitorData(int systemID, int nodeID, int monitorID, String observation)
 	{
-		return m_api.MonitorValue(systemID, nodeID, monitorID, observation);
+		return m_api.MonitorValue(systemID, nodeID, getMonitorKey(monitorID), observation);
 	}
 	
 	/**
@@ -670,7 +672,38 @@ public class mondata {
 	 */
 	public boolean monitorData(int systemID, int monitorID, String observation)
 	{
-		return m_api.MonitorValue(systemID, monitorID, observation);
+		return m_api.MonitorValue(systemID, getMonitorKey(monitorID), observation);
+	}
+	
+	/**
+	 * Batch request to the API.
+	 * 
+	 * @param fields: the names of the variables to be passed to the API
+	 * @param values: the values to the passed to the API
+	 */
+	public boolean bulkMonitorData(String[] monitors, String[] systems, String[] nodes, String[] values) {
+		String apiRequest = "monitordata";
+		if ( !(monitors.length == systems.length && monitors.length == nodes.length && monitors.length == values.length) ) {
+			System.err.println("Bulk data failed: arrays must be of the same size: got "
+					+ monitors.length + " monitors, " + systems.length + " systems, "
+					+ nodes.length + " nodes and " + values.length + " values.");
+			return false;
+		}
+		List<String> fi = new ArrayList<String>();
+		List<String> va = new ArrayList<String>();
+		for (int i=0; i<monitors.length; i++) {
+			fi.add("m[" + Integer.toString(i) + "]");
+			va.add(monitors[i]);
+			fi.add("s[" + Integer.toString(i) + "]");
+			va.add(systems[i]);
+			fi.add("n[" + Integer.toString(i) + "]");
+			va.add(nodes[i]);
+			fi.add("v[" + Integer.toString(i) + "]");
+			va.add(values[i]);
+		}
+		String[] fields = fi.toArray(new String[0]);
+		String[] parameters = va.toArray(new String[0]);
+		return m_api.bulkMonitorValue(apiRequest, fields, parameters);
 	}
 	
 }

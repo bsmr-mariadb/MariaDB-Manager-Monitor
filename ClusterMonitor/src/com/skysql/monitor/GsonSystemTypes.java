@@ -18,66 +18,37 @@
 
 package com.skysql.monitor;
 
-import java.util.List;
-
 /**
- * Contains the fields for the node API call.
+ * Class for systemtypes API.
  * 
  * @author Massimo Siani
  *
  */
-public class GsonNodeStates {
-	private NodeStates nodestate;
-	private List<NodeStates> nodestates;
+public class GsonSystemTypes {
+	
+	private SystemTypes systemtypes;
 	
 	/**
-	 * @return the nodestate
+	 * @return the systemtypes
 	 */
-	public NodeStates getNodestate() {
-		return nodestate;
+	public SystemTypes getSystemtypes() {
+		return systemtypes;
 	}
 
-	/**
-	 * @return the nodestates
-	 */
-	public List<NodeStates> getNodestates() {
-		return nodestates;
-	}
-
-	public static class NodeStates {
-		private String state;
-		int stateid;
-		private String description;
-		private String icon;
-		
+	public static class SystemTypes {
+		private String aws, galera;
 		/**
-		 * @return the state
+		 * @return the aws
 		 */
-		public String getState() {
-			return state;
-		}
-		
-		/**
-		 * @return the state id
-		 */
-		public int getStateId() {
-			return stateid;
+		public String getAws() {
+			return aws;
 		}
 
 		/**
-		 * @return the description
+		 * @return the galera
 		 */
-		public String getDescription() {
-			return description;
-		}
-
-		/**
-		 * @return the icon
-		 */
-		public String getIcon() {
-			return icon;
+		public String getGalera() {
+			return galera;
 		}
 	}
-	
-	public GsonNodeStates() {}
 }

@@ -18,6 +18,8 @@
 
 package com.skysql.monitor;
 
+import java.util.List;
+
 /**
  * Contains the fields for the node API call.
  * 
@@ -25,87 +27,114 @@ package com.skysql.monitor;
  *
  */
 public class GsonMonitorClasses {
-	private int id;
-	private String name;
-	private String sql;
-	private String description;
-	private String type;
-	private int delta;
-	private String monitortype;
-	private int systemaverage;
-	private int interval;
-	private String unit;
+	private MonitorClasses monitorclass;
+	private List<MonitorClasses> monitorclasses;
 	
+	/**
+	 * @return the monitorclass
+	 */
+	public MonitorClasses getMonitorclass() {
+		return monitorclass;
+	}
+
+	/**
+	 * @return the monitorclasses
+	 */
+	public List<MonitorClasses> getMonitorclasses() {
+		return monitorclasses;
+	}
+
+	public static class MonitorClasses {
+		private String systemtype;
+		String monitor;
+		private String name;
+		private String sql;
+		private String description;
+		private String charttype;
+		private int delta;
+		private String monitortype;
+		private int systemaverage;
+		private int interval;
+		private String unit;
+		String monitorid;
+		
+		/**
+		 * @return the systemtype
+		 */
+		public String getSystemtype() {
+			return systemtype;
+		}
+		/**
+		 * @return the monitor
+		 */
+		public String getMonitor() {
+			return monitor;
+		}
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
+		/**
+		 * @return the sql
+		 */
+		public String getSql() {
+			return sql;
+		}
+		/**
+		 * @return the description
+		 */
+		public String getDescription() {
+			return description;
+		}
+		/**
+		 * @return the charttype
+		 */
+		public String getCharttype() {
+			return charttype;
+		}
+		/**
+		 * @return the delta
+		 */
+		public int getDelta() {
+			return delta;
+		}
+		/**
+		 * @return the monitortype
+		 */
+		public String getMonitortype() {
+			return monitortype;
+		}
+		/**
+		 * @return the systemaverage
+		 */
+		public int getSystemaverage() {
+			return systemaverage;
+		}
+		/**
+		 * @return the interval
+		 */
+		public int getInterval() {
+			return interval;
+		}
+		/**
+		 * @return the unit
+		 */
+		public String getUnit() {
+			return unit;
+		}
+		/**
+		 * @return the monitorid
+		 */
+		public String getMonitorid() {
+			return monitorid;
+		}
+	}
+	
+	/**
+	 * Constructor.
+	 */
 	public GsonMonitorClasses() {}
 
-	/**
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @return the sql
-	 */
-	public String getSql() {
-		return sql;
-	}
-
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @return the delta
-	 */
-	public int getDelta() {
-		return delta;
-	}
-
-	/**
-	 * @return the monitortype
-	 */
-	public String getMonitortype() {
-		return monitortype;
-	}
-
-	/**
-	 * @return the systemaverage
-	 */
-	public int getSystemaverage() {
-		return systemaverage;
-	}
-
-	/**
-	 * @return the interval
-	 */
-	public int getInterval() {
-		return interval;
-	}
-
-	/**
-	 * @return the unit
-	 */
-	public String getUnit() {
-		return unit;
-	}
-	
 }

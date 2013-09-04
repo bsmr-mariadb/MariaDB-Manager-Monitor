@@ -21,63 +21,25 @@ package com.skysql.monitor;
 import java.util.List;
 
 /**
- * Contains the fields for the node API call.
+ * Class for errors and warnings.
  * 
  * @author Massimo Siani
  *
  */
-public class GsonNodeStates {
-	private NodeStates nodestate;
-	private List<NodeStates> nodestates;
+public class GsonErrors {
+	private List<String> errors;
+	private List<String> warnings;
 	
 	/**
-	 * @return the nodestate
+	 * @return the errors
 	 */
-	public NodeStates getNodestate() {
-		return nodestate;
+	public List<String> getErrors() {
+		return errors;
 	}
-
 	/**
-	 * @return the nodestates
+	 * @return the warnings
 	 */
-	public List<NodeStates> getNodestates() {
-		return nodestates;
+	public List<String> getWarnings() {
+		return warnings;
 	}
-
-	public static class NodeStates {
-		private String state;
-		int stateid;
-		private String description;
-		private String icon;
-		
-		/**
-		 * @return the state
-		 */
-		public String getState() {
-			return state;
-		}
-		
-		/**
-		 * @return the state id
-		 */
-		public int getStateId() {
-			return stateid;
-		}
-
-		/**
-		 * @return the description
-		 */
-		public String getDescription() {
-			return description;
-		}
-
-		/**
-		 * @return the icon
-		 */
-		public String getIcon() {
-			return icon;
-		}
-	}
-	
-	public GsonNodeStates() {}
 }

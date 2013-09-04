@@ -18,6 +18,8 @@
 
 package com.skysql.monitor;
 
+import java.util.List;
+
 /**
  * Contains the fields for the node API call.
  * 
@@ -25,135 +27,159 @@ package com.skysql.monitor;
  *
  */
 public class GsonNode {
-	private int system;
-	private int id;
-	private String name;
-	private int state;
-	private String hostname;
-	private String publicIP;
-	private String privateIP;
-	private int instanceID;
-	private String username;
-	private String passwd;
-	private int[] commands;
-	private String[] connections;
-	private String[] packets;
-	private String[] health;
-	private String command;
-	private String task;
+	private List<Nodes> nodes;
 	
+	/**
+	 * @return the nodes
+	 */
+	public List<Nodes> getNodes() {
+		return nodes;
+	}
+
+	public static class Nodes {
+		String systemid;
+		private String nodeid;
+		private String name;
+		private String state;
+		private String hostname;
+		private String publicIP;
+		private String privateIP;
+		private String port;
+		private int instanceID;
+		private String dbusername;
+		private String dbpassword;
+		private List<Commands> commands;
+		private GsonSharedMonitorLatest monitorlatest;
+		private String command;
+		private String taskid;
+		
+		/**
+		 * @return the systemid
+		 */
+		public String getSystemid() {
+			return systemid;
+		}
+		/**
+		 * @return the nodeid
+		 */
+		public String getNodeid() {
+			return nodeid;
+		}
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
+		/**
+		 * @return the state
+		 */
+		public String getState() {
+			return state;
+		}
+		/**
+		 * @return the hostname
+		 */
+		public String getHostname() {
+			return hostname;
+		}
+		/**
+		 * @return the publicIP
+		 */
+		public String getPublicIP() {
+			return publicIP;
+		}
+		/**
+		 * @return the privateIP
+		 */
+		public String getPrivateIP() {
+			return privateIP;
+		}
+		/**
+		 * @return the port
+		 */
+		public String getPort() {
+			return port;
+		}
+		/**
+		 * @return the instanceID
+		 */
+		public int getInstanceID() {
+			return instanceID;
+		}
+		/**
+		 * @return the dbusername
+		 */
+		public String getDbusername() {
+			return dbusername;
+		}
+		/**
+		 * @return the dbpassword
+		 */
+		public String getDbpassword() {
+			return dbpassword;
+		}
+		/**
+		 * @return the commands
+		 */
+		public List<Commands> getCommands() {
+			return commands;
+		}
+		/**
+		 * @return the monitorlatest
+		 */
+		public GsonSharedMonitorLatest getMonitorlatest() {
+			return monitorlatest;
+		}
+		/**
+		 * @return the command
+		 */
+		public String getCommand() {
+			return command;
+		}
+		/**
+		 * @return the taskid
+		 */
+		public String getTaskid() {
+			return taskid;
+		}
+	}
+	
+	public static class Commands {
+		String command;
+		String description;
+		String icon;
+		String steps;
+		
+		/**
+		 * @return the command
+		 */
+		public String getCommand() {
+			return command;
+		}
+		/**
+		 * @return the description
+		 */
+		public String getDescription() {
+			return description;
+		}
+		/**
+		 * @return the icon
+		 */
+		public String getIcon() {
+			return icon;
+		}
+		/**
+		 * @return the steps
+		 */
+		public String getSteps() {
+			return steps;
+		}
+	}
+
+	/**
+	 * Constructor.
+	 */
 	public GsonNode() {}
-
-	/**
-	 * @return the system
-	 */
-	public int getSystem() {
-		return system;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @return the state
-	 */
-	public int getState() {
-		return state;
-	}
-
-	/**
-	 * @return the hostname
-	 */
-	public String getHostname() {
-		return hostname;
-	}
-
-	/**
-	 * @return the publicIP
-	 */
-	public String getPublicIP() {
-		return publicIP;
-	}
-
-	/**
-	 * @return the privateIP
-	 */
-	public String getPrivateIP() {
-		return privateIP;
-	}
-
-	/**
-	 * @return the instanceID
-	 */
-	public int getInstanceID() {
-		return instanceID;
-	}
-
-	/**
-	 * @return the username
-	 */
-	public String getUsername() {
-		return username;
-	}
-
-	/**
-	 * @return the passwd
-	 */
-	public String getPasswd() {
-		return passwd;
-	}
-
-	/**
-	 * @return the commands
-	 */
-	public int[] getCommands() {
-		return commands;
-	}
-
-	/**
-	 * @return the connections
-	 */
-	public String[] getConnections() {
-		return connections;
-	}
-
-	/**
-	 * @return the packets
-	 */
-	public String[] getPackets() {
-		return packets;
-	}
-
-	/**
-	 * @return the health
-	 */
-	public String[] getHealth() {
-		return health;
-	}
-
-	/**
-	 * @return the command
-	 */
-	public String getCommand() {
-		return command;
-	}
-
-	/**
-	 * @return the task
-	 */
-	public String getTask() {
-		return task;
-	}
 	
 }

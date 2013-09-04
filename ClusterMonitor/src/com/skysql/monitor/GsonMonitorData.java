@@ -21,63 +21,51 @@ package com.skysql.monitor;
 import java.util.List;
 
 /**
- * Contains the fields for the node API call.
+ * Monitor data.
  * 
  * @author Massimo Siani
  *
  */
-public class GsonNodeStates {
-	private NodeStates nodestate;
-	private List<NodeStates> nodestates;
+public class GsonMonitorData {
+	private MonitorData monitor_data;
+	private MonitorData monitor_rawdata;
 	
 	/**
-	 * @return the nodestate
+	 * @return the monitor_data
 	 */
-	public NodeStates getNodestate() {
-		return nodestate;
+	public MonitorData getMonitor_data() {
+		return monitor_data;
 	}
 
 	/**
-	 * @return the nodestates
+	 * @return the monitor_rawdata
 	 */
-	public List<NodeStates> getNodestates() {
-		return nodestates;
+	public MonitorData getMonitor_rawdata() {
+		return monitor_rawdata;
 	}
 
-	public static class NodeStates {
-		private String state;
-		int stateid;
-		private String description;
-		private String icon;
+	public static class MonitorData {
+		List<String> timestamp;
+		List<String> value;
+		List<String> repeats;
 		
 		/**
-		 * @return the state
+		 * @return the timestamp
 		 */
-		public String getState() {
-			return state;
+		public List<String> getTimestamp() {
+			return timestamp;
 		}
-		
 		/**
-		 * @return the state id
+		 * @return the value
 		 */
-		public int getStateId() {
-			return stateid;
+		public List<String> getValue() {
+			return value;
 		}
-
 		/**
-		 * @return the description
+		 * @return the repeats
 		 */
-		public String getDescription() {
-			return description;
-		}
-
-		/**
-		 * @return the icon
-		 */
-		public String getIcon() {
-			return icon;
+		public List<String> getRepeats() {
+			return repeats;
 		}
 	}
-	
-	public GsonNodeStates() {}
 }
