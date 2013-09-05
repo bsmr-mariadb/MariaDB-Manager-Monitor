@@ -29,8 +29,16 @@ import java.util.List;
  *
  */
 public class GsonNode {
+	private Nodes node;
 	private List<Nodes> nodes;
 	
+	/**
+	 * @return the node
+	 */
+	public Nodes getNode() {
+		return node;
+	}
+
 	/**
 	 * @return the nodes
 	 */
@@ -39,7 +47,7 @@ public class GsonNode {
 	}
 
 	public static class Nodes {
-		String systemid;
+		private String systemid;
 		private String nodeid;
 		private String name;
 		private String state;

@@ -35,7 +35,10 @@ import java.util.*;
  *
  */
 public class ClusterMonitor extends Thread {
-	/** The ID of the system we are monitoring */
+	/**
+	 * The ID of the system we are monitoring. This is
+	 * read from the arguments list.
+	 */
 	private int					m_systemID; 
 	/**
 	 *  A handle on the configuration class that handles
@@ -44,7 +47,14 @@ public class ClusterMonitor extends Thread {
 	private mondata 			m_confdb;	
 	/** The list of nodes in the system to monitor */
 	private List<node> 			m_nodeList;	
-	/** The list of the lists of monitors */
+	/**
+	 * The list of the lists of monitors.
+	 * The outer list is characterized by the monitor id,
+	 * the inner list by the node id. Thus, this can be
+	 * seen as a table (monitor id, node id) where each
+	 * element is an instance of the monitor class (or its
+	 * extensions) that knows which node it's monitoring.
+	 */
 	private List<List<monitor>> m_monitorList;
 	/** Verbose logging flag */
 	private boolean				m_verbose;
@@ -52,14 +62,12 @@ public class ClusterMonitor extends Thread {
 	private int					m_interval;
 	/** The number of cycles before full refresh */
 	private int					m_refresh = 1;
-	/** The  name of the database to connect to */
-	private String				m_dbfile;
 	
 	public static void main( String[] args )
 	{
-		if (args.length != 2 && args.length != 3)
+		if (args.length != 2)
 		{
-			System.err.println("Usage: ClusterMonitor [-v]  <System ID> <dbfile>");
+			System.err.println("Usage: ClusterMonitor [-v]  <System ID>");
 			System.exit(1);
 		}
 		int off = 0;
@@ -78,15 +86,14 @@ public class ClusterMonitor extends Thread {
 		{
 			while (true)
 			{
-				mondata db = new mondata(args[off+1]);
-				List<Integer> systems = db.getSystemList();
+				List<Integer> systems = (new mondata()).getSystemList();
 				if (systems == null) systems = new ArrayList<Integer>();
 				Iterator<Integer> it = systems.iterator();
 				ClusterMonitor monitor = null;
 				while (it.hasNext())
 				{
 					Integer i = it.next();
-					monitor = new ClusterMonitor(i.intValue(), args[off + 1], verbose);
+					monitor = new ClusterMonitor(i.intValue(), verbose);
 					monitor.initialise();
 				
 					monitor.start();
@@ -99,8 +106,7 @@ public class ClusterMonitor extends Thread {
 						// Nothing to do
 					}
 				}
-				if (systems.isEmpty())
-				{
+				if (systems.isEmpty()) {
 					System.out.println("No systems found to monitor, waiting for systems to be deployed.");
 					try {
 						Thread.sleep(10000);
@@ -113,8 +119,7 @@ public class ClusterMonitor extends Thread {
 		else
 		{
 			int targetSystem = new Integer(args[off]).intValue();
-			mondata db = new mondata(args[off+1]);
-			List<Integer> systems = db.getSystemList();
+			List<Integer> systems = (new mondata()).getSystemList();
 			Iterator<Integer> it = systems.iterator();
 			boolean found = false;
 			while (it.hasNext())
@@ -131,7 +136,7 @@ public class ClusterMonitor extends Thread {
 				System.exit(1);
 			}
 			
-			ClusterMonitor monitor = new ClusterMonitor(targetSystem, args[off + 1], verbose);
+			ClusterMonitor monitor = new ClusterMonitor(targetSystem, verbose);
 			monitor.initialise();
 		
 			monitor.execute();
@@ -153,15 +158,13 @@ public class ClusterMonitor extends Thread {
 	 * ClusterMonitor constructor
 	 * 
 	 * @param systemID	int		Unique ID of the system
-	 * @param dbfile	String	Name of the SQLite database file
 	 * @param verbose	boolean	Log debugging information
 	 */
-	public ClusterMonitor(int systemID, String dbfile, boolean verbose)
+	public ClusterMonitor(int systemID, boolean verbose)
 	{
-		m_dbfile = dbfile;
 		m_verbose = verbose;
 		m_systemID = systemID;
-		m_confdb = new mondata(m_systemID, m_dbfile);
+		m_confdb = new mondata(m_systemID);
 		m_interval = m_confdb.monitorInterval();
 	}
 	

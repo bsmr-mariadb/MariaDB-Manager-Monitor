@@ -18,17 +18,11 @@
 
 package com.skysql.monitor;
 
-import java.io.FileReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.script.Bindings;
-import javax.script.Compilable;
-import javax.script.CompiledScript;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.SimpleBindings;
 
 /**
  * Interface to the monitoring database, this is the database that holds
@@ -43,25 +37,42 @@ public class mondata {
 	private monAPI		m_api;
 	private String		m_systemType = "galera";
 	
+//	/**
+//	 * Constructor for the monitor data class.
+//	 * 
+//	 * @param systemID	The System ID being monitored
+//	 * @param dbfile	The SQLite database file
+//	 */
+//	public mondata(int systemID, String dbfile)
+//	{
+//		m_systemID = systemID;
+//		m_api = new monAPI();
+//	}
+//	/**
+//	 * Constructor used when the monitor is being used for when the system id is not known.
+//	 * 
+//	 * @param dbfile	The SQLite database file
+//	 */
+//	public mondata(String dbfile)
+//	{
+//		this(-1, dbfile);
+//	}
 	/**
 	 * Constructor for the monitor data class.
 	 * 
 	 * @param systemID	The System ID being monitored
-	 * @param dbfile	The SQLite database file
 	 */
-	public mondata(int systemID, String dbfile)
+	public mondata(int systemID)
 	{
 		m_systemID = systemID;
 		m_api = new monAPI();
 	}
 	/**
-	 * Constructor used when the monitor is being used for when the system id is not known.
-	 * 
-	 * @param dbfile	The SQLite database file
+	 * Constructor used when the system id is not known.
 	 */
-	public mondata(String dbfile)
+	public mondata()
 	{
-		this(-1, dbfile);
+		this(-1);
 	}
 	
 	/**
@@ -201,7 +212,7 @@ public class mondata {
 	}
 	
 	/**
-	 * Return the list of monitors.
+	 * Return the list of all available monitor Id's for the given system type.
 	 * 
 	 * @return The list of monitorID's defined in the database
 	 */
@@ -221,7 +232,9 @@ public class mondata {
 	public String getNodePrivateIP(int NodeNo)
 	{
 		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
-		return ListStringToString(getStringFromQuery(apiRequest, "fields", "privateip"));
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		return gsonNode == null ? null : gsonNode.getNode().getPrivateIP();
+//		return ListStringToString(getStringFromQuery(apiRequest, "fields", "privateip"));
 	}
 	
 	/**
@@ -586,65 +599,6 @@ public class mondata {
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * Read a JavaScript filename from the table Monitors and execute it.
-	 * 
-	 * @param script the script that identifies the cluster state
-	 * @return a string with the state
-	 */
-	public String runJavaScriptString(int monitor_id) {
-		try {
-			try {
-				Class.forName("org.mariadb.jdbc.Driver");
-			} catch (ClassNotFoundException e) {
-				System.err.println("ERROR: cannot find MariaDB driver");
-				return null;
-			}
-			String script = getMonitorSQL(monitor_id);
-			ScriptEngine engine = 
-					new ScriptEngineManager().getEngineByName("javascript");
-			Bindings bindings = new SimpleBindings();
-
-			FileReader fr = new FileReader(script);
-			if (engine instanceof Compilable) {
-				Compilable compEngine = (Compilable)engine;
-				CompiledScript cs = compEngine.compile(fr);
-				return (String) cs.eval(bindings);
-			} else return (String) engine.eval(fr, bindings);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	/**
-	 * Run a JavaScript file.
-	 * 
-	 * @param script the script that identifies the cluster state
-	 * @return a string with the state
-	 */
-	public String runJavaScriptFile(String scriptFile) {
-		try {
-			try {
-				Class.forName("org.mariadb.jdbc.Driver");
-			} catch (ClassNotFoundException e) {
-				System.err.println("ERROR: cannot find MariaDB driver");
-				return null;
-			}
-			ScriptEngine engine = 
-					new ScriptEngineManager().getEngineByName("javascript");
-			Bindings bindings = new SimpleBindings();
-
-			FileReader fr = new FileReader(scriptFile);
-			if (engine instanceof Compilable) {
-				Compilable compEngine = (Compilable)engine;
-				CompiledScript cs = compEngine.compile(fr);
-				return (String) cs.eval(bindings);
-			} else return (String) engine.eval(fr, bindings);
-		} catch (Exception e) {
-			return null;
-		}
 	}
 	
 	/**

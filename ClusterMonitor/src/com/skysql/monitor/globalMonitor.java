@@ -40,7 +40,7 @@ public class globalMonitor extends monitor {
 	 */
 	private	globalStatusObject	m_global;
 	/**
-	 * The monitor should record differences between the consequetive
+	 * The monitor should record differences between the consecutive
 	 * probe cycles.
 	 */
 	private boolean				m_delta;
@@ -53,7 +53,7 @@ public class globalMonitor extends monitor {
 	/**
 	 * Constructor for the global monitor
 	 * 
-	 * @param db		Handle for the moitoring database
+	 * @param db		Handle for the monitoring database
 	 * @param id		The ID of the monitor
 	 * @param mon_node	The node being monitored
 	 * @param delta		The monitor is a delta monitor

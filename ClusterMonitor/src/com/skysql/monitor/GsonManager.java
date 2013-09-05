@@ -41,7 +41,7 @@ public class GsonManager {
 	 * @param obj the object.
 	 * @return the Json string.
 	 */
-	public static String toString(Object obj) {
+	public static <T> String toJson(T obj) {
 		String result = gson.toJson(obj);
 		return result;
 	}

@@ -72,7 +72,7 @@ public class monitor {
 	
 	/**
 	 * The probe function, called once per probe cycle.
-	 * This is the method that get overriden by the custom monitor classes
+	 * This is the method that get overridden by the custom monitor classes
 	 * 
 	 * @param verbose	Logging level
 	 */

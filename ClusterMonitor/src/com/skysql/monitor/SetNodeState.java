@@ -46,7 +46,7 @@ public class SetNodeState {
 	
 	public SetNodeState(int systemID, int nodeID, String dbfile)
 	{
-		m_confdb = new mondata(systemID, dbfile);
+		m_confdb = new mondata(systemID);
 		m_nodeid = nodeID;
 		m_systemID = systemID;
 	}
