@@ -488,6 +488,9 @@ public class mondata {
 	{
 		return m_api.MonitorValue(systemID, getMonitorKey(monitorID), observation);
 	}
+	public boolean bulkMonitorData(Integer monitorID, Integer systemID, Integer nodeID, String value) {
+		return bulkMonitorData(new Integer[]{monitorID}, new Integer[]{systemID}, new Integer[]{nodeID}, new String[]{value});
+	}
 	/**
 	 * Batch request to the API.
 	 * 

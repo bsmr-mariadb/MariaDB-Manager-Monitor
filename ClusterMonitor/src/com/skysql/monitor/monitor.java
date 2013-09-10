@@ -112,7 +112,8 @@ public class monitor {
 	 */
 	protected boolean saveObservation(String observation)
 	{
-		return m_confdb.monitorData(m_node.getSystemID(), m_node.getID(), m_monitor_id, observation);
+//		return m_confdb.monitorData(m_node.getSystemID(), m_node.getID(), m_monitor_id, observation);
+		return m_confdb.bulkMonitorData(m_monitor_id, m_node.getSystemID(), m_node.getID(), observation);
 	}
 	
 	/**
