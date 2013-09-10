@@ -460,7 +460,7 @@ public class monAPI {
 	 * Run the buffer queue.
 	 */
 	private void runBuffer() {
-		if (this.m_bufferingExecution && (this.m_cycles >= 5)) {
+		if (this.m_bufferingExecution && (this.m_cycles >= 10)) {
 			APIBatchExecution.sendAll();
 			this.m_cycles = 0;
 		}
