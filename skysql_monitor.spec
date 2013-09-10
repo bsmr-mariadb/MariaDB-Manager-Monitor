@@ -32,8 +32,8 @@ chown apache:apache /var/log/SkySQL-ClusterMonitor.log
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
-cp ClusterMonitor.jar  $RPM_BUILD_ROOT%{install_path}
-cp ClusterMonitor.sh  $RPM_BUILD_ROOT%{install_path}
+cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
+cp ClusterMonitor.sh $RPM_BUILD_ROOT%{install_path}
 cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
 #cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
 
