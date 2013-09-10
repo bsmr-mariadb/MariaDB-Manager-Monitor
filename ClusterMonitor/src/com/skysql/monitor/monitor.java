@@ -37,6 +37,10 @@ public class monitor {
 	 */
 	protected int			m_monitor_id;
 	/**
+	 * The Monitor key
+	 */
+	protected String		m_monitor_key;
+	/**
 	 * The node being monitored
 	 */
 	protected node			m_node;
@@ -52,6 +56,10 @@ public class monitor {
 	 * Is this a system averaged monitor
 	 */
 	protected boolean 		m_systemAverage;
+	/**
+	 * The monitor interval
+	 */
+	protected int			m_interval;
 	
 	/**
 	 * The monitor constructor
@@ -64,10 +72,12 @@ public class monitor {
 	{
 		m_confdb = db;
 		m_monitor_id = id;
+		m_monitor_key = m_confdb.getMonitorKey(m_monitor_id);
 		m_node = mon_node;
 		m_sql = db.getMonitorSQL(id);
 		m_lastValue = null;
-		m_systemAverage = db.getMonitorSystemAverage(id);
+		m_systemAverage = db.isMonitorSystemAverage(id);
+		m_interval = m_confdb.getMonitorClassInterval(m_monitor_key);
 	}
 	
 	/**

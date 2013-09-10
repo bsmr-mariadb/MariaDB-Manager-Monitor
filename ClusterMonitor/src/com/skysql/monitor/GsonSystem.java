@@ -30,7 +30,7 @@ import java.util.List;
  * @author Massimo Siani
  *
  */
-public class GsonSystem {
+public class GsonSystem extends GsonErrors {
 	/** A single system */
 	private Systems system;
 	/** List of systems */
@@ -47,7 +47,6 @@ public class GsonSystem {
 	public Systems getSystem() {
 		return system;
 	}
-
 	/**
 	 * @return the list of systems
 	 */
@@ -138,6 +137,25 @@ public class GsonSystem {
 	}
 	
 	public static class Properties {
+		private String MonitorInterval;
+		private String IPMonitor;
+
+		/**
+		 * @return the monitorInterval
+		 */
+		public Integer getMonitorInterval() {
+			try {
+				return Integer.parseInt(MonitorInterval);
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		/**
+		 * @return the iPMonitor
+		 */
+		public String getIPMonitor() {
+			return IPMonitor;
+		}
 		
 	}
 	

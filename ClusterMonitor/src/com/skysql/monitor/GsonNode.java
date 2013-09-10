@@ -28,7 +28,7 @@ import java.util.List;
  * @author Massimo Siani
  *
  */
-public class GsonNode {
+public class GsonNode extends GsonErrors {
 	private Nodes node;
 	private List<Nodes> nodes;
 	
@@ -52,8 +52,8 @@ public class GsonNode {
 		private String name;
 		private String state;
 		private String hostname;
-		private String publicIP;
-		private String privateIP;
+		private String publicip;
+		private String privateip;
 		private String port;
 		private int instanceID;
 		private String dbusername;
@@ -97,13 +97,13 @@ public class GsonNode {
 		 * @return the publicIP
 		 */
 		public String getPublicIP() {
-			return publicIP;
+			return publicip;
 		}
 		/**
 		 * @return the privateIP
 		 */
 		public String getPrivateIP() {
-			return privateIP;
+			return privateip;
 		}
 		/**
 		 * @return the port
@@ -156,10 +156,10 @@ public class GsonNode {
 	}
 	
 	public static class Commands {
-		String command;
-		String description;
-		String icon;
-		String steps;
+		private String command;
+		private String description;
+		private String icon;
+		private String steps;
 		
 		/**
 		 * @return the command
@@ -205,6 +205,23 @@ public class GsonNode {
 				result.add(Integer.parseInt(it.next().getNodeId()));
 			}
 		} else return null;
+		return result;
+	}
+	/**
+	 * Fetch the states of the available nodes.
+	 * 
+	 * @return the list of states, null if no node is found
+	 */
+	public List<String> getNodeStateList() {
+		List<String> result = new ArrayList<String>();
+		if (this.getNodes() != null) {
+			Iterator<GsonNode.Nodes> it = getNodes().iterator();
+			while (it.hasNext()) {
+				result.add(it.next().getState());
+			}
+		} else if (this.getNode() != null) {
+			result.add(this.getNode().getState());
+		} else result = null;
 		return result;
 	}
 	

@@ -38,8 +38,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.json.simple.parser.ParseException;
-
 /**
  * The interface to the SkySQL Manager API, a REST interface to the monitor database.
  * This is the API that should be used to store all monitor observations and to retrieve 
@@ -101,40 +99,22 @@ public class monAPI {
 	/**
 	 * Populate a monitor value for a given node.
 	 * 
-	 * @param systemID	The ID of the System
-	 * @param nodeID	The ID of the node within the system that the data refers to
-	 * @param monitorID	The ID of the monitor itself
-	 * @param value		The observed value
+	 * @param systemID		The ID of the System
+	 * @param nodeID		The ID of the node within the system that the data refers to
+	 * @param monitorKey	The key of the monitor itself
+	 * @param value			The observed value
 	 * @return True if the update was performed to the API
 	 */
 	public boolean MonitorValue(int systemID, int nodeID, String monitorKey, String value) {
 		String apiRequest = "system/" + systemID + "/node/" + nodeID + "/monitor/" + monitorKey + "/data";
 		return wrapperMonitorValue(apiRequest, value);
-//		System.err.println("Saving the monitor request into the batch buffer.");
-//		String apiRequest = "monitordata";
-//		List<String> fi = new ArrayList<String>();
-//		List<String> va = new ArrayList<String>();
-//		for (int i=0; i<1; i++) {
-//			fi.add("m[" + Integer.toString(i) + "]");
-//			va.add("18");
-//			fi.add("s[" + Integer.toString(i) + "]");
-//			va.add(Integer.toString(systemID));
-//			fi.add("n[" + Integer.toString(i) + "]");
-//			va.add(Integer.toString(nodeID));
-//			fi.add("v[" + Integer.toString(i) + "]");
-//			va.add(value);
-//		}
-//		String[] fields = fi.toArray(new String[0]);
-//		String[] parameters = va.toArray(new String[0]);
-//		boolean me = bulkMonitorValue(apiRequest, fields, parameters);
-//		return me;
 	}
 	/**
 	 * Populate a monitor value for the system.
 	 * 
-	 * @param systemID	The ID of the System
-	 * @param monitorID	The ID of the monitor itself
-	 * @param value		The observed value
+	 * @param systemID		The ID of the System
+	 * @param monitorKey	The key of the monitor itself
+	 * @param value			The observed value
 	 * @return True if the update was performed to the API
 	 */
 	public boolean MonitorValue(int systemID, String monitorKey, String value) {
@@ -185,37 +165,6 @@ public class monAPI {
 	}
 	
 	/**
-	 * Read a value.
-	 * 
-	 * @param restRequest	The URL, excluding the fixed stem
-	 * @param pName			The parameter name for the GET request
-	 * @param pValue		The parameter value for the GET request
-	 * @return
-	 * @throws ParseException 
-	 */
-	public List<String> SystemValue(String restRequest, String pName, String pValue) {
-		String[] newpName = new String[] {pName};
-		String[] newpValue = new String[] {pValue};
-		return SystemValue(restRequest, newpName, newpValue);
-	}
-	/**
-	 * Calls the API and parses the resulting JSON.
-	 * 
-	 * @param restRequest	The URL, excluding the fixed stem
-	 * @param pName[]		The parameter names for the GET request
-	 * @param pValue[]		The parameter values for the GET request
-	 * @return
-	 * @throws ParseException 
-	 */
-	public List<String> SystemValue(String restRequest, String[] pName, String[] pValue) {
-		String outJson = getReturnedJson(restRequest, pName, pValue);
-		if (outJson == null) {
-			return null;
-		}
-		return json.getStringField(outJson, pValue[0]);
-	}
-	
-	/**
 	 * Bounce the Json that comes from the API. Only for GET requests.
 	 * 
 	 * @param restRequest
@@ -227,8 +176,8 @@ public class monAPI {
 		String outJson = restGet(restRequest, pName, pValue);
 		if (outJson == null) {
 			System.err.println("Failed: Output Json: " + outJson);
-			System.err.println("URI request: " + restRequest);
-			System.err.print("Parameters names and values:");
+			System.err.println("        URI request: " + restRequest);
+			System.err.print("        Parameters names and values:");
 			for (int i=0; i<pName.length; i++) {
 				System.err.print(" " + pName[i] + "=" + pValue[i]);
 			}
@@ -606,9 +555,9 @@ public class monAPI {
 		 * Return the whole stack list.
 		 * @return
 		 */
-		public static List<List<Object>> getExecutionStack() {
-			return getInstance().stack;
-		}
+//		public static List<List<Object>> getExecutionStack() {
+//			return getInstance().stack;
+//		}
 		/**
 		 * Push an element, on a LIFO
 		 * @param toBuffer
@@ -626,16 +575,16 @@ public class monAPI {
 		 * Pop on a LIFO
 		 * @return
 		 */
-		public synchronized static List<Object> pop() {
-			try {
-				int lastPos = getInstance().stack.size() -1;
-				List<Object> result = getInstance().stack.get(lastPos);
-				getInstance().stack.remove(lastPos);
-				return result;
-			} catch (Exception e) {
-				return null;
-			}
-		}
+//		public synchronized static List<Object> pop() {
+//			try {
+//				int lastPos = getInstance().stack.size() -1;
+//				List<Object> result = getInstance().stack.get(lastPos);
+//				getInstance().stack.remove(lastPos);
+//				return result;
+//			} catch (Exception e) {
+//				return null;
+//			}
+//		}
 		/**
 		 * Execute the buffer queue.
 		 */

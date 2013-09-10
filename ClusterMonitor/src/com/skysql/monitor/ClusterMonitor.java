@@ -61,11 +61,11 @@ public class ClusterMonitor extends Thread {
 	/** The polling interval to use */
 	private int					m_interval;
 	/** The number of cycles before full refresh */
-	private int					m_refresh = 1;
+	private int					m_refresh = 10;
 	
 	public static void main( String[] args )
 	{
-		if (args.length != 2)
+		if (args.length != 1 && args.length != 2)
 		{
 			System.err.println("Usage: ClusterMonitor [-v]  <System ID>");
 			System.exit(1);
@@ -73,7 +73,7 @@ public class ClusterMonitor extends Thread {
 		int off = 0;
 		
 		boolean verbose = false;
-		if (args.length == 3)
+		if (args.length == 2)
 		{
 			off = 1;
 			verbose = true;
@@ -165,7 +165,7 @@ public class ClusterMonitor extends Thread {
 		m_verbose = verbose;
 		m_systemID = systemID;
 		m_confdb = new mondata(m_systemID);
-		m_interval = m_confdb.monitorInterval();
+		m_interval = m_confdb.getSystemMonitorInterval();
 	}
 	
 	/**
@@ -259,7 +259,7 @@ public class ClusterMonitor extends Thread {
 				String type = m_confdb.getMonitorType(monid);
 				if (type == null || type.equals("SQL"))
 				{
-					if (m_confdb.monitorIsDelta(monid))
+					if (m_confdb.isMonitorDelta(monid))
 						mlist.add(new deltaMonitor(m_confdb, monid, n));
 					else
 						mlist.add(new monitor(m_confdb, monid, n));
@@ -282,7 +282,9 @@ public class ClusterMonitor extends Thread {
 				}
 				else if (type.equals("GLOBAL"))
 				{
-					mlist.add(new globalMonitor(m_confdb, monid, n, m_confdb.monitorIsDelta(monid)));
+					mlist.add(new globalMonitor(m_confdb, monid, n, m_confdb.isMonitorDelta(monid)));
+				} else if (type.equals("GALERA_PROBE")) {
+					mlist.add(new GaleraProbeMonitor(m_confdb, monid, n));
 				}
 				else
 				{

@@ -25,6 +25,22 @@
 
 CHANGELOG
 
+* Tue Sep 10 2013 Massimo Siani <massimo.siani@skysql.com>
+- Fixed node state API incompatibility.
+- Removed json simple, and switched to JSON objects only.
+
+* Thu Sep 5 2013 Massimo Siani <massimo.siani@skysql.com>
+- Remove any reference to SQLite db file.
+
+* Wed Sep 4 2013 Massimo Siani <massimo.siani@skysql.com>
+- Implemented Gson
+
+* Tue Sep 3 2013 Massimo Siani <massimo.siani@skysql.com>
+- Fixings
+
+* Thu Aug 29 2013 Massimo Siani <massimo.siani@skysql.com> - 1.6.0
+- Added: GET API calls compatible with new API
+
 * Fri Aug 16 2013 Massimo Siani <massimo.siani@skysql.com> - 1.5.3
 - Fixed: jdbc connection hangs on a node shutdown
 

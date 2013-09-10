@@ -66,7 +66,7 @@ public class pingMonitor extends monitor {
 		}
 		if (m_failcnt > 1)
 		{
-			int state = m_confdb.getStateValue("stopped");
+			int state = m_confdb.getNodeStateId("stopped");
 			m_confdb.setNodeState(m_node.getID(), state);	// Stopped - update this to something better
 		}
 	

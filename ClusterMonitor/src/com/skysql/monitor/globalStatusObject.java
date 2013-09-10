@@ -108,7 +108,7 @@ public class globalStatusObject {
 	 * fetched from the cache, if the cache is older than the configured 
 	 * update time then it will be refreshed first.
 	 * 
-	 * @param name	The VARAIBLE_NAME to return
+	 * @param name	The VARIABLE_NAME to return
 	 * @return	The VARIABLE_VALUE
 	 */
 	public String getStatus(String name) {
@@ -120,7 +120,7 @@ public class globalStatusObject {
 	 * fetched from the cache, if the cache is older than the configured 
 	 * update time then it will be refreshed first.
 	 * 
-	 * @param name	The VARAIBLE_NAME to return
+	 * @param name	The VARIABLE_NAME to return
 	 * @return	The VARIABLE_VALUE
 	 */
 	public String getVaraiable(String name) {
@@ -133,7 +133,7 @@ public class globalStatusObject {
 	 * The value will be fetched from the cache, if the cache is older than the 
 	 * configured update time then it will be refreshed first.
 	 * 
-	 * @param name	The VARAIBLE_NAME to return
+	 * @param name	The VARIABLE_NAME to return
 	 * @return	The VARIABLE_VALUE
 	 */
 	public String getStatusOrVaraiable(String name) {

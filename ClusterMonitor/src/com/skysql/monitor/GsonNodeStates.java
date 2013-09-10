@@ -18,6 +18,7 @@
 
 package com.skysql.monitor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ import java.util.List;
  * @author Massimo Siani
  *
  */
-public class GsonNodeStates {
+public class GsonNodeStates extends GsonErrors {
 	private NodeStates nodestate;
 	private List<NodeStates> nodestates;
 	
@@ -46,7 +47,7 @@ public class GsonNodeStates {
 
 	public static class NodeStates {
 		private String state;
-		int stateid;
+		private int stateid;
 		private String description;
 		private String icon;
 		
@@ -80,4 +81,52 @@ public class GsonNodeStates {
 	}
 	
 	public GsonNodeStates() {}
+	
+	/**
+	 * The full list of valid node state names.
+	 * 
+	 * @return the list of states, null if no found
+	 */
+	public List<String> getStateList() {
+		if (this.getNodestates() != null) {
+			List<String> result = new ArrayList<String>();
+			for (NodeStates oneNodeState : this.getNodestates()) {
+				result.add(oneNodeState.getState());
+			}
+			return result;
+		}
+		return null;
+	}
+	/**
+	 * The full list of valid node state names.
+	 * 
+	 * @return the list of states, null if no found
+	 */
+	public List<String> getDescriptionList() {
+		if (this.getNodestates() != null) {
+			List<String> result = new ArrayList<String>();
+			for (NodeStates oneNodeState : this.getNodestates()) {
+				result.add(oneNodeState.getDescription());
+			}
+			return result;
+		}
+		return null;
+	}
+	/**
+	 * Translate a state id into a state name.
+	 * 
+	 * @param stateId The id of the state to translate
+	 * @return The corresponding state name, null if no id corresponds.
+	 */
+	public String getStateFromId(int stateId) {
+		if (this.getNodestates() != null) {
+			for (NodeStates nodeState : this.getNodestates()) {
+				if (nodeState.getStateId() == stateId) return nodeState.getState();
+			}
+		}
+		if (this.getNodestate() != null) {
+			if (getNodestate().getStateId() == stateId) return getNodestate().getState();
+		}
+		return null;
+	}
 }

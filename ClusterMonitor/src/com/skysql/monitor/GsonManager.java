@@ -47,15 +47,40 @@ public class GsonManager {
 	}
 
 	/**
-	 * Convert a Json into a Java object.
+	 * Convert a Json into a Java object. If the Object class is derived
+	 * from GsonErrors and the object contains errors, this method
+	 * prints the error and/or warning messages on the stderr. 
 	 * 
 	 * @param inJson the Json as a string.
 	 * @param objClass the class of the object.
 	 * @return the deserialized Json as a Java object.
-	 * @throws ParseException 
 	 */
 	public static <T> T fromJson(final String inJson, Class<T> objClass) {
 		try {
+			boolean errorFound = false;
+			// if API returned errors or warnings
+			if (GsonErrors.class.isAssignableFrom(objClass)) {
+				GsonErrors gsonErrors = gson.fromJson(inJson, GsonErrors.class);
+				if (gsonErrors != null) {
+					// print errors
+					if (gsonErrors.getErrors() != null) {
+						errorFound = true;
+						System.err.println("The API returned the following error(s): ");
+						for (String error : gsonErrors.getErrors()) {
+							System.err.println(error);
+						}
+					}
+					// print warnings
+					if (gsonErrors.getWarnings() != null) {
+						errorFound = true;
+						System.err.println("The API returned the following warning(s): ");
+						for (String warning : gsonErrors.getWarnings()) {
+							System.err.println(warning);
+						}
+					}
+					if (errorFound) return null;
+				}
+			}
 			T resultObj = gson.fromJson(inJson, objClass);
 			return resultObj;
 		} catch (Exception e) {

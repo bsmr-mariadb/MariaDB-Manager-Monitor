@@ -37,26 +37,6 @@ public class mondata {
 	private monAPI		m_api;
 	private String		m_systemType = "galera";
 	
-//	/**
-//	 * Constructor for the monitor data class.
-//	 * 
-//	 * @param systemID	The System ID being monitored
-//	 * @param dbfile	The SQLite database file
-//	 */
-//	public mondata(int systemID, String dbfile)
-//	{
-//		m_systemID = systemID;
-//		m_api = new monAPI();
-//	}
-//	/**
-//	 * Constructor used when the monitor is being used for when the system id is not known.
-//	 * 
-//	 * @param dbfile	The SQLite database file
-//	 */
-//	public mondata(String dbfile)
-//	{
-//		this(-1, dbfile);
-//	}
 	/**
 	 * Constructor for the monitor data class.
 	 * 
@@ -76,106 +56,6 @@ public class mondata {
 	}
 	
 	/**
-	 * Returns the result of the query in a list.
-	 * 
-	 * @param query to send
-	 * @return a list of the results, null on errors
-	 */
-	private List<Integer> getIntegerFromQuery(String request, String parName, String parValue) {
-		String[] newparName = {parName};
-		String[] newparValue = {parValue};
-		return getIntegerFromQuery(request, newparName, newparValue);
-	}
-	/**
-	 * Returns the result of the query in a list.
-	 * 
-	 * @param query to send
-	 * @return a list of the results, null on errors
-	 */
-	private List<Integer> getIntegerFromQuery(String request, String parName[], String parValue[]) {
-		try {
-			List<Integer> ilist = new ArrayList<Integer>();
-			Iterator<String> results = m_api.SystemValue(request, parName, parValue).iterator();
-			while (results.hasNext())
-			{
-				ilist.add(Integer.parseInt(results.next()));
-			}
-			return ilist;
-		}
-		catch (Exception ex)
-		{
-			System.err.println("Failed: " + request + ": " + ex.getMessage());
-			return null;
-		}
-	}
-	
-	/**
-	 * Returns the result of the query in a list.
-	 * 
-	 * @param query to send
-	 * @return a list of the results, null on errors
-	 */
-	private List<String> getStringFromQuery(String request, String parName, String parValue) {
-		String[] newparName = {parName};
-		String[] newparValue = {parValue};
-		return getStringFromQuery(request, newparName, newparValue);
-	}
-	/**
-	 * Returns the result of the query in a list.
-	 * 
-	 * @param query to send
-	 * @return a list of the results, null on errors
-	 */
-	private List<String> getStringFromQuery(String request, String parName[], String parValue[]) {
-		try {
-			List<String> slist = new ArrayList<String>();
-			Iterator<String> results = m_api.SystemValue(request, parName, parValue).iterator();
-			while (results.hasNext())
-			{
-				slist.add(results.next());
-			}
-			return slist;
-		}
-		catch (Exception ex)
-		{
-			System.err.println("Failed: " + request + ": " + ex.getMessage());
-			return null;
-		}
-	}
-	
-	/**
-	 * Returns the first element of a list of String.
-	 * 
-	 * @param list
-	 * @return the first element
-	 */
-	private String ListStringToString(List<String> strlist) {
-		try {
-			String[] result = new String[strlist.size()];
-			strlist.toArray(result);
-			return result[0];
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	/**
-	 * Returns the first element of a list of Integer.
-	 * 
-	 * @param list
-	 * @return the first element
-	 */
-	private Integer ListIntegerToInteger(List<Integer> ilist) {
-		try {
-			Integer[] result = new Integer[ilist.size()];
-			ilist.toArray(result);
-			return result[0];
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	/**
 	 * Fetch the Java object that corresponds to an API URI.
 	 * 
 	 * @param apiRequest
@@ -187,7 +67,14 @@ public class mondata {
 		T object = GsonManager.fromJson(getJson, objectClass);
 		return object;
 	}
-
+	
+	
+	/********************************************************
+	 * GET
+	 ********************************************************/
+	/********************************************************
+	 * System
+	 ********************************************************/
 	/**
 	 * Fetch the list of System ID's to monitor.
 	 * 
@@ -198,9 +85,45 @@ public class mondata {
 		GsonSystem gsonSystem = getObjectFromAPI(apiRequest, GsonSystem.class);
 		return gsonSystem == null ? null : gsonSystem.getSystemIdList();
 	}
-	
 	/**
-	 * Return the list of node numbers to monitor.
+	 * Fetch the monitor probe interval.
+	 * 
+	 * @return The monitor interval in seconds
+	 */
+	public Integer getSystemMonitorInterval()
+	{
+		String apiRequest = "system/" + m_systemID + "/property/MonitorInterval";
+		GsonSystem gsonSystem = getObjectFromAPI(apiRequest, GsonSystem.class);
+		if (gsonSystem == null) return 30;
+		return gsonSystem.getSystem().getProperties().getMonitorInterval();
+	}
+	/**
+	 * IPMonitor
+	 * 
+	 * Get the system property IPMonitor - this controls the running of the IPMonitor for
+	 * EC2 Cloud based deployments. The default is true for reasons of backward compatibility.
+	 * 
+	 * @return	boolean		True if the IP Monitor should be run
+	 */
+	public boolean IPMonitor()
+	{
+		String apiRequest = "system/" + m_systemID + "/property/IPMonitor";
+		GsonSystem gsonSystem = getObjectFromAPI(apiRequest, GsonSystem.class);
+		if (gsonSystem == null) return false;
+		String IP = gsonSystem.getSystem().getProperties().getIPMonitor();
+		if (IP == null) return false;
+		Pattern pattern = Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
+		Matcher matcher = pattern.matcher(IP);
+		if (matcher.matches()) {
+			return true;
+		}
+		return false;
+	}
+	/********************************************************
+	 * Node
+	 ********************************************************/	
+	/**
+	 * Return the list of node id's to monitor.
 	 * 
 	 * @return The list of nodes in the database
 	 */
@@ -210,19 +133,6 @@ public class mondata {
 		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
 		return gsonNode == null ? null : gsonNode.getNodeIdList();
 	}
-	
-	/**
-	 * Return the list of all available monitor Id's for the given system type.
-	 * 
-	 * @return The list of monitorID's defined in the database
-	 */
-	public List<Integer> getMonitorList()
-	{
-		String apiRequest = "monitorclass/" + m_systemType + "/key";
-		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
-		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorIdList();
-	}
-	
 	/**
 	 * Get the private IP address of the specified node.
 	 * 
@@ -234,9 +144,7 @@ public class mondata {
 		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
 		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
 		return gsonNode == null ? null : gsonNode.getNode().getPrivateIP();
-//		return ListStringToString(getStringFromQuery(apiRequest, "fields", "privateip"));
 	}
-	
 	/**
 	 * Get the credentials for the specified node.
 	 * 
@@ -246,19 +154,13 @@ public class mondata {
 	public Credential getNodeMonitorCredentials(int NodeNo)
 	{
 		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
-		String fields = "fields";
-		String values = "dbusername";
+		Credential cred;
 		try {
-			// we have to call the API twice: json are unordered
-			List<String> result = new ArrayList<String>();
-			result.add(ListStringToString(getStringFromQuery(apiRequest, fields, values)));
-			values = "dbpassword";
-			result.add(ListStringToString(getStringFromQuery(apiRequest, fields, values))); 
-			Iterator<String> iresults = result.iterator();
-			Credential cred;
-			if (iresults.hasNext())
-				cred = new Credential(iresults.next(), iresults.next());
-			else
+			GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+			if (gsonNode != null) {
+				cred = new Credential(gsonNode.getNode().getDbusername(),
+						gsonNode.getNode().getDbpassword());
+			} else
 				cred = new Credential("repluser", "repw");
 			return cred;
 		} catch (Exception ex) {
@@ -266,7 +168,74 @@ public class mondata {
 			return null;
 		}
 	}
-	
+	/**
+	 * Get the list of instance ID for this cluster.
+	 * 
+	 * @return The list of instance IDs
+	 */
+	public List<Integer> getInstances()
+	{
+		String apiRequest = "system/" + m_systemID + "/node";
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		List<Integer> result = new ArrayList<Integer>();
+		for (int i=0; i<gsonNode.getNodes().size(); i++) {
+			result.add(gsonNode.getNodes().get(i).getInstanceID());
+		}
+		return result;
+	}
+	/********************************************************
+	 * Node States
+	 ********************************************************/
+	/**
+	 * Return the list of valid node states.
+	 * 
+	 * @return The set of defined node states.
+	 */
+	public List<String> getNodeValidStates()
+	{
+		String apiRequest = "nodestate";
+		GsonNodeStates gsonNodeStates = getObjectFromAPI(apiRequest, GsonNodeStates.class);
+		if (gsonNodeStates == null) return null;
+		return gsonNodeStates.getDescriptionList();
+	}
+	/**
+	 * Map a node state string to a state id.
+	 * 
+	 * @param Name The name of the node state
+	 * @return The Node State
+	 */
+	public int getNodeStateId(String Name)
+	{
+		String apiRequest = "nodestate/" + Name;
+		GsonNodeStates gsonNodeStates = getObjectFromAPI(apiRequest, GsonNodeStates.class);
+		return gsonNodeStates == null ? null : gsonNodeStates.getNodestate().getStateId();
+	}
+	/**
+	 * Map a node state id to a state string.
+	 * 
+	 * @param stateId The id of the node state
+	 * @return The Node State
+	 */
+	public String getNodeStateFromId(int stateId)
+	{
+		String apiRequest = "nodestate";
+		GsonNodeStates gsonNodeStates = getObjectFromAPI(apiRequest, GsonNodeStates.class);
+		return gsonNodeStates.getStateFromId(stateId);
+	}
+	/********************************************************
+	 * Monitor
+	 ********************************************************/
+	/**
+	 * Return the list of all available monitor Id's for the given system type.
+	 * 
+	 * @return The list of monitorID's defined in the database
+	 */
+	public List<Integer> getMonitorList()
+	{
+		String apiRequest = "monitorclass/" + m_systemType + "/key";
+		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
+		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorIdList();
+	}
 	/**
 	 * Get the SQL command (or command string) associated with a particular monitor.
 	 * 
@@ -279,61 +248,20 @@ public class mondata {
 	public String getMonitorSQL(int monitor_id)
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
-		return ListStringToString(getStringFromQuery(apiRequest, "fields", "sql"));
+		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
+		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass().getSql();
 	}
-
-	/**
-	 * Is the monitored value a cumulative number or a snapshot value. This allows monitors
-	 * to return values that are either the value in the database or the difference between
-	 * the current value and the previous value.
-	 * 
-	 * @param monitor_id	The monitor ID to check
-	 * @return True of the monitor is a delta of observed values
-	 */
-	public Boolean monitorIsDelta(int monitor_id)
-	{
-		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
-		String result = ListStringToString(getStringFromQuery(apiRequest, "fields", "delta"));
-		if (result.equalsIgnoreCase("0")) {
-			return false;
-		}
-		else return true;
-	}
-	
 	/**
 	 * Fetch the monitor probe interval.
 	 * 
 	 * @return The monitor interval in seconds
 	 */
-	public int monitorInterval()
-	{
-		String apiRequest = "system/" + m_systemID + "/property/MonitorInterval";
-		String[] fields = {"system", "propertyname"};
-		String[] values = {Integer.toString(m_systemID), "MonitorInterval"};
-		Integer result = ListIntegerToInteger(getIntegerFromQuery(apiRequest, fields, values));
-		if (result == null) {
-			return 30;
-		}
-		return result;
-	}
-	
-	/**
-	 * Fetch the monitor probe interval.
-	 * 
-	 * @return The monitor interval in seconds
-	 */
-	public int monitorClassInterval(String monitorKey)
+	public int getMonitorClassInterval(String monitorKey)
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key/" + monitorKey;
-		String[] fields = {"fields"};
-		String[] values = {"interval"};
-		Integer result = ListIntegerToInteger(getIntegerFromQuery(apiRequest, fields, values));
-		if (result == null) {
-			return 30;
-		}
-		return result;
+		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
+		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass().getInterval();
 	}
-	
 	/**
 	 * Fetch the id of a particular monitor.
 	 * 
@@ -343,9 +271,9 @@ public class mondata {
 	public int getNamedMonitor(String monitorKey)
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key/" + monitorKey;
-		return ListIntegerToInteger(getIntegerFromQuery(apiRequest, "fields", "monitorid"));
+		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
+		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass().getMonitorId();
 	}
-	
 	/**
 	 * Return the type, and hence monitor class, of a particular monitor.
 	 * 
@@ -355,9 +283,41 @@ public class mondata {
 	public String getMonitorType(int monitor_id)
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
-		return ListStringToString(getStringFromQuery(apiRequest, "fields", "monitortype"));
+		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
+		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass().getMonitorType();
 	}
-	
+	/**
+	 * Is the system monitor value cumulative or an average of all the nodes in the system?
+	 * 
+	 * @param id	The Monitor ID
+	 * @return		True if the system value of a monitor is an average of all the nodes in the system
+	 */
+	public boolean isMonitorSystemAverage(int monitor_id)
+	{
+		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
+		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
+		Integer result = (gsonMonitorClasses == null ? 0 : gsonMonitorClasses.getMonitorClass().getSystemAverage());
+		if (result == 1) return true;
+		return false;
+	}
+	/**
+	 * Is the monitored value a cumulative number or a snapshot value. This allows monitors
+	 * to return values that are either the value in the database or the difference between
+	 * the current value and the previous value.
+	 * 
+	 * @param monitor_id	The monitor ID to check
+	 * @return True of the monitor is a delta of observed values
+	 */
+	public Boolean isMonitorDelta(int monitor_id)
+	{
+		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
+		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
+		Integer result = (gsonMonitorClasses == null ? 0 : gsonMonitorClasses.getMonitorClass().getDelta());
+		if (result == 0) {
+			return false;
+		}
+		else return true;
+	}
 	/**
 	 * Retrieve the Monitor key from the Monitor id.
 	 * 
@@ -366,64 +326,53 @@ public class mondata {
 	 */
 	public String getMonitorKey(int monitor_id) {
 		String apiRequest = "monitorclass/" + m_systemType + "/key";
-		List<String> li = getStringFromQuery(apiRequest, "fields", "monitorid,monitor");
-		if (li.indexOf(Integer.toString(monitor_id)) != -1) {
-			return li.get(li.indexOf(Integer.toString(monitor_id))-1);
-		} else return null;
+		for (GsonMonitorClasses.MonitorClasses monitorClass : getObjectFromAPI(apiRequest, GsonMonitorClasses.class).getMonitorClasses()) {
+			if (monitorClass.getMonitorId() == monitor_id)
+				return monitorClass.getMonitor();
+		}
+		return null;
 	}
 	
+
+	/********************************************************
+	 * SET
+	 ********************************************************/
+	/********************************************************
+	 * System
+	 ********************************************************/
 	/**
-	 * Is the system monitor value cumulative or an average of all the nodes in the system?
-	 * 
-	 * @param id	The Monitor ID
-	 * @return		True if the system value of a monitor is an average of all the nodes in the system
+	 * Set the status of the system.
 	 */
-	public boolean getMonitorSystemAverage(int monitor_id)
+	public void setSystemStatus()
 	{
-		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
-		String result = ListStringToString(getStringFromQuery(apiRequest, "fields", "systemaverage"));
-		if (result.equalsIgnoreCase("1")) return true;
-		return false;
+		String apiRequest = "system/" + m_systemID + "/node";
+		try {
+			// get the state of the node
+			GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+			Iterator<String> states = gsonNode.getNodeStateList().iterator();
+			String systemState = "stopped";	// Stopped
+			while (states.hasNext()) {
+				String rval = states.next();
+				if (rval == "master") 		// We have a master
+				{
+					systemState = "running";		// Running
+					break;
+				}
+				if (rval == "slave") 		// We have a master
+				{
+					systemState = "running";		// Running
+				}
+			}
+			// now update
+			apiRequest = "system/" + m_systemID;
+			m_api.UpdateValue(apiRequest, "state", systemState);
+		} catch (Exception e) {
+			System.err.println("Update System State Failed: " + e.getMessage());
+		}
 	}
-	
-	/**
-	 * Map a node state string to a state id.
-	 * 
-	 * @param Name The name of the node state
-	 * @return The Node State
-	 */
-	public int getStateValue(String Name)
-	{
-		String apiRequest = "nodestate/" + Name;
-		return ListIntegerToInteger(getIntegerFromQuery(apiRequest, "fields", "state"));
-	}
-	
-	/**
-	 * Map a node state id to a state string.
-	 * 
-	 * @param stateId The id of the node state
-	 * @return The Node State
-	 */
-	public String getStateString(int stateId)
-	{
-		String apiRequest = "nodestate";
-		Integer index = getStringFromQuery(apiRequest, "fields", "stateid").indexOf(Integer.toString(stateId));
-		if (index.equals(-1)) return null;
-		String result = getStringFromQuery(apiRequest, "fields", "state").get(index);
-		return result;
-	}
-	
-	/**
-	 * Return the list of valid node states.
-	 * 
-	 * @return The set of defined node states.
-	 */
-	public List<String> getValidStates()
-	{
-		String apiRequest = "nodestate";
-		return getStringFromQuery(apiRequest, "fields", "description");
-	}
-	
+	/********************************************************
+	 * Node
+	 ********************************************************/
 	/**
 	 * Set the state of a node.
 	 * 
@@ -434,9 +383,7 @@ public class mondata {
 	{
 		String apiRequest = "system/" + m_systemID + "/node/" + nodeid;
 		try {
-			String NodeState = getStateString(stateid);
-			if (NodeState == null) throw new RuntimeException("Node State id " + stateid + " not found.");
-			boolean results = m_api.UpdateValue(apiRequest, "state", NodeState);
+			boolean results = m_api.UpdateValue(apiRequest, "stateid", Integer.toString(stateid));
 			if (! results) {
 				System.err.println("Failed to update node state: " + apiRequest + " to state " + stateid);
 				return;
@@ -448,7 +395,58 @@ public class mondata {
 			System.err.println("API Failed: " + apiRequest + ": "+ e.getMessage());
 		}
 	}
-	
+	/**
+	 * Update the public IP address of a node if it has changed.
+	 * 
+	 * @param	nodeID The node ID
+	 * @param	publicIP 	The public IP address of the instance
+	 * @return	True if the IP address was updated
+	 */
+	public boolean setNodePublicIP(String nodeID, String publicIP) {
+		String apiRequest = "system/" + m_systemID + "/node";
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		for (GsonNode.Nodes nodes : gsonNode.getNodes()) {
+			if (nodes.getNodeId() == nodeID) {
+				if (nodes.getPublicIP() != null && nodes.getPublicIP().equalsIgnoreCase(publicIP))
+					return false;
+				apiRequest = "system/" + m_systemID + "/node/" + nodeID;
+				return m_api.UpdateValue(apiRequest, "publicip", publicIP);
+			}
+		}
+		return false;
+	}
+	/**
+	 * setPrivateIP - Update the private IP of an instance. Only update the database
+	 * if the new value differs from that already stored.
+	 * 
+	 * @param nodeID		The node ID as a string
+	 * @param privateIP		The current private IP address
+	 * @return	boolean 	True if the IP address changed
+	 */
+	public boolean setNodePrivateIP(String nodeID, String privateIP) {
+		String apiRequest = "system/" + m_systemID + "/node";
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		for (GsonNode.Nodes nodes : gsonNode.getNodes()) {
+			if (nodes.getNodeId() == nodeID) {
+				if (nodes.getPrivateIP() != null && nodes.getPrivateIP().equalsIgnoreCase(privateIP))
+					return false;
+				apiRequest = "system/" + m_systemID + "/node/" + nodeID;
+				return m_api.UpdateValue(apiRequest, "privateip", privateIP);
+			}
+		}
+		return false;
+	}
+	/********************************************************
+	 * Node State
+	 ********************************************************/
+	/********************************************************
+	 * Monitor
+	 ********************************************************/
+
+
+	/********************************************************
+	 * OTHER
+	 ********************************************************/
 	/**
 	 * Map a CRM state string to a valid node state.
 	 * 
@@ -457,150 +455,12 @@ public class mondata {
 	 */
 	public String mapCRMStatus(String state)
 	{
-		String query = "select State from CRMStateMap crm where crmState = '" + state + "'";
-		String apiRequest = "";
-		return ListStringToString(getStringFromQuery(apiRequest, "fields", ""));
-	}
-	
-	/**
-	 * Set the status of the system.
-	 */
-	public void setSystemStatus()
-	{
-		String query = "select State from Node where SystemID = " + m_systemID;
-		String apiRequest = "system/" + m_systemID + "/node";
-		try {
-			// get the state of the node
-			Iterator<Integer> results = getIntegerFromQuery(apiRequest, "fields", "state").iterator();
-			String systemState = "System Stopped";	// Stopped
-			while (results.hasNext()) {
-				int rval = results.next();
-				if (rval == 1) 		// We have a master
-				{
-					systemState = "System Started";		// Running
-					break;
-				}
-				if (rval < 12) 		// We have a master
-				{
-					systemState = "System Starting";		// Running
-				}
-			}
-			query = "update System set State = (select State from NodeStates where Description = '"
-				+ systemState + "') where SystemID = " + m_systemID;
-			// before update, get the state corresponding to the description
-			apiRequest = "nodestate/" + systemState;
-			int newSystemStateID = ListIntegerToInteger(getIntegerFromQuery(apiRequest, "fields", "state"));
-			// now update
-			apiRequest = "system/" + m_systemID;
-			m_api.UpdateValue(apiRequest, "state", String.valueOf(newSystemStateID));
-		} catch (Exception e) {
-			System.err.println("Update System State SQL Failed: " + query + ": " + e.getMessage());
-		}
-	}	
-	
-	/**
-	 * Get the list of instance ID for this cluster.
-	 * 
-	 * @return The lsit of instance IDs
-	 */
-	public List<String> getInstances()
-	{
-		String apiRequest = "system/" + m_systemID + "/node";
-		return getStringFromQuery(apiRequest, "fields", "instanceID");
-	}
-	
-	/**
-	 * Update the public IP address of a node if it has changed.
-	 * 
-	 * @param	instanceID The instance ID
-	 * @param	publicIP 	The public IP addres of the instance
-	 * @return	True if the IP address was updated
-	 */
-	public boolean setPublicIP(String instanceID, String publicIP)
-	{
-		String apiRequest = "system/" + m_systemID + "/node";
-		String fields = "fields";
-		String values = "id, instanceID, publicip";
-		String nodeID = new String();
-		try {
-			List<String> secondRequestL = getStringFromQuery(apiRequest, fields, values);
-			for (int i = 0; i < secondRequestL.size(); i++) {
-				if (secondRequestL.get(i) != instanceID) continue;
-				if (secondRequestL.get(i) == instanceID) {
-					if (secondRequestL.get(i+1) != null && secondRequestL.get(i+1).equals(publicIP)) {
-						return false;
-					}
-					nodeID = secondRequestL.get(i-1);
-				}
-			}
-			apiRequest = "system/" + m_systemID + "/node/" + nodeID;
-			fields = "publicip";
-			values = publicIP;
-			return m_api.UpdateValue(apiRequest, fields, values);
-		} catch (Exception e) {
-			System.err.println("Failed: set public IP : " + apiRequest);
-			System.err.println("       " + e.getMessage());
-		}
-		return true;
-	}
-	
-	/**
-	 * setPrivateIP - Update the private IP of an instance. Only update the database
-	 * if the new value differs from that already stored.
-	 * 
-	 * @param instanceID	The instanceID as a string
-	 * @param privateIP		The current private IP address
-	 * @return	boolean 	True if the IP address changed
-	 */
-	public boolean setPrivateIP(String instanceID, String privateIP)
-	{
-		String apiRequest = "system/" + m_systemID + "/node";
-		String fields = "fields";
-		String values = "id, instanceID, privateIP";
-		String nodeID = new String();
-		try {
-			List<String> secondRequestL = getStringFromQuery(apiRequest, fields, values);
-			for (int i = 0; i < secondRequestL.size(); i++) {
-				if (secondRequestL.get(i) != instanceID) continue;
-				if (secondRequestL.get(i) == instanceID) {
-					if (secondRequestL.get(i+1) != null && secondRequestL.get(i+1).equals(privateIP)) {
-						return false;
-					}
-					nodeID = secondRequestL.get(i-1);
-				}
-			}
-			apiRequest = "system/" + m_systemID + "/node/" + nodeID;
-			fields = "privateip";
-			values = privateIP;
-			return m_api.UpdateValue(apiRequest, fields, values);
-		} catch (Exception e) {
-			System.err.println("Failed: set private IP : " + apiRequest);
-			System.err.println("       " + e.getMessage());
-		}
-		return true;
+//		String query = "select State from CRMStateMap crm where crmState = '" + state + "'";
+//		String apiRequest = "";
+		return "";
+//		return ListStringToString(getStringFromQuery(apiRequest, "fields", ""));
 	}
 
-	/**
-	 * IPMonitor
-	 * 
-	 * Get the system property IPMonitor - this controls the running of the IPMonitor for
-	 * EC2 Cloud based deployments. The default is true for reasons of backward compatibility.
-	 * 
-	 * @return	boolean		True if the IP Monitor should be run
-	 */
-	public boolean IPMonitor()
-	{
-		String apiRequest = "system/" + m_systemID + "/property/IPMonitor";
-		String IP = ListStringToString(getStringFromQuery(apiRequest, "", ""));
-		if (IP == null) return false;
-		Pattern pattern = Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
-		Matcher matcher = pattern.matcher(IP);
-		if (matcher.matches()) {
-			return true;
-		}
-		return false;
-	}
-	
 	/**
 	 * Interface to record monitor observed values. This differs from the other 
 	 * entry points in that it passes the data onto the API.
@@ -615,7 +475,6 @@ public class mondata {
 	{
 		return m_api.MonitorValue(systemID, nodeID, getMonitorKey(monitorID), observation);
 	}
-	
 	/**
 	 * Interface to record observed values for a system. This differs from the other 
 	 * entry points in that it passes the data onto the API.
@@ -629,7 +488,6 @@ public class mondata {
 	{
 		return m_api.MonitorValue(systemID, getMonitorKey(monitorID), observation);
 	}
-	
 	/**
 	 * Batch request to the API.
 	 * 

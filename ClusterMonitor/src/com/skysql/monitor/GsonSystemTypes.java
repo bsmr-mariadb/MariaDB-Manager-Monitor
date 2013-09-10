@@ -24,7 +24,7 @@ package com.skysql.monitor;
  * @author Massimo Siani
  *
  */
-public class GsonSystemTypes {
+public class GsonSystemTypes extends GsonErrors {
 	
 	private SystemTypes systemtypes;
 	

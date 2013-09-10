@@ -59,12 +59,12 @@ public class SetNodeState {
 			System.err.println("Can't find monitor \"Node State\".");
 			System.exit(1);
 		}
-		int stateid = m_confdb.getStateValue(state);
+		int stateid = m_confdb.getNodeStateId(state);
 		if (stateid == -1)
 		{
 			System.err.println("Unknown node state " + state);
 			System.err.println("Valid states are:");
-			List<String> states = m_confdb.getValidStates();
+			List<String> states = m_confdb.getNodeValidStates();
 			Iterator<String> it = states.iterator();
 			while (it.hasNext())
 			{

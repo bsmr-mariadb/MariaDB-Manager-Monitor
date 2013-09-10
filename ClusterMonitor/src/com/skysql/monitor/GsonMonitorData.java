@@ -26,7 +26,7 @@ import java.util.List;
  * @author Massimo Siani
  *
  */
-public class GsonMonitorData {
+public class GsonMonitorData extends GsonErrors {
 	private MonitorData monitor_data;
 	private MonitorData monitor_rawdata;
 	

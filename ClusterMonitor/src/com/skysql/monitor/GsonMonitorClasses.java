@@ -28,7 +28,7 @@ import java.util.List;
  * @author Massimo Siani
  *
  */
-public class GsonMonitorClasses {
+public class GsonMonitorClasses extends GsonErrors {
 	private MonitorClasses monitorclass;
 	private List<MonitorClasses> monitorclasses;
 	
@@ -48,7 +48,7 @@ public class GsonMonitorClasses {
 
 	public static class MonitorClasses {
 		private String systemtype;
-		String monitor;
+		private String monitor;
 		private String name;
 		private String sql;
 		private String description;
@@ -56,9 +56,9 @@ public class GsonMonitorClasses {
 		private int delta;
 		private String monitortype;
 		private int systemaverage;
-		private int interval;
+		private String interval;
 		private String unit;
-		String monitorid;
+		private String monitorid;
 		
 		/**
 		 * @return the systemtype
@@ -118,7 +118,7 @@ public class GsonMonitorClasses {
 		 * @return the interval
 		 */
 		public int getInterval() {
-			return interval;
+			return Integer.parseInt(interval);
 		}
 		/**
 		 * @return the unit
@@ -129,8 +129,8 @@ public class GsonMonitorClasses {
 		/**
 		 * @return the monitorid
 		 */
-		public String getMonitorId() {
-			return monitorid;
+		public int getMonitorId() {
+			return Integer.parseInt(monitorid);
 		}
 	}
 	
@@ -148,11 +148,11 @@ public class GsonMonitorClasses {
 	public List<Integer> getMonitorIdList() {
 		List<Integer> result = new ArrayList<Integer>();
 		if (this.getMonitorClass() != null) {
-			result.add(Integer.parseInt(getMonitorClass().getMonitorId()));
+			result.add(getMonitorClass().getMonitorId());
 		} else if (this.getMonitorClasses() != null) {
 			Iterator<GsonMonitorClasses.MonitorClasses> it = getMonitorClasses().iterator();
 			while (it.hasNext()) {
-				result.add(Integer.parseInt(it.next().getMonitorId()));
+				result.add(it.next().getMonitorId());
 			}
 		} else return null;
 		return result;
