@@ -113,7 +113,7 @@ public class monitor {
 	protected boolean saveObservation(String observation)
 	{
 //		return m_confdb.monitorData(m_node.getSystemID(), m_node.getID(), m_monitor_id, observation);
-		return m_confdb.bulkMonitorData(m_monitor_id, m_node.getSystemID(), m_node.getID(), observation);
+		return m_node.saveObservation(m_monitor_id, observation);
 	}
 	
 	/**
@@ -137,6 +137,13 @@ public class monitor {
 	}
 	
 	/**
+	 * @param m_node the m_node to set
+	 */
+	public void setNode(node node) {
+		this.m_node = node;
+	}
+
+	/**
 	 * The monitor has a system value as well as individual node values
 	 * 
 	 * @return True if there is a system value
@@ -156,5 +163,4 @@ public class monitor {
 	{
 		return m_systemAverage;
 	}
-
 }

@@ -208,7 +208,7 @@ public class mondata {
 	{
 		String apiRequest = "nodestate/" + Name;
 		GsonNodeStates gsonNodeStates = getObjectFromAPI(apiRequest, GsonNodeStates.class);
-		return gsonNodeStates == null ? null : gsonNodeStates.getNodestate().getStateId();
+		return gsonNodeStates == null ? null : gsonNodeStates.getNodeState(0).getStateId();
 	}
 	/**
 	 * Map a node state id to a state string.
@@ -230,7 +230,7 @@ public class mondata {
 	 * 
 	 * @return The list of monitorID's defined in the database
 	 */
-	public List<Integer> getMonitorList()
+	public List<Integer> getMonitorIdList()
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key";
 		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
@@ -249,7 +249,8 @@ public class mondata {
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
 		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
-		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass().getSql();
+		if (gsonMonitorClasses == null || gsonMonitorClasses.getMonitorClass(0) == null) return null;
+		return gsonMonitorClasses.getMonitorClass(0).getSql();
 	}
 	/**
 	 * Fetch the monitor probe interval.
@@ -260,7 +261,7 @@ public class mondata {
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key/" + monitorKey;
 		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
-		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass().getInterval();
+		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass(0).getInterval();
 	}
 	/**
 	 * Fetch the id of a particular monitor.
@@ -272,7 +273,7 @@ public class mondata {
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key/" + monitorKey;
 		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
-		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass().getMonitorId();
+		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass(0).getMonitorId();
 	}
 	/**
 	 * Return the type, and hence monitor class, of a particular monitor.
@@ -284,7 +285,7 @@ public class mondata {
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
 		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
-		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass().getMonitorType();
+		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass(0).getMonitorType();
 	}
 	/**
 	 * Is the system monitor value cumulative or an average of all the nodes in the system?
@@ -296,7 +297,7 @@ public class mondata {
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
 		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
-		Integer result = (gsonMonitorClasses == null ? 0 : gsonMonitorClasses.getMonitorClass().getSystemAverage());
+		Integer result = (gsonMonitorClasses == null ? 0 : gsonMonitorClasses.getMonitorClass(0).getSystemAverage());
 		if (result == 1) return true;
 		return false;
 	}
@@ -312,7 +313,7 @@ public class mondata {
 	{
 		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
 		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
-		Integer result = (gsonMonitorClasses == null ? 0 : gsonMonitorClasses.getMonitorClass().getDelta());
+		Integer result = (gsonMonitorClasses == null ? 0 : gsonMonitorClasses.getMonitorClass(0).getDelta());
 		if (result == 0) {
 			return false;
 		}
@@ -488,34 +489,34 @@ public class mondata {
 	{
 		return m_api.MonitorValue(systemID, getMonitorKey(monitorID), observation);
 	}
-	public boolean bulkMonitorData(Integer monitorID, Integer systemID, Integer nodeID, String value) {
-		return bulkMonitorData(new Integer[]{monitorID}, new Integer[]{systemID}, new Integer[]{nodeID}, new String[]{value});
-	}
+//	public boolean bulkMonitorData(Integer monitorID, Integer systemID, Integer nodeID, String value) {
+//		return bulkMonitorData(new Integer[]{monitorID}, new Integer[]{systemID}, new Integer[]{nodeID}, new String[]{value});
+//	}
 	/**
 	 * Batch request to the API.
 	 * 
 	 * @param fields: the names of the variables to be passed to the API
 	 * @param values: the values to the passed to the API
 	 */
-	public boolean bulkMonitorData(Integer[] monitorIDs, Integer[] systemIDs, Integer[] nodeIDs, String[] values) {
+	public boolean bulkMonitorData(List<Integer> monitorIDs, List<Integer> systemIDs, List<Integer> nodeIDs, List<String> values) {
 		String apiRequest = "monitordata";
-		if ( !(monitorIDs.length == systemIDs.length && monitorIDs.length == nodeIDs.length && monitorIDs.length == values.length) ) {
+		if ( !(monitorIDs.size() == systemIDs.size() && monitorIDs.size() == nodeIDs.size() && monitorIDs.size() == values.size()) ) {
 			System.err.println("Bulk data failed: arrays must be of the same size: got "
-					+ monitorIDs.length + " monitors, " + systemIDs.length + " systems, "
-					+ nodeIDs.length + " nodes and " + values.length + " values.");
+					+ monitorIDs.size() + " monitors, " + systemIDs.size() + " systems, "
+					+ nodeIDs.size() + " nodes and " + values.size() + " values.");
 			return false;
 		}
 		List<String> fi = new ArrayList<String>();
 		List<String> va = new ArrayList<String>();
-		for (int i=0; i<monitorIDs.length; i++) {
+		for (int i=0; i<monitorIDs.size(); i++) {
 			fi.add("m[" + Integer.toString(i) + "]");
-			va.add(Integer.toString(monitorIDs[i]));
+			va.add(Integer.toString(monitorIDs.get(i)));
 			fi.add("s[" + Integer.toString(i) + "]");
-			va.add(Integer.toString(systemIDs[i]));
+			va.add(Integer.toString(systemIDs.get(i)));
 			fi.add("n[" + Integer.toString(i) + "]");
-			va.add(Integer.toString(nodeIDs[i]));
+			va.add(Integer.toString(nodeIDs.get(i)));
 			fi.add("v[" + Integer.toString(i) + "]");
-			va.add(values[i]);
+			va.add(values.get(i));
 		}
 		String[] fields = fi.toArray(new String[0]);
 		String[] parameters = va.toArray(new String[0]);

@@ -236,7 +236,7 @@ public class ClusterMonitor extends Thread {
 			Integer i = it.next();
 			m_nodeList.add(new node(m_confdb, m_systemID, i.intValue()));
 		}
-		List<Integer> monitorIDList = m_confdb.getMonitorList();
+		List<Integer> monitorIDList = m_confdb.getMonitorIdList();
 		if (monitorIDList == null)
 		{
 			System.err.println("No monitors configured to run.");

@@ -24,12 +24,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * The node interface in the monitor. Each instance of a node represents a database that 
  * is being monitored. This class provides a mechanism to connect to the monitored database,
  * a means to execute SQL on that database and basic reachability tests for the node.
+ * A Node instance retrieves the list of monitors to be run, stores the results, and
+ * uses the bulk update API to minimize the overhead.
  * 
  * Node connections are implemented as threads in order not to delay the execution of the
  * main monitor. Connections are closed if the thread is stuck.
@@ -50,6 +56,10 @@ public class node implements Runnable {
 	 * The nodes node number
 	 */
 	private int			m_nodeNo;
+	/**
+	 * The number of monitors that support bulk update
+	 */
+	private int			m_batchedMonitors;
 	/**
 	 * The JDBC connection to the monitored database
 	 */
@@ -74,6 +84,12 @@ public class node implements Runnable {
 	 * Attempts to connect to the database. If more are necessary, reset the connection
 	 */
 	private int			m_tempts;
+	/**
+	 * Store observed values, and send them to the API only when all the monitors
+	 * have returned their result. Use bulk updates for this.
+	 * Integer numbers are the monitor id's, Strings are the values.
+	 */
+	private LinkedHashMap<Integer, String>	m_observedValues;
 	
 	/**
 	 * Node constructor
@@ -90,6 +106,9 @@ public class node implements Runnable {
 		m_nodeNo = nodeNo;
 		m_confdb = confDB;
 		m_tempts = 1;
+		m_batchedMonitors = 0;
+		m_observedValues = new LinkedHashMap<Integer, String>();
+		setBatchExecution();
 		String address = confDB.getNodePrivateIP(nodeNo);
 		if (address == null)
 		{
@@ -100,6 +119,33 @@ public class node implements Runnable {
 		System.out.println("Created node: " + this);
 	}
 	
+	/**
+	 * Set the variables for the bulk update API
+	 */
+	private void setBatchExecution() {
+		Iterator<Integer> monitorIdIterator = m_confdb.getMonitorIdList().iterator();
+		while (monitorIdIterator.hasNext()) {
+			int monitorId = monitorIdIterator.next().intValue();
+			String monitorType = m_confdb.getMonitorType(monitorId);
+			if (! (m_confdb.getMonitorSQL(monitorId).isEmpty()) || monitorType.equals("PING")) {
+				if (monitorType == null || monitorType.equals("SQL")) {
+					if (m_confdb.isMonitorDelta(monitorId)) {
+					}
+					else m_batchedMonitors++;
+				}
+				else if (monitorType.equals("PING") || monitorType.equals("COMMAND") || monitorType.equals("SQL_NODE_STATE")
+						|| monitorType.equals("GLOBAL"))
+				{
+					m_batchedMonitors++;
+				}
+				else
+				{
+					// do nothing
+				}
+			}
+		}
+	}
+
 	/**
 	 * Close the connection to the monitored database
 	 */
@@ -290,5 +336,33 @@ public class node implements Runnable {
 			}
 		}
 		return null;	// If we can't probe return null
+	}
+	
+	/**
+	 * Save an observed value for a monitor and stores all the data
+	 * if no monitors remain.
+	 * 
+	 * @param observation	The observed value
+	 * @return	True if updated
+	 */
+	protected boolean saveObservation(Integer monitorId, String observation)
+	{
+		m_observedValues.put(monitorId, observation);
+		if (m_observedValues.size() == m_batchedMonitors) {
+			List<Integer> monitorIDs = new ArrayList<Integer>(m_observedValues.size());
+			List<Integer> systemIDs = new ArrayList<Integer>(m_observedValues.size());
+			List<Integer> nodeIDs = new ArrayList<Integer>(m_observedValues.size());
+			List<String> values = new ArrayList<String>(m_observedValues.size());
+			for (Integer key : m_observedValues.keySet()) {
+				monitorIDs.add(key);
+				systemIDs.add(m_systemID);
+				nodeIDs.add(m_nodeNo);
+				values.add(m_observedValues.get(key));
+			}
+			m_observedValues.clear();
+			return m_confdb.bulkMonitorData(monitorIDs, systemIDs, nodeIDs, values);
+		} else {
+			return true;
+		}
 	}
 }

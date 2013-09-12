@@ -34,15 +34,21 @@ public class GsonNodeStates extends GsonErrors {
 	/**
 	 * @return the nodestate
 	 */
-	public NodeStates getNodestate() {
-		return nodestate;
+	public NodeStates getNodeState(int index) {
+		return getNodeStates().get(0);
 	}
 
 	/**
 	 * @return the nodestates
 	 */
-	public List<NodeStates> getNodestates() {
-		return nodestates;
+	public List<NodeStates> getNodeStates() {
+		if (nodestates != null)	return nodestates;
+		if (nodestate != null) {
+			List<NodeStates> listNodeStates = new ArrayList<NodeStates>(1);
+			listNodeStates.add(nodestate);
+			return listNodeStates;
+		}
+		return null;
 	}
 
 	public static class NodeStates {
@@ -88,9 +94,9 @@ public class GsonNodeStates extends GsonErrors {
 	 * @return the list of states, null if no found
 	 */
 	public List<String> getStateList() {
-		if (this.getNodestates() != null) {
+		if (this.getNodeStates() != null) {
 			List<String> result = new ArrayList<String>();
-			for (NodeStates oneNodeState : this.getNodestates()) {
+			for (NodeStates oneNodeState : this.getNodeStates()) {
 				result.add(oneNodeState.getState());
 			}
 			return result;
@@ -103,9 +109,9 @@ public class GsonNodeStates extends GsonErrors {
 	 * @return the list of states, null if no found
 	 */
 	public List<String> getDescriptionList() {
-		if (this.getNodestates() != null) {
+		if (this.getNodeStates() != null) {
 			List<String> result = new ArrayList<String>();
-			for (NodeStates oneNodeState : this.getNodestates()) {
+			for (NodeStates oneNodeState : this.getNodeStates()) {
 				result.add(oneNodeState.getDescription());
 			}
 			return result;
@@ -119,13 +125,13 @@ public class GsonNodeStates extends GsonErrors {
 	 * @return The corresponding state name, null if no id corresponds.
 	 */
 	public String getStateFromId(int stateId) {
-		if (this.getNodestates() != null) {
-			for (NodeStates nodeState : this.getNodestates()) {
+		if (this.getNodeStates() != null) {
+			for (NodeStates nodeState : this.getNodeStates()) {
 				if (nodeState.getStateId() == stateId) return nodeState.getState();
 			}
 		}
-		if (this.getNodestate() != null) {
-			if (getNodestate().getStateId() == stateId) return getNodestate().getState();
+		if (this.getNodeState(0) != null) {
+			if (getNodeState(0).getStateId() == stateId) return getNodeState(0).getState();
 		}
 		return null;
 	}

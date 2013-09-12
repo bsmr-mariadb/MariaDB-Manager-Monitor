@@ -81,4 +81,15 @@ public class deltaMonitor extends monitor {
 			}
 		}
 	}
+	
+	/**
+	 * Save an observed value for the monitor
+	 * 
+	 * @param observation	The observed value
+	 * @return	True if updated
+	 */
+	protected boolean saveObservation(String observation)
+	{
+		return m_confdb.monitorData(m_node.getSystemID(), m_node.getID(), m_monitor_id, observation);
+	}
 }

@@ -33,17 +33,25 @@ public class GsonMonitorClasses extends GsonErrors {
 	private List<MonitorClasses> monitorclasses;
 	
 	/**
+	 * Deprecated. Do not use in new programs.
+	 * 
 	 * @return the monitorclass
 	 */
-	public MonitorClasses getMonitorClass() {
-		return monitorclass;
-	}
+//	public MonitorClasses getMonitorClass() {
+//		return monitorclass;
+//	}
 
+	public MonitorClasses getMonitorClass(int index) {
+		return getMonitorClasses().get(index);
+	}
 	/**
 	 * @return the monitorclasses
 	 */
 	public List<MonitorClasses> getMonitorClasses() {
-		return monitorclasses;
+		if (monitorclasses != null) return monitorclasses;
+		List<MonitorClasses> listMonitorClasses = new ArrayList<MonitorClasses>(1);
+		listMonitorClasses.add(monitorclass);
+		return listMonitorClasses;
 	}
 
 	public static class MonitorClasses {
@@ -53,9 +61,9 @@ public class GsonMonitorClasses extends GsonErrors {
 		private String sql;
 		private String description;
 		private String charttype;
-		private int delta;
+		private String delta;
 		private String monitortype;
-		private int systemaverage;
+		private String systemaverage;
 		private String interval;
 		private String unit;
 		private String monitorid;
@@ -100,7 +108,7 @@ public class GsonMonitorClasses extends GsonErrors {
 		 * @return the delta
 		 */
 		public int getDelta() {
-			return delta;
+			return Integer.parseInt(delta);
 		}
 		/**
 		 * @return the monitortype
@@ -112,7 +120,7 @@ public class GsonMonitorClasses extends GsonErrors {
 		 * @return the systemaverage
 		 */
 		public int getSystemAverage() {
-			return systemaverage;
+			return Integer.parseInt(systemaverage);
 		}
 		/**
 		 * @return the interval
@@ -147,9 +155,10 @@ public class GsonMonitorClasses extends GsonErrors {
 	 */
 	public List<Integer> getMonitorIdList() {
 		List<Integer> result = new ArrayList<Integer>();
-		if (this.getMonitorClass() != null) {
-			result.add(getMonitorClass().getMonitorId());
-		} else if (this.getMonitorClasses() != null) {
+//		if (this.getMonitorClass() != null) {
+//			result.add(getMonitorClass().getMonitorId());
+//		} else
+			if (this.getMonitorClasses() != null) {
 			Iterator<GsonMonitorClasses.MonitorClasses> it = getMonitorClasses().iterator();
 			while (it.hasNext()) {
 				result.add(it.next().getMonitorId());
