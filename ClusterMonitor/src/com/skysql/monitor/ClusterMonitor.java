@@ -31,7 +31,7 @@ import java.util.*;
  * threads are created to monitor each system. These threads each have a unique
  * instance of the ClusterMonitor class.
  * 
- * @author Mark Riddoch
+ * @author Mark Riddoch, Massimo Siani
  *
  */
 public class ClusterMonitor extends Thread {
@@ -62,6 +62,8 @@ public class ClusterMonitor extends Thread {
 	private int					m_interval;
 	/** The number of cycles before full refresh */
 	private int					m_refresh = 10;
+	/** The system observed values, bulk updated */
+	private LinkedHashMap<Integer, String>	m_observedValues = new LinkedHashMap<Integer, String>();
 	
 	public static void main( String[] args )
 	{
@@ -283,8 +285,8 @@ public class ClusterMonitor extends Thread {
 				else if (type.equals("GLOBAL"))
 				{
 					mlist.add(new globalMonitor(m_confdb, monid, n, m_confdb.isMonitorDelta(monid)));
-				} else if (type.equals("GALERA_PROBE")) {
-					mlist.add(new GaleraProbeMonitor(m_confdb, monid, n));
+				} else if (type.equals("JS")) {
+					mlist.add(new RhinoMonitor(m_confdb, monid, n));
 				}
 				else
 				{
@@ -373,11 +375,22 @@ public class ClusterMonitor extends Thread {
 							else
 								format = "#.##";
 							DecimalFormat fmt = new DecimalFormat(format);
-							m_confdb.monitorData(m_systemID, id, fmt.format(system_value));
+//							m_confdb.monitorData(m_systemID, id, fmt.format(system_value));
 							// m_confdb.updateSystemMonitorData(id, fmt.format(system_value));
+							m_observedValues.put(id, fmt.format(system_value));
 							if (m_verbose)
 								System.out.println("    Probe system value " + system_value);
 						}
+					}
+					// Update the observations
+					if (updateObservations())
+						System.out.println("System " + m_systemID + " monitor data updated.");
+					node_it = m_nodeList.iterator();
+					while (node_it.hasNext())
+					{
+						node n = node_it.next();
+						if(n.updateObservations())
+							System.out.println("Node " + n.getID() + " of system " + n.getSystemID() + " monitor data updated.");
 					}
 					try {
 						if (m_verbose) {
@@ -397,5 +410,25 @@ public class ClusterMonitor extends Thread {
 			refreshconfig();
 		}
 			
+	}
+	
+	/**
+	 * Send all the buffered observations about the system to the API in one shot.
+	 * 
+	 * @return True if the update is performed
+	 */
+	private boolean updateObservations() {
+		List<Integer> monitorIDs = new ArrayList<Integer>(m_observedValues.size());
+		List<Integer> systemIDs = new ArrayList<Integer>(m_observedValues.size());
+		List<Integer> nodeIDs = new ArrayList<Integer>(m_observedValues.size());
+		List<String> values = new ArrayList<String>(m_observedValues.size());
+		for (Integer key : m_observedValues.keySet()) {
+			monitorIDs.add(key);
+			systemIDs.add(m_systemID);
+			nodeIDs.add(0);
+			values.add(m_observedValues.get(key));
+		}
+		m_observedValues.clear();
+		return m_confdb.bulkMonitorData(monitorIDs, systemIDs, nodeIDs, values);
 	}
 }

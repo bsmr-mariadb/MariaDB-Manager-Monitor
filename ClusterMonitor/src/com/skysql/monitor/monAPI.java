@@ -34,6 +34,7 @@ import java.util.TimeZone;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.lang.reflect.Method;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -233,6 +234,9 @@ public class monAPI {
 				throw new RuntimeException("Failed : HTTP error : "
 					+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
+		} catch (ConnectException e) {
+			System.err.println("Cannot connect to the web server.");
+			return null;
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			return null;

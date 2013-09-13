@@ -88,8 +88,8 @@ public class deltaMonitor extends monitor {
 	 * @param observation	The observed value
 	 * @return	True if updated
 	 */
-	protected boolean saveObservation(String observation)
-	{
-		return m_confdb.monitorData(m_node.getSystemID(), m_node.getID(), m_monitor_id, observation);
-	}
+//	protected boolean saveObservation(String observation)
+//	{
+//		return m_confdb.monitorData(m_node.getSystemID(), m_node.getID(), m_monitor_id, observation);
+//	}
 }

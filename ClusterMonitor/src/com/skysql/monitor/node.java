@@ -26,7 +26,6 @@ import java.sql.Statement;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -56,10 +55,6 @@ public class node implements Runnable {
 	 * The nodes node number
 	 */
 	private int			m_nodeNo;
-	/**
-	 * The number of monitors that support bulk update
-	 */
-	private int			m_batchedMonitors;
 	/**
 	 * The JDBC connection to the monitored database
 	 */
@@ -106,9 +101,7 @@ public class node implements Runnable {
 		m_nodeNo = nodeNo;
 		m_confdb = confDB;
 		m_tempts = 1;
-		m_batchedMonitors = 0;
 		m_observedValues = new LinkedHashMap<Integer, String>();
-		setBatchExecution();
 		String address = confDB.getNodePrivateIP(nodeNo);
 		if (address == null)
 		{
@@ -117,33 +110,6 @@ public class node implements Runnable {
 		m_URL = "jdbc:mysql://" + address + "/information_schema";
 		connect();
 		System.out.println("Created node: " + this);
-	}
-	
-	/**
-	 * Set the variables for the bulk update API
-	 */
-	private void setBatchExecution() {
-		Iterator<Integer> monitorIdIterator = m_confdb.getMonitorIdList().iterator();
-		while (monitorIdIterator.hasNext()) {
-			int monitorId = monitorIdIterator.next().intValue();
-			String monitorType = m_confdb.getMonitorType(monitorId);
-			if (! (m_confdb.getMonitorSQL(monitorId).isEmpty()) || monitorType.equals("PING")) {
-				if (monitorType == null || monitorType.equals("SQL")) {
-					if (m_confdb.isMonitorDelta(monitorId)) {
-					}
-					else m_batchedMonitors++;
-				}
-				else if (monitorType.equals("PING") || monitorType.equals("COMMAND") || monitorType.equals("SQL_NODE_STATE")
-						|| monitorType.equals("GLOBAL"))
-				{
-					m_batchedMonitors++;
-				}
-				else
-				{
-					// do nothing
-				}
-			}
-		}
 	}
 
 	/**
@@ -339,30 +305,38 @@ public class node implements Runnable {
 	}
 	
 	/**
-	 * Save an observed value for a monitor and stores all the data
-	 * if no monitors remain.
+	 * Save an observed value for a monitor in a local buffer.
 	 * 
 	 * @param observation	The observed value
-	 * @return	True if updated
+	 * @return	True if the value is correctly buffered
 	 */
 	protected boolean saveObservation(Integer monitorId, String observation)
 	{
-		m_observedValues.put(monitorId, observation);
-		if (m_observedValues.size() == m_batchedMonitors) {
-			List<Integer> monitorIDs = new ArrayList<Integer>(m_observedValues.size());
-			List<Integer> systemIDs = new ArrayList<Integer>(m_observedValues.size());
-			List<Integer> nodeIDs = new ArrayList<Integer>(m_observedValues.size());
-			List<String> values = new ArrayList<String>(m_observedValues.size());
-			for (Integer key : m_observedValues.keySet()) {
-				monitorIDs.add(key);
-				systemIDs.add(m_systemID);
-				nodeIDs.add(m_nodeNo);
-				values.add(m_observedValues.get(key));
-			}
-			m_observedValues.clear();
-			return m_confdb.bulkMonitorData(monitorIDs, systemIDs, nodeIDs, values);
-		} else {
-			return true;
+		try {
+			m_observedValues.put(monitorId, observation);
+		} catch (Exception e) {
+			return false;
 		}
+		return true;
+	}
+	
+	/**
+	 * Send all the buffered observations about this node to the API in one shot.
+	 * 
+	 * @return True if the update is performed
+	 */
+	public boolean updateObservations() {
+		List<Integer> monitorIDs = new ArrayList<Integer>(m_observedValues.size());
+		List<Integer> systemIDs = new ArrayList<Integer>(m_observedValues.size());
+		List<Integer> nodeIDs = new ArrayList<Integer>(m_observedValues.size());
+		List<String> values = new ArrayList<String>(m_observedValues.size());
+		for (Integer key : m_observedValues.keySet()) {
+			monitorIDs.add(key);
+			systemIDs.add(m_systemID);
+			nodeIDs.add(m_nodeNo);
+			values.add(m_observedValues.get(key));
+		}
+		m_observedValues.clear();
+		return m_confdb.bulkMonitorData(monitorIDs, systemIDs, nodeIDs, values);
 	}
 }

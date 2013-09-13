@@ -34,19 +34,24 @@ import javax.script.SimpleBindings;
  * variables. It decodes the value of a subset of session variables into a
  * single 
  * 
- * @author Massimo Siani
+ * @author Massimo Siani, Mark Riddoch
  *
  */
-public class GaleraProbeMonitor extends monitor {
+public class RhinoMonitor extends monitor {
+	/**
+     * The singleton class associated with this node that manages the
+     * collection and storage of global variables and global status
+     * data from the database server being monitored.
+     */
+	private globalStatusObject		m_global;
 
-	public GaleraProbeMonitor(mondata db, int id, node mon_node) {
+	public RhinoMonitor(mondata db, int id, node mon_node) {
 		super(db, id, mon_node);
 		m_sql = m_confdb.getMonitorSQL(m_monitor_id);
 	}
 	
-	public void probe () {
-		String galeraState = runJavaScriptString();
-		System.out.println("Global variables: " + galeraState);
+	public void probe (boolean verbose) {
+		saveObservation(runJavaScriptString());
 	}
 	
 	/**
@@ -58,19 +63,10 @@ public class GaleraProbeMonitor extends monitor {
 	 */
 	private String runJavaScriptString() {
 		try {
-//			try {
-//				Class.forName("org.mariadb.jdbc.Driver");
-//			} catch (ClassNotFoundException e) {
-//				System.err.println("ERROR: cannot find MariaDB driver");
-//				return null;
-//			}
 			ScriptEngine engine = new ScriptEngineManager().getEngineByName("javascript");
 			Bindings bindings = new SimpleBindings();
-			Credential credential = m_confdb.getNodeMonitorCredentials(m_node.getID());
-			HashMap<String, String> jsBindings= new HashMap<String, String>(3);
-			jsBindings.put("address", m_confdb.getNodePrivateIP(m_node.getID()));
-			jsBindings.put("dbUserName", credential.getUsername());
-			jsBindings.put("dbPassword", credential.getPassword());
+			HashMap<String, globalStatusObject> jsBindings= new HashMap<String, globalStatusObject>(1);
+			jsBindings.put("globals", m_global);
 			bindings.putAll(jsBindings);
 
 			if (engine instanceof Compilable) {
