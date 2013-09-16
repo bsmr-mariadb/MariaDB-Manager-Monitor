@@ -157,6 +157,6 @@ public class globalStatusObject {
 		}
 		m_globalStatus = m_node.fetchTable("select * from global_status");
 		m_globalVariables = m_node.fetchTable("select * from global_status");
-		m_fetchTime = now.getTime();;
+		m_fetchTime = now.getTime();
 	}
 }

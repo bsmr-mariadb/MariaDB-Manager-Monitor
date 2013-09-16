@@ -101,7 +101,6 @@ public class monitor {
 		}
 		saveObservation(value);
 		m_lastValue = value;
-	
 	}
 	
 	/**

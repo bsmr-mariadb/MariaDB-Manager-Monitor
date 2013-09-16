@@ -45,13 +45,30 @@ public class RhinoMonitor extends monitor {
      */
 	private globalStatusObject		m_global;
 
+	/**
+	 * Constructor for the RhinoMonitor class. Set the monitor and the
+	 * globalStatusObject object.
+	 * 
+	 * @param db		the API interface
+	 * @param id		the monitor id
+	 * @param mon_node	the node object
+	 */
 	public RhinoMonitor(mondata db, int id, node mon_node) {
 		super(db, id, mon_node);
-		m_sql = m_confdb.getMonitorSQL(m_monitor_id);
+		m_sql = m_sql.replace("\\", "");
+		m_global = globalStatusObject.getInstance(mon_node);
 	}
 	
 	public void probe (boolean verbose) {
-		saveObservation(runJavaScriptString());
+		if (m_sql.isEmpty())
+			return;
+		String value = runJavaScriptString();
+		if (value == null)
+		{
+			value = "0";
+		}
+		saveObservation(value);
+		m_lastValue = value;
 	}
 	
 	/**
@@ -72,9 +89,10 @@ public class RhinoMonitor extends monitor {
 			if (engine instanceof Compilable) {
 				Compilable compEngine = (Compilable)engine;
 				CompiledScript cs = compEngine.compile(m_sql);
-				return (String) cs.eval(bindings);
-			} else return (String) engine.eval(m_sql, bindings);
+				return ( (Double) cs.eval(bindings) ).toString();
+			} else return ( (Double) engine.eval(m_sql, bindings) ).toString();
 		} catch (Exception e) {
+			System.err.println("Error in JavaScript: " + e.getMessage());
 			return null;
 		}
 	}
