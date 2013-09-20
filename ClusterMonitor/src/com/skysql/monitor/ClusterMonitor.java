@@ -18,6 +18,7 @@
 
 package com.skysql.monitor;
 
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -45,7 +46,7 @@ public class ClusterMonitor extends Thread {
 	 *  interaction with the database.
 	 */
 	private mondata 			m_confdb;	
-	/** The list of nodes in the system to monitor */
+	/** The list of nodes in the system to monitor. */
 	private List<node> 			m_nodeList;	
 	/**
 	 * The list of the lists of monitors.
@@ -56,14 +57,14 @@ public class ClusterMonitor extends Thread {
 	 * extensions) that knows which node it's monitoring.
 	 */
 	private List<List<monitor>> m_monitorList;
-	/** Verbose logging flag */
+	/** Verbose logging flag, read from the arguments list. */
 	private boolean				m_verbose;
-	/** The polling interval to use */
+	/** The default polling interval to use. */
 	private int					m_interval;
-	/** The number of cycles before full refresh */
-	private int					m_refresh = 10;
-	/** The system observed values, bulk updated */
-	private LinkedHashMap<Integer, String>	m_observedValues = new LinkedHashMap<Integer, String>();
+	/** The GCD amongst the monitor intervals. */
+	private int					m_gcdMonitorInterval;
+	/** The system observed values, for bulk updates. */
+	private LinkedHashMap<Integer, String>	m_observedValues;
 	
 	public static void main( String[] args )
 	{
@@ -81,7 +82,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		System.err.println("Starting ClusterMonitor v1.6.0");
+		System.err.println("Starting ClusterMonitor v1.6.1");
 		System.err.println("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -168,6 +169,8 @@ public class ClusterMonitor extends Thread {
 		m_systemID = systemID;
 		m_confdb = new mondata(m_systemID);
 		m_interval = m_confdb.getSystemMonitorInterval();
+		m_gcdMonitorInterval = m_interval;
+		m_observedValues = new LinkedHashMap<Integer, String>();
 	}
 	
 	/**
@@ -179,7 +182,7 @@ public class ClusterMonitor extends Thread {
 	 */
 	public void initialise()
 	{
-		refreshconfig();
+//		refreshconfig();
 //		try {
 //			Class.forName("PublicIPMonitor");
 //			if (m_confdb.IPMonitor())
@@ -210,7 +213,7 @@ public class ClusterMonitor extends Thread {
 		if (m_verbose)
 			System.out.println("Reading configuration data");
 		List<Integer> nodeIDList = m_confdb.getNodeList();
-		while (nodeIDList == null)
+		while (nodeIDList == null || nodeIDList.isEmpty())
 		{
 			System.err.println("No nodes configured to monitor.");
 			try {
@@ -246,6 +249,7 @@ public class ClusterMonitor extends Thread {
 		}
 		if (m_verbose)
 			System.out.println(monitorIDList.size() + " distinct monitors");
+		m_interval = m_confdb.getSystemMonitorInterval();
 		m_monitorList = new ArrayList<List<monitor>>();
 		it = monitorIDList.iterator();
 		while (it.hasNext())
@@ -292,6 +296,10 @@ public class ClusterMonitor extends Thread {
 				{
 					System.err.println("Unsupported monitor type: " + type);
 				}
+				if (! mlist.isEmpty())
+					m_gcdMonitorInterval = BigInteger.valueOf(m_gcdMonitorInterval)
+					.gcd(BigInteger.valueOf(mlist.get(mlist.size() -1).m_interval)).intValue();
+				m_gcdMonitorInterval = m_interval;   // disable polling functionality
 			}
 		}
 	}
@@ -312,10 +320,11 @@ public class ClusterMonitor extends Thread {
 		while (true)
 		{
 			try {
-				// Every m_refresh time we reread the config, so do m_refresh probe(s)
+				// Every m_refresh times we reread the config, so do m_refresh probe(s)
 				// here and then read the config
-				for (int i = 0; i < m_refresh; i++)
-				{
+//				for (int cycleCount = 0; cycleCount < m_refresh; cycleCount++)
+//				{
+					if (m_confdb.testChanges()) refreshconfig();
 					if (m_verbose)
 						System.out.println("Probe");
 					
@@ -342,6 +351,7 @@ public class ClusterMonitor extends Thread {
 						{
 							monitor m = it.next();
 							id = m.getID();
+//							if ((m_gcdMonitorInterval * cycleCount) % m.m_interval != 0) continue;
 							m.probe(m_verbose);
 							systemAverage = m.isSystemAverage();
 							if (m.hasSystemValue())
@@ -376,15 +386,15 @@ public class ClusterMonitor extends Thread {
 								format = "#.##";
 							DecimalFormat fmt = new DecimalFormat(format);
 //							m_confdb.monitorData(m_systemID, id, fmt.format(system_value));
-							// m_confdb.updateSystemMonitorData(id, fmt.format(system_value));
 							m_observedValues.put(id, fmt.format(system_value));
 							if (m_verbose)
 								System.out.println("    Probe system value " + system_value);
 						}
 					}
-					// Update the observations
+					// Update the observations: system
 					if (updateObservations())
 						System.out.println("System " + m_systemID + " monitor data updated.");
+					// Update the observations: nodes in this system
 					node_it = m_nodeList.iterator();
 					while (node_it.hasNext())
 					{
@@ -392,24 +402,20 @@ public class ClusterMonitor extends Thread {
 						if(n.updateObservations())
 							System.out.println("Node " + n.getID() + " of system " + n.getSystemID() + " monitor data updated.");
 					}
+					// sleep
 					try {
-						if (m_verbose) {
-							System.out.println("\nNext full refresh in "
-									+ (m_refresh-i)*m_interval + " seconds\n");
-						}
-						Thread.sleep(m_interval * 1000);	// Sleep for 30 seconds
-					}
-					catch (Exception ex)
-					{
+//						if (m_verbose)
+//							System.out.println("\nNext full refresh in " + (m_refresh-cycleCount)*m_gcdMonitorInterval + " seconds\n");
+						Thread.sleep(m_gcdMonitorInterval * 1000);	// Sleep for 30 seconds
+					} catch (Exception ex) {
 						// Ignore exception
 					}
-				}
+//				}
 			} catch (Exception ex) {
 				System.err.println("Probe exception: " + ex.getMessage());
 			}
-			refreshconfig();
+//			refreshconfig();
 		}
-			
 	}
 	
 	/**
@@ -418,6 +424,7 @@ public class ClusterMonitor extends Thread {
 	 * @return True if the update is performed
 	 */
 	private boolean updateObservations() {
+		if (m_observedValues.isEmpty()) return false;
 		List<Integer> monitorIDs = new ArrayList<Integer>(m_observedValues.size());
 		List<Integer> systemIDs = new ArrayList<Integer>(m_observedValues.size());
 		List<Integer> nodeIDs = new ArrayList<Integer>(m_observedValues.size());

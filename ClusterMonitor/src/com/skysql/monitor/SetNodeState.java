@@ -74,7 +74,6 @@ public class SetNodeState {
 		}
 		String newValue = (new Integer(stateid)).toString();
 		m_confdb.monitorData(m_nodeid, monid, newValue);
-//		m_confdb.bulkMonitorData(new Integer[]{monid}, new Integer[]{m_systemID}, new Integer[]{m_nodeid}, new String[]{newValue});
 		m_confdb.setNodeState(m_nodeid, stateid);
 	}
 }

@@ -35,7 +35,8 @@ import java.util.regex.Pattern;
 public class mondata {
 	private int			m_systemID;
 	private monAPI		m_api;
-	private String		m_systemType = "galera";
+	private String		m_systemType;
+	private GsonLatestObservations m_dataChanged;
 	
 	/**
 	 * Constructor for the monitor data class.
@@ -46,6 +47,8 @@ public class mondata {
 	{
 		m_systemID = systemID;
 		m_api = new monAPI();
+		m_systemType = "galera";
+		m_dataChanged = new GsonLatestObservations();
 	}
 	/**
 	 * Constructor used when the system id is not known.
@@ -64,6 +67,22 @@ public class mondata {
 	 */
 	private <T> T getObjectFromAPI(String apiRequest, Class<T> objectClass) {
 		String getJson = m_api.getReturnedJson(apiRequest, new String[]{""}, new String[] {""});
+		T object = GsonManager.fromJson(getJson, objectClass);
+		return object;
+	}
+	
+	/**
+	 * Ask the API to update or create an object, and return an object which encodes
+	 * information on the modified object.
+	 * 
+	 * @param apiRequest
+	 * @param objectClass
+	 * @param pName
+	 * @param pValue
+	 * @return		an object which contains information on the modified elements
+	 */
+	private <T> T updateValue(String apiRequest, Class<T> objectClass, String[] pName, String[] pValue) {
+		String getJson = m_api.updateValue(apiRequest, pName, pValue);
 		T object = GsonManager.fromJson(getJson, objectClass);
 		return object;
 	}
@@ -95,7 +114,7 @@ public class mondata {
 		String apiRequest = "system/" + m_systemID + "/property/MonitorInterval";
 		GsonSystem gsonSystem = getObjectFromAPI(apiRequest, GsonSystem.class);
 		if (gsonSystem == null) return 30;
-		return gsonSystem.getSystem().getProperties().getMonitorInterval();
+		return gsonSystem.getSystems().get(0).getProperties().getMonitorInterval();
 	}
 	/**
 	 * IPMonitor
@@ -110,7 +129,7 @@ public class mondata {
 		String apiRequest = "system/" + m_systemID + "/property/IPMonitor";
 		GsonSystem gsonSystem = getObjectFromAPI(apiRequest, GsonSystem.class);
 		if (gsonSystem == null) return false;
-		String IP = gsonSystem.getSystem().getProperties().getIPMonitor();
+		String IP = gsonSystem.getSystems().get(0).getProperties().getIPMonitor();
 		if (IP == null) return false;
 		Pattern pattern = Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
 		Matcher matcher = pattern.matcher(IP);
@@ -143,7 +162,7 @@ public class mondata {
 	{
 		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
 		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
-		return gsonNode == null ? null : gsonNode.getNode().getPrivateIP();
+		return gsonNode == null ? null : gsonNode.getNode(0).getPrivateIP();
 	}
 	/**
 	 * Get the credentials for the specified node.
@@ -158,8 +177,8 @@ public class mondata {
 		try {
 			GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
 			if (gsonNode != null) {
-				cred = new Credential(gsonNode.getNode().getDbusername(),
-						gsonNode.getNode().getDbpassword());
+				cred = new Credential(gsonNode.getNode(0).getDbUserName(),
+						gsonNode.getNode(0).getDbPassword());
 			} else
 				cred = new Credential("repluser", "repw");
 			return cred;
@@ -384,14 +403,14 @@ public class mondata {
 	{
 		String apiRequest = "system/" + m_systemID + "/node/" + nodeid;
 		try {
-			boolean results = m_api.UpdateValue(apiRequest, "stateid", Integer.toString(stateid));
-			if (! results) {
-				System.err.println("Failed to update node state: " + apiRequest + " to state " + stateid);
-				return;
+			GsonUpdatedAPI gsonUpdatedAPI = updateValue(apiRequest, GsonUpdatedAPI.class, new String[]{"stateid"}, new String[]{Integer.toString(stateid)});
+			if (gsonUpdatedAPI != null) {
+				System.out.println(gsonUpdatedAPI.getUpdateCount() + " row(s) updated, " + gsonUpdatedAPI.getInsertedKey() + " new keys added.");
+				if (gsonUpdatedAPI.getUpdateCount() == 0)
+					System.err.println("Failed to update node state: " + apiRequest + " to state " + stateid);
 			}
-			else if (results) {
-				// TODO: recognize how many rows have been changed
-			}
+			if (gsonUpdatedAPI.getErrors() != null) throw new RuntimeException(gsonUpdatedAPI.getErrors().get(0));
+			if (gsonUpdatedAPI.getWarnings() != null) throw new RuntimeException(gsonUpdatedAPI.getWarnings().get(0));
 		} catch (Exception e) {
 			System.err.println("API Failed: " + apiRequest + ": "+ e.getMessage());
 		}
@@ -403,7 +422,7 @@ public class mondata {
 	 * @param	publicIP 	The public IP address of the instance
 	 * @return	True if the IP address was updated
 	 */
-	public boolean setNodePublicIP(String nodeID, String publicIP) {
+	public boolean setNodePublicIP(int nodeID, String publicIP) {
 		String apiRequest = "system/" + m_systemID + "/node";
 		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
 		for (GsonNode.Nodes nodes : gsonNode.getNodes()) {
@@ -424,7 +443,7 @@ public class mondata {
 	 * @param privateIP		The current private IP address
 	 * @return	boolean 	True if the IP address changed
 	 */
-	public boolean setNodePrivateIP(String nodeID, String privateIP) {
+	public boolean setNodePrivateIP(int nodeID, String privateIP) {
 		String apiRequest = "system/" + m_systemID + "/node";
 		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
 		for (GsonNode.Nodes nodes : gsonNode.getNodes()) {
@@ -472,10 +491,10 @@ public class mondata {
 	 * @param observation	The observed value
 	 * @return True if the monitor observation was written
 	 */
-	public boolean monitorData(int systemID, int nodeID, int monitorID, String observation)
-	{
-		return m_api.MonitorValue(systemID, nodeID, getMonitorKey(monitorID), observation);
-	}
+//	public boolean monitorData(int systemID, int nodeID, int monitorID, String observation)
+//	{
+//		return m_api.MonitorValue(systemID, nodeID, getMonitorKey(monitorID), observation);
+//	}
 	/**
 	 * Interface to record observed values for a system. This differs from the other 
 	 * entry points in that it passes the data onto the API.
@@ -489,9 +508,7 @@ public class mondata {
 	{
 		return m_api.MonitorValue(systemID, getMonitorKey(monitorID), observation);
 	}
-//	public boolean bulkMonitorData(Integer monitorID, Integer systemID, Integer nodeID, String value) {
-//		return bulkMonitorData(new Integer[]{monitorID}, new Integer[]{systemID}, new Integer[]{nodeID}, new String[]{value});
-//	}
+
 	/**
 	 * Batch request to the API.
 	 * 
@@ -523,4 +540,28 @@ public class mondata {
 		return m_api.bulkMonitorValue(apiRequest, fields, parameters);
 	}
 	
+	
+	public boolean testChanges() {
+		String now = m_dataChanged.getSystemUpdateDate(m_systemID);
+		String json = m_api.restModified("system/" + m_systemID, new String[]{""}, new String[]{""}, now);
+		boolean isChanged = (json == "" ? false : true);
+		if (isChanged) {
+			GsonSystem gsonSystem = GsonManager.fromJson(json, GsonSystem.class);
+			m_dataChanged.setLastSystem(m_systemID, gsonSystem);
+		}
+		boolean toUpdate = isChanged;
+		Iterator<Integer> it = getNodeList().iterator();
+		while (it.hasNext()) {
+			Integer nodeid = it.next();
+			now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeid);
+			json = m_api.restModified("system/" + m_systemID + "/node/" + nodeid, new String[]{""}, new String[]{""}, now);
+			isChanged = (json == "" ? false : true);
+			if (isChanged) {
+				GsonNode gsonNode = GsonManager.fromJson(json, GsonNode.class);
+				m_dataChanged.setLastNode(m_systemID, nodeid, gsonNode);
+			}
+			toUpdate = toUpdate || isChanged;
+		}
+		return toUpdate;
+	}
 }

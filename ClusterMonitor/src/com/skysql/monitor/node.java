@@ -326,6 +326,7 @@ public class node implements Runnable {
 	 * @return True if the update is performed
 	 */
 	public boolean updateObservations() {
+		if (m_observedValues.isEmpty()) return false;
 		List<Integer> monitorIDs = new ArrayList<Integer>(m_observedValues.size());
 		List<Integer> systemIDs = new ArrayList<Integer>(m_observedValues.size());
 		List<Integer> nodeIDs = new ArrayList<Integer>(m_observedValues.size());

@@ -33,21 +33,31 @@ public class GsonMonitorData extends GsonErrors {
 	/**
 	 * @return the monitor_data
 	 */
-	public MonitorData getMonitor_data() {
+	private MonitorData getMonitor_data() {
 		return monitor_data;
 	}
-
 	/**
 	 * @return the monitor_rawdata
 	 */
-	public MonitorData getMonitor_rawdata() {
+	private MonitorData getMonitor_rawdata() {
 		return monitor_rawdata;
+	}
+	
+	/**
+	 * Get the instance.
+	 * 
+	 * @return	the MonitorData object, null if not set
+	 */
+	public MonitorData getMonitorData() {
+		if (getMonitor_data() != null) return getMonitor_data();
+		else if (getMonitor_rawdata() != null) return getMonitor_rawdata();
+		else return null;
 	}
 
 	public static class MonitorData {
-		List<String> timestamp;
-		List<String> value;
-		List<String> repeats;
+		private List<String> timestamp;
+		private List<String> value;
+		private List<String> repeats;
 		
 		/**
 		 * @return the timestamp

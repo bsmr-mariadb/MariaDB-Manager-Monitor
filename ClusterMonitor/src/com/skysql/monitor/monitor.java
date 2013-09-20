@@ -59,7 +59,7 @@ public class monitor {
 	/**
 	 * The monitor interval
 	 */
-	protected int			m_interval;
+	protected Integer		m_interval;
 	
 	/**
 	 * The monitor constructor
@@ -78,6 +78,7 @@ public class monitor {
 		m_lastValue = null;
 		m_systemAverage = db.isMonitorSystemAverage(id);
 		m_interval = m_confdb.getMonitorClassInterval(m_monitor_key);
+		if (m_interval == null)	m_interval = 30;
 	}
 	
 	/**

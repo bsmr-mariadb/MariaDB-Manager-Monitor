@@ -31,17 +31,17 @@ import java.util.List;
 public class GsonMonitorClasses extends GsonErrors {
 	private MonitorClasses monitorclass;
 	private List<MonitorClasses> monitorclasses;
-	
-	/**
-	 * Deprecated. Do not use in new programs.
-	 * 
-	 * @return the monitorclass
-	 */
-//	public MonitorClasses getMonitorClass() {
-//		return monitorclass;
-//	}
 
+	/**
+	 * Return a single MonitorClass object at a given position.
+	 * The first element is at position 0.
+	 * 
+	 * @param index		the position 
+	 * @return			the corresponding MonitorClass object
+	 */
 	public MonitorClasses getMonitorClass(int index) {
+		if (index < 0) return null;
+		if (getMonitorClasses() == null || getMonitorClasses().size() < index+1) return null;
 		return getMonitorClasses().get(index);
 	}
 	/**
@@ -49,6 +49,7 @@ public class GsonMonitorClasses extends GsonErrors {
 	 */
 	public List<MonitorClasses> getMonitorClasses() {
 		if (monitorclasses != null) return monitorclasses;
+		if (monitorclass == null) return null;
 		List<MonitorClasses> listMonitorClasses = new ArrayList<MonitorClasses>(1);
 		listMonitorClasses.add(monitorclass);
 		return listMonitorClasses;
@@ -60,6 +61,7 @@ public class GsonMonitorClasses extends GsonErrors {
 		private String name;
 		private String sql;
 		private String description;
+		private String mapping;
 		private String charttype;
 		private String delta;
 		private String monitortype;
@@ -97,6 +99,12 @@ public class GsonMonitorClasses extends GsonErrors {
 		 */
 		public String getDescription() {
 			return description;
+		}
+		/**
+		 * @return the mapping
+		 */
+		public String getMapping() {
+			return mapping;
 		}
 		/**
 		 * @return the charttype

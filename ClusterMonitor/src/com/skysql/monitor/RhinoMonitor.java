@@ -59,6 +59,11 @@ public class RhinoMonitor extends monitor {
 		m_global = globalStatusObject.getInstance(mon_node);
 	}
 	
+	/**
+	 * The probe function, called once per probe cycle.
+	 * 
+	 * @param verbose	The logging level
+	 */
 	public void probe (boolean verbose) {
 		if (m_sql.isEmpty())
 			return;

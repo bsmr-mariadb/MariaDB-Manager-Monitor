@@ -33,9 +33,16 @@ public class GsonNode extends GsonErrors {
 	private List<Nodes> nodes;
 	
 	/**
+	 * Constructor.
+	 */
+	public GsonNode(Nodes node) {
+		this.node = node;
+	}
+	
+	/**
 	 * @return the node
 	 */
-	public Nodes getNode() {
+	private Nodes getNode() {
 		return node;
 	}
 
@@ -43,7 +50,26 @@ public class GsonNode extends GsonErrors {
 	 * @return the nodes
 	 */
 	public List<Nodes> getNodes() {
-		return nodes;
+		if (nodes != null) return nodes;
+		else if (getNode() != null) {
+			List<Nodes> listNodes = new ArrayList<Nodes>(1);
+			listNodes.add(getNode());
+			return listNodes;
+		}
+		return null;
+	}
+	/**
+	 * Return a single Node object at a given position.
+	 * The first element is at position 0.
+	 * 
+	 * @param index		the position 
+	 * @return			the corresponding MonitorClass object
+	 */
+	public Nodes getNode(int index) {
+		if (index < 0) return null;
+		List<Nodes> dummy = getNodes();
+		if (dummy == null || dummy.size() < index+1) return null;
+		else return dummy.get(index);
 	}
 
 	public static class Nodes {
@@ -51,13 +77,16 @@ public class GsonNode extends GsonErrors {
 		private String nodeid;
 		private String name;
 		private String state;
+		private String updated;
 		private String hostname;
 		private String publicip;
 		private String privateip;
 		private String port;
-		private int instanceID;
+		private String instanceid;
 		private String dbusername;
 		private String dbpassword;
+		private String repusername;
+		private String reppassword;
 		private List<Commands> commands;
 		private GsonSharedMonitorLatest monitorlatest;
 		private String command;
@@ -66,14 +95,14 @@ public class GsonNode extends GsonErrors {
 		/**
 		 * @return the systemid
 		 */
-		public String getSystemId() {
-			return systemid;
+		public int getSystemId() {
+			return Integer.parseInt(systemid);
 		}
 		/**
 		 * @return the nodeid
 		 */
-		public String getNodeId() {
-			return nodeid;
+		public int getNodeId() {
+			return Integer.parseInt(nodeid);
 		}
 		/**
 		 * @return the name
@@ -115,18 +144,19 @@ public class GsonNode extends GsonErrors {
 		 * @return the instanceID
 		 */
 		public int getInstanceID() {
-			return instanceID;
+			if (instanceid.isEmpty()) return 0;
+			return Integer.parseInt(instanceid);
 		}
 		/**
 		 * @return the dbusername
 		 */
-		public String getDbusername() {
+		public String getDbUserName() {
 			return dbusername;
 		}
 		/**
 		 * @return the dbpassword
 		 */
-		public String getDbpassword() {
+		public String getDbPassword() {
 			return dbpassword;
 		}
 		/**
@@ -152,6 +182,32 @@ public class GsonNode extends GsonErrors {
 		 */
 		public String getTaskId() {
 			return taskid;
+		}
+		/**
+		 * If set, this value overrides the corresponding
+		 * one in the System class.
+		 * 
+		 * @return the repusername
+		 */
+		public String getRepUserName() {
+			return repusername;
+		}
+		/**
+		 * If set, this value overrides the corresponding
+		 * one in the System class.
+		 * 
+		 * @return the reppassword
+		 */
+		public String getRepPassword() {
+			return reppassword;
+		}
+		/**
+		 * The timestamp for the last change. 
+		 * 
+		 * @return the string representing the last update time
+		 */
+		public String getLastUpdateTime() {
+			return updated;
 		}
 	}
 	
@@ -186,11 +242,6 @@ public class GsonNode extends GsonErrors {
 			return steps;
 		}
 	}
-
-	/**
-	 * Constructor.
-	 */
-	public GsonNode() {}
 	
 	/**
 	 * Get the list of node id's.
@@ -202,7 +253,7 @@ public class GsonNode extends GsonErrors {
 		if (this.getNodes() != null) {
 			Iterator<GsonNode.Nodes> it = getNodes().iterator();
 			while (it.hasNext()) {
-				result.add(Integer.parseInt(it.next().getNodeId()));
+				result.add(it.next().getNodeId());
 			}
 		} else return null;
 		return result;

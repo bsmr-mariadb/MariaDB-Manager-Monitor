@@ -63,15 +63,16 @@ public class monAPI {
 	/**
 	 * Execute stored batch commands?
 	 */
-	boolean		m_bufferingExecution;
+	private boolean		m_bufferingExecution;
 	/**
 	 * Count the number of calls, to avoid buffering too often
 	 */
-	int			m_cycles;
+	private int			m_cycles;
 	/**
 	 * Timezone read from the php configuration. Assume /etc/php.ini, default to Europe/London.
 	 */
-	String		m_timeZone = null;
+	private String		m_timeZone = null;
+	private String[] _params_name = {"HTTP_DATE", "HTTP_AUTHORIZATION", "_method", "_accept"};
 	
 	/**
 	 * Construct the monAPI instance. This consists of obtaining the information required
@@ -106,10 +107,10 @@ public class monAPI {
 	 * @param value			The observed value
 	 * @return True if the update was performed to the API
 	 */
-	public boolean MonitorValue(int systemID, int nodeID, String monitorKey, String value) {
-		String apiRequest = "system/" + systemID + "/node/" + nodeID + "/monitor/" + monitorKey + "/data";
-		return wrapperMonitorValue(apiRequest, value);
-	}
+//	public boolean MonitorValue(int systemID, int nodeID, String monitorKey, String value) {
+//		String apiRequest = "system/" + systemID + "/node/" + nodeID + "/monitor/" + monitorKey + "/data";
+//		return wrapperMonitorValue(apiRequest, value);
+//	}
 	/**
 	 * Populate a monitor value for the system.
 	 * 
@@ -140,6 +141,7 @@ public class monAPI {
 	}
 	
 	/**
+	 * DEPRECATED.
 	 * API call which requires to modify something.
 	 * 
 	 * @param restRequest
@@ -153,6 +155,7 @@ public class monAPI {
 		return UpdateValue(restRequest, newpName, newpValue);
 	}
 	/**
+	 * DEPRECATED.
 	 * API call which requires to modify something.
 	 * 
 	 * @param restRequest
@@ -162,7 +165,22 @@ public class monAPI {
 	 */
 	public boolean UpdateValue(String restRequest, String[] pName, String[] pValue) {
 		System.err.println("UPDATE REQUEST: " + restRequest);
-		return restPut(restRequest, pName, pValue);
+		String result = updateValue(restRequest, pName, pValue);
+		if (result == null) return false;
+		return true;
+	}
+	
+	/**
+	 * API call which requires to modify something.
+	 * 
+	 * @param restRequest
+	 * @param pName
+	 * @param pValue
+	 * @return				the Json from the API as is, or null if an error occurred.
+	 */
+	public String updateValue(String restRequest, String[] pName, String[] pValue) {
+		String outJson = restPut(restRequest, pName, pValue);
+		return outJson;
 	}
 	
 	/**
@@ -188,6 +206,44 @@ public class monAPI {
 		return outJson;
 	}
 	
+	public String restModified(String restRequest, String[] pName, String[] pValue, String lastUpdate) {
+		String result = "";
+		String value = "";
+		for (int i=0; i < pName.length; i++) {
+			value += "&" + pName[i] + "=" + pValue[i];
+		}
+		try {
+			// set up authorization for the redirected webpage (ie, $_POST variable)
+			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
+			String rfcdate = setDate();
+		    String sb = this.setAuth(restRequest, rfcdate);
+	        
+			// set up connection
+		    URL postURL = new URL(reqString);
+			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
+			apiConn.setRequestProperty("If-Modified-Since", lastUpdate);
+			value = setUpConn(apiConn, sb, rfcdate, value, "GET");
+			
+			// get output
+			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
+			String tmp;
+			while ((tmp = in.readLine()) != null)
+				result += tmp;
+			in.close();
+
+			if (apiConn.getResponseCode() == 304) {
+				result = "";
+			}
+		} catch (ConnectException e) {
+			System.err.println("Cannot connect to the web server.");
+			return "";
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			return "";
+		}
+		return result;
+	}
+	
 	/**
 	 * Send a GET request to the API
 	 * 
@@ -198,8 +254,6 @@ public class monAPI {
 	 */
 	private String restGet(String restRequest, String[] pName, String[] pValue) {
 		String result = "";
-		String[] _params_name = {"_rfcdate", "_authorization", "_method", "_accept"};
-		String[] _params = new String[_params_name.length];
 		String value = "";
 		for (int i=0; i < pName.length; i++) {
 			value += "&" + pName[i] + "=" + pValue[i];
@@ -209,18 +263,11 @@ public class monAPI {
 			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
 			String rfcdate = setDate();
 		    String sb = this.setAuth(restRequest, rfcdate);
-		    _params[0] = encodeURIComponent(rfcdate);
-			_params[1] = "api-auth-" + m_apiKeyID + "-" + sb;
-			_params[2] = "GET";
-			_params[3] = "application/json";
-			for (int i = 0; i < _params.length; i++) {
-				value += "&" + _params_name[i] + "=" + _params[i];
-			}
 	        
 			// set up connection
 		    URL postURL = new URL(reqString);
 			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-			value = setUpConn(apiConn, sb, rfcdate, value);
+			value = setUpConn(apiConn, sb, rfcdate, value, "GET");
 			
 			// get output
 			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
@@ -252,9 +299,8 @@ public class monAPI {
 	 * @param pValue[]		The parameter values for the GET request
 	 * @return				The output of the API (a JSON string)
 	 */
-	private boolean restPut(String restRequest, String[] pName, String[] pValue) {
+	private String restPut(String restRequest, String[] pName, String[] pValue) {
 		String result = "";
-		String[] _params_name = {"_rfcdate", "_authorization", "_method", "_accept"};
 		String[] _params = new String[_params_name.length];
 		String value = "";
 		for (int i=0; i < pName.length; i++) {
@@ -276,7 +322,7 @@ public class monAPI {
 			// set up connection
 			URL postURL = new URL(reqString);
 			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-			value = setUpConn(apiConn, sb, rfcdate, value);
+			value = setUpConn(apiConn, sb, rfcdate, value, "PUT");
 
 			// get output
 			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
@@ -295,9 +341,9 @@ public class monAPI {
 			}
 		} catch (Exception e) {
 			pushFailedApi("restPut", restRequest, pName, pValue);
-			return false;
+			return null;
 		}
-		return true;
+		return result;
 	}
 
 	/**
@@ -309,8 +355,6 @@ public class monAPI {
 	 */
 	private boolean restPost(String restRequest, String[] pName, String[] pValue) {
 		String result = "";
-		String[] _params_name = {"_rfcdate", "_authorization", "_method", "_accept"};
-		String[] _params = new String[_params_name.length];
 		String value = "";
 		for (int i=0; i < pName.length; i++) {
 			value += "&" + pName[i] + "=" + pValue[i];
@@ -320,18 +364,11 @@ public class monAPI {
 			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
 			String rfcdate = setDate();
 			String sb = this.setAuth(restRequest, rfcdate);
-			_params[0] = encodeURIComponent(rfcdate);
-			_params[1] = "api-auth-" + m_apiKeyID + "-" + sb;
-			_params[2] = "POST";
-			_params[3] = "application/json";
-			for (int i = 0; i < _params.length; i++) {
-				value += "&" + _params_name[i] + "=" + _params[i];
-			}
 
 			// set up connection
 			URL postURL = new URL(reqString);
 			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-			value = setUpConn(apiConn, sb, rfcdate, value);
+			value = setUpConn(apiConn, sb, rfcdate, value, "POST");
 
 			// get output
 			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
@@ -439,25 +476,30 @@ public class monAPI {
 	 * @param value
 	 * @throws IOException
 	 */
-	private String setUpConn(HttpURLConnection apiConn, String sb, String rfcdate, String value)
+	private String setUpConn(HttpURLConnection apiConn, String sb, String rfcdate, String value, String method)
 	throws IOException {
-		apiConn.setRequestMethod("POST");
+		apiConn.setRequestMethod(method);
 		apiConn.setRequestProperty("Accept", "application/json");
 		apiConn.setRequestProperty("Authorization", "api-auth-" + m_apiKeyID + "-" + sb);
 		apiConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 		apiConn.setRequestProperty("charset", "utf-8");
 		apiConn.setRequestProperty("Date", rfcdate);
 		apiConn.setRequestProperty("Content-Length", "" + Integer.toString(value.getBytes().length));
+		apiConn.setRequestProperty("X-SkySQL-API-Version", "1");
 		apiConn.setDoOutput(true);
 		apiConn.setUseCaches(false);
-		value = value.substring(1);
-		if (value.substring(0,1).matches("=")) {
-			value = value.substring(2);
+		if (value.length() > 1) {
+			value = value.substring(1);
+			if (value.substring(0,1).matches("=")) {
+				value = value.substring(1);
+			}
 		}
-		OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
-		out.write(value);
-		out.flush();
-		out.close();
+		if (method == "PUT" || method == "POST") {
+			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
+			out.write(value);
+			out.flush();
+			out.close();
+		}
 		return value;
 	}
 	/**
