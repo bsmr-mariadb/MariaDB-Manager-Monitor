@@ -242,7 +242,8 @@ public class ClusterMonitor extends Thread {
 		}
 		if (m_verbose)
 			System.out.println(monitorIDList.size() + " distinct monitors");
-		m_interval = m_confdb.getSystemMonitorInterval();
+//		m_interval = m_confdb.getSystemMonitorInterval();
+		m_interval = 30;
 		m_monitorList = new ArrayList<List<monitor>>();
 		it = monitorIDList.iterator();
 		while (it.hasNext())
@@ -284,6 +285,8 @@ public class ClusterMonitor extends Thread {
 					mlist.add(new globalMonitor(m_confdb, monid, n, m_confdb.isMonitorDelta(monid)));
 				} else if (type.equals("JS")) {
 					mlist.add(new RhinoMonitor(m_confdb, monid, n));
+				} else if (type.equals("GALERA_STATUS")) {
+					mlist.add(new GaleraStatusMonitor(m_confdb, monid, n));
 				}
 				else
 				{

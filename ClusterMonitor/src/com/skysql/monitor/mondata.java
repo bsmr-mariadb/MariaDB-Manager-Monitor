@@ -225,6 +225,22 @@ public class mondata {
 		}
 		return null;
 	}
+	/**
+	 * Get the host name of the node. If the host name has not been set, returns
+	 * the ID of the node.
+	 * 
+	 * @param NodeNo	the node number
+	 * @return	the hostname or the ID of the node
+	 */
+	public String getNodeHostName(int NodeNo) {
+		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		if (gsonNode != null) {
+			if (gsonNode.getNode(0).getHostname() != null) return gsonNode.getNode(0).getHostname();
+			else return Integer.toString(gsonNode.getNode(0).getNodeId());
+		}
+		return null;
+	}
 	/********************************************************
 	 * Node States
 	 ********************************************************/
@@ -235,7 +251,7 @@ public class mondata {
 	 */
 	public List<String> getNodeValidStates()
 	{
-		String apiRequest = "nodestate";
+		String apiRequest = "nodestate/" + m_systemType;
 		GsonNodeStates gsonNodeStates = getObjectFromAPI(apiRequest, GsonNodeStates.class);
 		if (gsonNodeStates == null) return null;
 		return gsonNodeStates.getDescriptionList();
@@ -248,9 +264,9 @@ public class mondata {
 	 */
 	public int getNodeStateId(String Name)
 	{
-		String apiRequest = "nodestate/" + Name;
+		String apiRequest = "nodestate/" + m_systemType;
 		GsonNodeStates gsonNodeStates = getObjectFromAPI(apiRequest, GsonNodeStates.class);
-		return gsonNodeStates == null ? null : gsonNodeStates.getNodeState(0).getStateId();
+		return gsonNodeStates == null ? null : gsonNodeStates.getIdFromState(Name);
 	}
 	/**
 	 * Map a node state id to a state string.
@@ -260,7 +276,7 @@ public class mondata {
 	 */
 	public String getNodeStateFromId(int stateId)
 	{
-		String apiRequest = "nodestate";
+		String apiRequest = "nodestate/" + m_systemType;
 		GsonNodeStates gsonNodeStates = getObjectFromAPI(apiRequest, GsonNodeStates.class);
 		return gsonNodeStates.getStateFromId(stateId);
 	}
