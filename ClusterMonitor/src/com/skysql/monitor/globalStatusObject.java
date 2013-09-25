@@ -51,13 +51,13 @@ public class globalStatusObject {
 	
 	/**
 	 * The global_status cache for this instance. The hashmap key is the
-	 * VARAIABLE_NAME column and the value is the VARIABLE_VALUE
+	 * VARIABLE_NAME column and the value is the VARIABLE_VALUE
 	 */
 	private HashMap<String,String> 	m_globalStatus;
 	
 	/**
 	 * The global_variables cache for this instance. The hashmap key is the
-	 * VARAIABLE_NAME column and the value is the VARIABLE_VALUE
+	 * VARIABLE_NAME column and the value is the VARIABLE_VALUE
 	 */
 	private HashMap<String,String> 	m_globalVariables;
 	
@@ -123,7 +123,7 @@ public class globalStatusObject {
 	 * @param name	The VARIABLE_NAME to return
 	 * @return	The VARIABLE_VALUE
 	 */
-	public String getVaraiable(String name) {
+	public String getVariable(String name) {
 		fetchData();
 		return m_globalVariables.get(name);
 	}
@@ -136,7 +136,7 @@ public class globalStatusObject {
 	 * @param name	The VARIABLE_NAME to return
 	 * @return	The VARIABLE_VALUE
 	 */
-	public String getStatusOrVaraiable(String name) {
+	public String getStatusOrVariable(String name) {
 		String rval;
 		fetchData();
 		if ((rval = m_globalStatus.get(name)) == null)

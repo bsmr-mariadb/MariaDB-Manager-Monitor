@@ -33,10 +33,10 @@ import java.util.regex.Pattern;
  *
  */
 public class mondata {
-	private int			m_systemID;
-	private monAPI		m_api;
-	private String		m_systemType;
-	private GsonLatestObservations m_dataChanged;
+	private int							m_systemID;
+	private monAPI						m_api;
+	private String						m_systemType;
+	private GsonLatestObservations 		m_dataChanged;
 	
 	/**
 	 * Constructor for the monitor data class.
@@ -179,8 +179,15 @@ public class mondata {
 			if (gsonNode != null) {
 				cred = new Credential(gsonNode.getNode(0).getDbUserName(),
 						gsonNode.getNode(0).getDbPassword());
-			} else
-				cred = new Credential("repluser", "repw");
+			} else {
+				apiRequest = "system/" + m_systemID;
+				GsonSystem gsonSystem = getObjectFromAPI(apiRequest, GsonSystem.class);
+				if (gsonSystem != null) {
+					cred = new Credential(gsonSystem.getSystem(0).getDbUserName(),
+							gsonSystem.getSystem(0).getDbPassword());
+				}
+				else cred = new Credential("repluser", "replpassword");
+			}
 			return cred;
 		} catch (Exception ex) {
 			System.err.println("API Failed: " + apiRequest + ": " + ex.getMessage());
@@ -201,6 +208,22 @@ public class mondata {
 			result.add(gsonNode.getNodes().get(i).getInstanceID());
 		}
 		return result;
+	}
+	/**
+	 * Get the name of the node. If the name has not been set, returns
+	 * the ID of the node.
+	 * 
+	 * @param NodeNo	the node number
+	 * @return	the name or the ID of the node
+	 */
+	public String getNodeName(int NodeNo) {
+		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		if (gsonNode != null) {
+			if (gsonNode.getNode(0).getName() != null) return gsonNode.getNode(0).getName();
+			else return Integer.toString(gsonNode.getNode(0).getNodeId());
+		}
+		return null;
 	}
 	/********************************************************
 	 * Node States
@@ -480,21 +503,6 @@ public class mondata {
 		return "";
 //		return ListStringToString(getStringFromQuery(apiRequest, "fields", ""));
 	}
-
-	/**
-	 * Interface to record monitor observed values. This differs from the other 
-	 * entry points in that it passes the data onto the API.
-	 * 
-	 * @param systemID		The SystemID to update
-	 * @param nodeID		The NodeID to update
-	 * @param monitorID		The moitorID the value is associated with
-	 * @param observation	The observed value
-	 * @return True if the monitor observation was written
-	 */
-//	public boolean monitorData(int systemID, int nodeID, int monitorID, String observation)
-//	{
-//		return m_api.MonitorValue(systemID, nodeID, getMonitorKey(monitorID), observation);
-//	}
 	/**
 	 * Interface to record observed values for a system. This differs from the other 
 	 * entry points in that it passes the data onto the API.
@@ -508,7 +516,6 @@ public class mondata {
 	{
 		return m_api.MonitorValue(systemID, getMonitorKey(monitorID), observation);
 	}
-
 	/**
 	 * Batch request to the API.
 	 * 
@@ -539,26 +546,32 @@ public class mondata {
 		String[] parameters = va.toArray(new String[0]);
 		return m_api.bulkMonitorValue(apiRequest, fields, parameters);
 	}
-	
-	
+	/**
+	 * Compare the date when the current instance last updated the objects in the
+	 * current system with the last update date retrieved from the API. If necessary,
+	 * the updated objects are saved in place of the older ones. If this happens,
+	 * a return value of true is returned.
+	 * 
+	 * @return		true if the objects have been updated, false otherwise
+	 */
 	public boolean testChanges() {
 		String now = m_dataChanged.getSystemUpdateDate(m_systemID);
-		String json = m_api.restModified("system/" + m_systemID, new String[]{""}, new String[]{""}, now);
+		String json = m_api.restModified("system/" + m_systemID, null, null, now);
 		boolean isChanged = (json == "" ? false : true);
 		if (isChanged) {
 			GsonSystem gsonSystem = GsonManager.fromJson(json, GsonSystem.class);
-			m_dataChanged.setLastSystem(m_systemID, gsonSystem);
+			m_dataChanged.setLastSystem(gsonSystem);
 		}
 		boolean toUpdate = isChanged;
 		Iterator<Integer> it = getNodeList().iterator();
 		while (it.hasNext()) {
 			Integer nodeid = it.next();
 			now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeid);
-			json = m_api.restModified("system/" + m_systemID + "/node/" + nodeid, new String[]{""}, new String[]{""}, now);
+			json = m_api.restModified("system/" + m_systemID + "/node/" + nodeid, null, null, now);
 			isChanged = (json == "" ? false : true);
 			if (isChanged) {
 				GsonNode gsonNode = GsonManager.fromJson(json, GsonNode.class);
-				m_dataChanged.setLastNode(m_systemID, nodeid, gsonNode);
+				m_dataChanged.setLastNode(gsonNode);
 			}
 			toUpdate = toUpdate || isChanged;
 		}

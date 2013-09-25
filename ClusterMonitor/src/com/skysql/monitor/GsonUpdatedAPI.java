@@ -28,9 +28,15 @@ public class GsonUpdatedAPI extends GsonErrors {
 	private Integer updatecount;
 	private Integer insertkey;
 	
+	/**
+	 * @return	the number of updated rows
+	 */
 	public Integer getUpdateCount() {
 		return updatecount;
 	}
+	/**
+	 * @return	the number of new keys
+	 */
 	public Integer getInsertedKey() {
 		return insertkey;
 	}

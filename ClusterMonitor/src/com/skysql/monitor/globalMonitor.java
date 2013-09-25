@@ -74,7 +74,7 @@ public class globalMonitor extends monitor {
 	 */
 	public void probe(boolean verbose)
 	{
-		String value = m_global.getStatusOrVaraiable(m_sql);
+		String value = m_global.getStatusOrVariable(m_sql);
 		if (verbose)
 			System.out.println("globalMonitor: " + m_sql + " set value " + value);
 		if (m_delta)

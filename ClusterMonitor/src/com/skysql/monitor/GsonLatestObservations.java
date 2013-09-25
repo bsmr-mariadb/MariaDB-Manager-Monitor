@@ -25,27 +25,55 @@ import java.util.LinkedHashMap;
 
 /**
  * Handle the latest observations for all the Gson objects.
+ * Provides methods to save and retrieve the objects and the
+ * date when the current instance has last updated them.
  * 
  * @author Massimo Siani
  *
  */
+// TODO: Convert this class to a singleton?
 public class GsonLatestObservations {
-	private String								m_standardDate;
-	private LinkedHashMap<Integer, GsonSystem.Systems>								m_system;
-	private LinkedHashMap<Integer, LinkedHashMap<Integer, GsonNode.Nodes>>			m_node;
-	private LinkedHashMap<Integer, String>				m_systemDates;
+	/**
+	 * The default date to return, if any error occurs.
+	 */
+	private String																m_standardDate;
+	/**
+	 * The table of (system ID, system) saved by the current instance.
+	 */
+	private LinkedHashMap<Integer, GsonSystem.Systems>							m_system;
+	/**
+	 * The table of (system ID, node IS, node) saved by the current instance.
+	 */
+	private LinkedHashMap<Integer, LinkedHashMap<Integer, GsonNode.Nodes>>		m_node;
+	/**
+	 * The (system ID, last system update date) table.
+	 */
+	private LinkedHashMap<Integer, String>										m_systemDates;
+	/**
+	 * The (system ID, node ID, last node update date) table.
+	 */
 	private LinkedHashMap<Integer, LinkedHashMap<Integer, String>>				m_nodeDates;
 
 
+	/**
+	 * Constructor for the class.
+	 */
 	public GsonLatestObservations() {
-		m_system = new LinkedHashMap<Integer, GsonSystem.Systems>();
-		m_node = new LinkedHashMap<Integer, LinkedHashMap<Integer, GsonNode.Nodes>>();
-		m_systemDates = new LinkedHashMap<Integer, String>();
-		m_nodeDates = new LinkedHashMap<Integer, LinkedHashMap<Integer,String>>();
+		m_system = new LinkedHashMap<Integer, GsonSystem.Systems>(1);
+		m_node = new LinkedHashMap<Integer, LinkedHashMap<Integer, GsonNode.Nodes>>(1);
+		m_systemDates = new LinkedHashMap<Integer, String>(1);
+		m_nodeDates = new LinkedHashMap<Integer, LinkedHashMap<Integer,String>>(1);
 		m_standardDate = "Thu, 01 Jan 1970 00:00:01 +0100";
 	}
 
-	public GsonSystem getLastSystem (int systemID) {
+	/**
+	 * Get the object that corresponds to a system. The system of interest
+	 * is specified by its ID.
+	 * 
+	 * @param systemID		the ID of the system to retrieve
+	 * @return				the Java object of the requested system, null if it doesn't exist
+	 */
+	public GsonSystem getSystem (int systemID) {
 		try {
 			GsonSystem gsonSystem = new GsonSystem(m_system.get(systemID));
 			return gsonSystem;
@@ -54,7 +82,15 @@ public class GsonLatestObservations {
 		}
 	}
 
-	public GsonNode getLastNode (int systemID, int nodeID) {
+	/**
+	 * Get the object that corresponds to a node. The node of is specified by
+	 * the system ID the node belongs to, and the ID of the node itself.
+	 * 
+	 * @param systemID		the ID of the system the node belongs to
+	 * @param nodeID		the ID of the node
+	 * @return				the object of the node, or null
+	 */
+	public GsonNode getNode (int systemID, int nodeID) {
 		try {
 			GsonNode gsonNode = new GsonNode(m_node.get(systemID).get(nodeID));
 			return gsonNode;
@@ -63,6 +99,14 @@ public class GsonLatestObservations {
 		}
 	}
 	
+	/**
+	 * Get the last time that a system has been updated by this instance.
+	 * The system is identified by its ID. If the ID does not exist or has not been
+	 * saved yet, a date in the past is returned.
+	 * 
+	 * @param systemID		the ID of the system
+	 * @return				the date when the system has been updated
+	 */
 	public String getSystemUpdateDate (int systemID) {
 		try {
 			if (! m_systemDates.containsKey(systemID)) throw new RuntimeException();
@@ -72,6 +116,16 @@ public class GsonLatestObservations {
 		}
 	}
 	
+	/**
+	 * Get the last date when a node has been updated by the instance.
+	 * If the ID of the system or of the node do not exist, or if
+	 * the node does not belong to the given system, the returned
+	 * value is a date in the past.
+	 * 
+	 * @param systemID		the ID of the system the node belongs to
+	 * @param nodeID		the ID of the node
+	 * @return				the date of the node last update
+	 */
 	public String getNodeUpdateDate (int systemID, int nodeID) {
 		try {
 			if (! m_nodeDates.containsKey(systemID)) throw new RuntimeException();
@@ -82,14 +136,21 @@ public class GsonLatestObservations {
 		}
 	}
 
-	public void setLastSystem (int systemID, GsonSystem systemObj) {
+	/**
+	 * Save a system object. If the object contains a list of systems,
+	 * each of them is saved separately with the current date.
+	 * 
+	 * @param systemObj		the object to save
+	 */
+	public void setLastSystem (GsonSystem systemObj) {
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 			String now = sdf.format(new Date());
 			Iterator<GsonSystem.Systems> it = systemObj.getSystems().iterator();
 			while (it.hasNext()) {
 				GsonSystem.Systems systemTmp = it.next();
-				m_system.put(systemTmp.getSystemId(), systemTmp);
+				int systemID = systemTmp.getSystemId();
+				m_system.put(systemID, systemTmp);
 				m_systemDates.put(systemID, now);
 			}
 		} catch (Exception e) {
@@ -97,17 +158,25 @@ public class GsonLatestObservations {
 		}
 	}
 
-	public void setLastNode (int systemID, int nodeID, GsonNode nodeObj) {
+	/**
+	 * Save a node object. If the object contains a list of nodes,
+	 * each of them is saved separately with the current date.
+	 * 
+	 * @param nodeObj		the object to save
+	 */
+	public void setLastNode (GsonNode nodeObj) {
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 			String now = sdf.format(new Date());
 			Iterator<GsonNode.Nodes> it = nodeObj.getNodes().iterator();
 			while (it.hasNext()) {
 				GsonNode.Nodes nodeTmp = it.next();
-				LinkedHashMap<Integer, GsonNode.Nodes> lhm = new LinkedHashMap<Integer, GsonNode.Nodes>();
-				lhm.put(nodeTmp.getNodeId(), nodeTmp);
-				m_node.put(nodeTmp.getSystemId(), lhm);
-				LinkedHashMap<Integer, String> lhmDate = new LinkedHashMap<Integer, String>();
+				LinkedHashMap<Integer, GsonNode.Nodes> lhm = new LinkedHashMap<Integer, GsonNode.Nodes>(1);
+				int systemID = nodeTmp.getSystemId();
+				int nodeID = nodeTmp.getNodeId();
+				lhm.put(nodeID, nodeTmp);
+				m_node.put(systemID, lhm);
+				LinkedHashMap<Integer, String> lhmDate = new LinkedHashMap<Integer, String>(1);
 				lhmDate.put(nodeID, now);
 				m_nodeDates.put(systemID, lhmDate);
 			}
@@ -115,17 +184,4 @@ public class GsonLatestObservations {
 			//
 		}
 	}
-
-//	public <T extends GsonErrors> void setLastObserved(T object) {
-//		if (object.getClass() == GsonSystem.class) {
-//			GsonSystem gsonSystem = (GsonSystem) object;
-//			Iterator<Integer> it = gsonSystem.getSystemIdList().iterator();
-//			while (it.hasNext()) {
-//				if (system.containsKey(it.next())) break;
-//			}
-//		}
-//		if (object.getClass() == GsonNode.class)
-//			node = (GsonNode) object;
-//	}
-
 }

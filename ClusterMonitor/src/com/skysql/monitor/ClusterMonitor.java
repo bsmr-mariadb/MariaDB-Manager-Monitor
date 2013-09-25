@@ -76,40 +76,39 @@ public class ClusterMonitor extends Thread {
 		int off = 0;
 		
 		boolean verbose = false;
-		if (args.length == 2)
+		if (args.length == 2 && args[0].equals("-v"))
 		{
 			off = 1;
 			verbose = true;
 		}
 
-		System.err.println("Starting ClusterMonitor v1.6.1");
+		System.err.println("Starting ClusterMonitor v1.6-2");
 		System.err.println("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
 		{
+			List<Integer> systems, systems_old = new ArrayList<Integer>();
 			while (true)
 			{
-				List<Integer> systems = (new mondata()).getSystemList();
+				systems = (new mondata()).getSystemList();
 				if (systems == null) systems = new ArrayList<Integer>();
+				systems.removeAll(systems_old);
 				Iterator<Integer> it = systems.iterator();
 				ClusterMonitor monitor = null;
 				while (it.hasNext())
 				{
 					Integer i = it.next();
 					monitor = new ClusterMonitor(i.intValue(), verbose);
+					if (monitor != null) systems_old.add(i);
 					monitor.initialise();
-				
 					monitor.start();
 				}
-				if (monitor != null)	
-				{
-					try {
-						monitor.join();
-					} catch (Exception ex) {
-						// Nothing to do
-					}
+				try {
+					Thread.sleep(30000);
+				} catch (Exception ex) {
+					// Nothing to do
 				}
-				if (systems.isEmpty()) {
+				if (systems.isEmpty() && systems_old.isEmpty()) {
 					System.out.println("No systems found to monitor, waiting for systems to be deployed.");
 					try {
 						Thread.sleep(10000);
@@ -138,10 +137,8 @@ public class ClusterMonitor extends Thread {
 				System.err.println("Unable to find the target system, " + targetSystem + " in your database.");
 				System.exit(1);
 			}
-			
 			ClusterMonitor monitor = new ClusterMonitor(targetSystem, verbose);
 			monitor.initialise();
-		
 			monitor.execute();
 		}
 	}
@@ -174,8 +171,6 @@ public class ClusterMonitor extends Thread {
 	}
 	
 	/**
-	 * initialise
-	 * 
 	 * Initialise the monitoring system, this means getting the list of nodes
 	 * from the database, configure and create the monitor classes and run the
 	 * IP Address Monitor if it is required.
@@ -202,8 +197,6 @@ public class ClusterMonitor extends Thread {
 	}
 	
 	/**
-	 * refreshconfig 
-	 *
 	 * Read the configuration data from the SQLite database, this was moved out of the initialise
 	 * routine to allow the monitor to re-read the configuration periodically and hence take note
 	 * of new monitors.
@@ -215,7 +208,7 @@ public class ClusterMonitor extends Thread {
 		List<Integer> nodeIDList = m_confdb.getNodeList();
 		while (nodeIDList == null || nodeIDList.isEmpty())
 		{
-			System.err.println("No nodes configured to monitor.");
+			System.err.println("No nodes configured in system " + m_systemID + ".");
 			try {
 				Thread.sleep(10000);
 			} catch (Exception e) {
@@ -305,8 +298,6 @@ public class ClusterMonitor extends Thread {
 	}
 
 	/**
-	 * execute
-	 * 
 	 * Run the actual monitors in a loop. This function never returns, it loops
 	 * running each monitor in turn, for each of the hosts, and sleeps once a complete
 	 * cycle has been completed. The sleep time is controlled by a SystemProperty entry
@@ -320,101 +311,92 @@ public class ClusterMonitor extends Thread {
 		while (true)
 		{
 			try {
-				// Every m_refresh times we reread the config, so do m_refresh probe(s)
-				// here and then read the config
-//				for (int cycleCount = 0; cycleCount < m_refresh; cycleCount++)
-//				{
-					if (m_confdb.testChanges()) refreshconfig();
-					if (m_verbose)
-						System.out.println("Probe");
-					
-					// Ping all the nodes before we do a real probe
-					Iterator<node> node_it = m_nodeList.iterator();
-					while (node_it.hasNext())
+				if (m_confdb.testChanges()) refreshconfig();
+				if (m_verbose)
+					System.out.println("Probe");
+
+				// Ping all the nodes before we do a real probe
+				Iterator<node> node_it = m_nodeList.iterator();
+				while (node_it.hasNext())
+				{
+					node n = node_it.next();
+					n.execute("select 1");
+				}
+				// Iterate on the monitors
+				Iterator<List<monitor>> mit = m_monitorList.iterator();
+				while (mit.hasNext())
+				{
+					List<monitor> mlist = mit.next();
+					Iterator<monitor> it = mlist.iterator();
+					double system_value = 0.0;
+					boolean validSystemProbe = false;
+					boolean systemAverage = false;
+					int id = 0;
+
+					// Iterate on the instances of the monitors, ie probe the machines
+					while (it.hasNext())
 					{
-						node n = node_it.next();
-						n.execute("select 1");
-					}
-					// Iterate on the monitors
-					Iterator<List<monitor>> mit = m_monitorList.iterator();
-					while (mit.hasNext())
-					{
-						List<monitor> mlist = mit.next();
-						Iterator<monitor> it = mlist.iterator();
-						double system_value = 0.0;
-						boolean validSystemProbe = false;
-						boolean systemAverage = false;
-						int id = 0;
-						
-						// Iterate on the instances of the monitors, ie probe the machines
-						while (it.hasNext())
+						monitor m = it.next();
+						id = m.getID();
+//						if ((m_gcdMonitorInterval * cycleCount) % m.m_interval != 0) continue;
+						m.probe(m_verbose);
+						systemAverage = m.isSystemAverage();
+						if (m.hasSystemValue())
 						{
-							monitor m = it.next();
-							id = m.getID();
-//							if ((m_gcdMonitorInterval * cycleCount) % m.m_interval != 0) continue;
-							m.probe(m_verbose);
-							systemAverage = m.isSystemAverage();
-							if (m.hasSystemValue())
-							{
-								validSystemProbe = true;
-								String value = m.getValue();
-								try {
-									if (value != null)
-										system_value += (new Double(value)).doubleValue();
-								} catch (Exception ex) {
-									System.err.println("Exception converting probe value '" + value + "' for monitor ID " + id);
-								}
-								if (m_verbose)
-									System.out.println("    Probe " + id + " returns value " + m.getValue());
+							validSystemProbe = true;
+							String value = m.getValue();
+							try {
+								if (value != null)
+									system_value += (new Double(value)).doubleValue();
+							} catch (Exception ex) {
+								System.err.println("Exception converting probe value '" + value + "' for monitor ID " + id);
 							}
-						}
-						
-						// This monitor is valid for the system as well
-						if (validSystemProbe)
-						{
-							String format;
-							if (systemAverage)
-							{
-								system_value = system_value / m_nodeList.size();
-								format = "############.##";
-							}
-							else if (system_value > 100)
-								format = "#############";
-							else if (system_value > 10)
-								format = "##.#";
-							else
-								format = "#.##";
-							DecimalFormat fmt = new DecimalFormat(format);
-//							m_confdb.monitorData(m_systemID, id, fmt.format(system_value));
-							m_observedValues.put(id, fmt.format(system_value));
 							if (m_verbose)
-								System.out.println("    Probe system value " + system_value);
+								System.out.println("    Probe " + id + " returns value " + m.getValue());
 						}
 					}
-					// Update the observations: system
-					if (updateObservations())
-						System.out.println("System " + m_systemID + " monitor data updated.");
-					// Update the observations: nodes in this system
-					node_it = m_nodeList.iterator();
-					while (node_it.hasNext())
+
+					// This monitor is valid for the system as well
+					if (validSystemProbe)
 					{
-						node n = node_it.next();
-						if(n.updateObservations())
-							System.out.println("Node " + n.getID() + " of system " + n.getSystemID() + " monitor data updated.");
+						String format;
+						if (systemAverage)
+						{
+							system_value = system_value / m_nodeList.size();
+							format = "############.##";
+						}
+						else if (system_value > 100)
+							format = "#############";
+						else if (system_value > 10)
+							format = "##.#";
+						else
+							format = "#.##";
+						DecimalFormat fmt = new DecimalFormat(format);
+						m_observedValues.put(id, fmt.format(system_value));
+						if (m_verbose)
+							System.out.println("    Probe system value " + system_value);
 					}
-					// sleep
-					try {
-//						if (m_verbose)
-//							System.out.println("\nNext full refresh in " + (m_refresh-cycleCount)*m_gcdMonitorInterval + " seconds\n");
-						Thread.sleep(m_gcdMonitorInterval * 1000);	// Sleep for 30 seconds
-					} catch (Exception ex) {
-						// Ignore exception
-					}
-//				}
+				}
+				// Update the observations: system
+				if (updateObservations())
+					System.out.println("System " + m_systemID + " monitor data updated.");
+				// Update the observations: nodes in this system
+				node_it = m_nodeList.iterator();
+				while (node_it.hasNext())
+				{
+					node n = node_it.next();
+					if(n.updateObservations())
+						System.out.println("Node " + m_confdb.getNodeName(n.getID()) + " of system " + n.getSystemID() + " monitor data updated.");
+				}
+				// sleep
+				try {
+					Thread.sleep(m_gcdMonitorInterval * 1000);	// Sleep for 30 seconds
+				} catch (Exception ex) {
+					// Ignore exception
+				}
 			} catch (Exception ex) {
 				System.err.println("Probe exception: " + ex.getMessage());
 			}
-//			refreshconfig();
 		}
 	}
 	

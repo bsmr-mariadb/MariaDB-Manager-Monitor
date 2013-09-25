@@ -37,7 +37,6 @@ import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 /**
  * The interface to the SkySQL Manager API, a REST interface to the monitor database.
@@ -72,7 +71,6 @@ public class monAPI {
 	 * Timezone read from the php configuration. Assume /etc/php.ini, default to Europe/London.
 	 */
 	private String		m_timeZone = null;
-	private String[] _params_name = {"HTTP_DATE", "HTTP_AUTHORIZATION", "_method", "_accept"};
 	
 	/**
 	 * Construct the monAPI instance. This consists of obtaining the information required
@@ -97,20 +95,6 @@ public class monAPI {
 		m_bufferingExecution = buffer;
 		m_cycles = 0;
 	}
-	
-	/**
-	 * Populate a monitor value for a given node.
-	 * 
-	 * @param systemID		The ID of the System
-	 * @param nodeID		The ID of the node within the system that the data refers to
-	 * @param monitorKey	The key of the monitor itself
-	 * @param value			The observed value
-	 * @return True if the update was performed to the API
-	 */
-//	public boolean MonitorValue(int systemID, int nodeID, String monitorKey, String value) {
-//		String apiRequest = "system/" + systemID + "/node/" + nodeID + "/monitor/" + monitorKey + "/data";
-//		return wrapperMonitorValue(apiRequest, value);
-//	}
 	/**
 	 * Populate a monitor value for the system.
 	 * 
@@ -121,20 +105,17 @@ public class monAPI {
 	 */
 	public boolean MonitorValue(int systemID, String monitorKey, String value) {
 		String apiRequest = "system/" + systemID + "/monitor/" + monitorKey + "/data";
-		return wrapperMonitorValue(apiRequest, value);
+		System.err.println("MONITOR REQUEST: " + apiRequest + " value: " + value);
+		return restPost(apiRequest, new String[] {"value"}, new String[] {value});
 	}
 	/**
-	 * Wrapper to the POST call (update a DB entry).
+	 * Bulk update API.
 	 * 
-	 * @param apiRequest	the request url
-	 * @param value			the value to be passed to the API
+	 * @param apiRequest	the request uri
+	 * @param fields
+	 * @param values
 	 * @return True if the update was performed
 	 */
-	private boolean wrapperMonitorValue(String apiRequest, String value) {
-		System.err.println("MONITOR REQUEST: " + apiRequest + " value: " + value);
-		return restPost(apiRequest, new String[] {"value"}, new String[] {value});		
-	}
-	
 	public boolean bulkMonitorValue(String apiRequest, String[] fields, String[] values) {
 		System.err.println("MONITOR BULK REQUEST: " + apiRequest);
 		return restPost(apiRequest, fields, values);
@@ -209,8 +190,10 @@ public class monAPI {
 	public String restModified(String restRequest, String[] pName, String[] pValue, String lastUpdate) {
 		String result = "";
 		String value = "";
-		for (int i=0; i < pName.length; i++) {
-			value += "&" + pName[i] + "=" + pValue[i];
+		if (pName != null && pValue != null) {
+			for (int i=0; i < pName.length; i++) {
+				value += "&" + pName[i] + "=" + pValue[i];
+			}
 		}
 		try {
 			// set up authorization for the redirected webpage (ie, $_POST variable)
@@ -301,7 +284,6 @@ public class monAPI {
 	 */
 	private String restPut(String restRequest, String[] pName, String[] pValue) {
 		String result = "";
-		String[] _params = new String[_params_name.length];
 		String value = "";
 		for (int i=0; i < pName.length; i++) {
 			value += "&" + pName[i] + "=" + pValue[i];
@@ -311,13 +293,6 @@ public class monAPI {
 			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
 			String rfcdate = setDate();
 			String sb = this.setAuth(restRequest, rfcdate);
-			_params[0] = encodeURIComponent(rfcdate);
-			_params[1] = "api-auth-" + m_apiKeyID + "-" + sb;
-			_params[2] = "PUT";
-			_params[3] = "application/json";
-			for (int i = 0; i < _params.length; i++) {
-				value += "&" + _params_name[i] + "=" + _params[i];
-			}
 
 			// set up connection
 			URL postURL = new URL(reqString);
@@ -448,26 +423,6 @@ public class monAPI {
 		return sb.toString();
 	}
 	/**
-	 * Encode a string to be passed as an URI.
-	 * 
-	 * @param component
-	 * @return
-	 */
-	private String encodeURIComponent(String component)   {     
-		String result = null;
-		try {       
-			result = URLEncoder.encode(component, "UTF-8")   
-				   .replaceAll("\\%28", "(")
-				   .replaceAll("\\%29", ")")
-				   .replaceAll("\\%27", "'")
-				   .replaceAll("\\%21", "!")
-				   .replaceAll("\\%7E", "~");
-		} catch (Exception e) {       
-			result = component;     
-		}
-		return result;   
-	}
-	/**
 	 * Set up the common properties of the connection.
 	 * 
 	 * @param apiConn
@@ -494,7 +449,7 @@ public class monAPI {
 				value = value.substring(1);
 			}
 		}
-		if (method == "PUT" || method == "POST") {
+		if (value.length() > 1) {
 			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
 			out.write(value);
 			out.flush();
@@ -671,5 +626,4 @@ public class monAPI {
 					+ "-------------------------------------------------------");
 		}
 	}
-		
 }
