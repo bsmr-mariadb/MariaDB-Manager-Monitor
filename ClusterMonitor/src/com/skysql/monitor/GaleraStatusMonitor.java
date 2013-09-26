@@ -54,7 +54,7 @@ public class GaleraStatusMonitor extends monitor {
 	 * to avoid multiple nodes from the same system to ask to
 	 * update the system itself multiple times. Unit: milliseconds. 
 	 */
-	private final int					UPDATE_THRESHOLD = 5000;
+	private final static int					UPDATE_THRESHOLD = 5000;
 	/**
 	 * A table of the updated systems. (systemID, time of the last update).
 	 */
@@ -71,7 +71,7 @@ public class GaleraStatusMonitor extends monitor {
 			m_updatedSystems = new HashMap<Integer, Long>();
 		}
 		if (INSTANCES.get(m_systemID) == null)
-			m_updatedSystems.put(m_systemID, (new Date()).getTime());
+			m_updatedSystems.put(m_systemID, now() - UPDATE_THRESHOLD);   // next time the monitor will run
 		return INSTANCES;
 	}
 	
@@ -93,7 +93,7 @@ public class GaleraStatusMonitor extends monitor {
 	 * Initialize the system singleton. Add the system id to the
 	 * table of known system id's and loads the associated nodes.
 	 * 
-	 * @param mon_node
+	 * @param mon_node	the node to be added to the instance
 	 */
 	private synchronized void setInstance(node mon_node) {
 		List<node> nodeList = getInstances().get(mon_node.getSystemID());
@@ -121,10 +121,12 @@ public class GaleraStatusMonitor extends monitor {
 	}
 	
 	/**
-	 * @param systemID
+	 * Check the nodes and assign them their state.
+	 * 
+	 * @param systemID	the id of the system whose nodes are to be checked
 	 */
 	public synchronized void probe(boolean verbose) {
-		if ((new Date()).getTime() - m_updatedSystems.get(m_node.getSystemID()) <= UPDATE_THRESHOLD)
+		if (now() - m_updatedSystems.get(m_node.getSystemID()) <= UPDATE_THRESHOLD)
 			return;
 		Iterator<node> nodeIt = getInstances().get(m_node.getSystemID()).iterator();
 		HashMap<String, List<node>> hmUUID = new HashMap<String, List<node>>();
@@ -173,8 +175,9 @@ public class GaleraStatusMonitor extends monitor {
 	/**
 	 * Check whether all the nodes appear in the incoming address variable.
 	 * 
-	 * @param incomingAddress
-	 * @return
+	 * @param incomingAddress	a table which contains the INCOMING_ADDRESSES variable
+	 * @return	true if and only if all the nodes appear in all the other nodes'
+	 * INCOMING_ADDRESSES variable
 	 */
 	private boolean checkIncomingAddress(HashMap<node, String> incomingAddress) {
 		boolean isCluster = true;
@@ -197,10 +200,19 @@ public class GaleraStatusMonitor extends monitor {
 	}
 	
 	/**
+	 * Return the current time.
+	 * 
+	 * @return a number reprsenting the current time
+	 */
+	private long now() {
+		return (new Date()).getTime();
+	}
+	
+	/**
 	 * Update the time when this system has been last updated.
 	 */
 	private void updateTime() {
-		m_updatedSystems.put(m_systemID, (new Date()).getTime());
+		m_updatedSystems.put(m_systemID, now());
 	}
 	
 	/**

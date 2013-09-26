@@ -117,7 +117,6 @@ public class monAPI {
 	 * @return True if the update was performed
 	 */
 	public boolean bulkMonitorValue(String apiRequest, String[] fields, String[] values) {
-		System.err.println("MONITOR BULK REQUEST: " + apiRequest);
 		return restPost(apiRequest, fields, values);
 	}
 	

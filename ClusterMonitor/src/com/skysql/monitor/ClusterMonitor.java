@@ -65,6 +65,14 @@ public class ClusterMonitor extends Thread {
 	private int					m_gcdMonitorInterval;
 	/** The system observed values, for bulk updates. */
 	private LinkedHashMap<Integer, String>	m_observedValues;
+	/**
+	 * The table to save all the currently thread instances, so
+	 * that they can be retrieved and terminated if no longer
+	 * necessary.
+	 */
+	private static volatile LinkedHashMap<Integer, ClusterMonitor>	m_threadMap = new LinkedHashMap<Integer, ClusterMonitor>(3);
+	/** The list of systems that are currently running. */
+	private static volatile List<Integer>	m_systems_old = new ArrayList<Integer>();
 	
 	public static void main( String[] args )
 	{
@@ -87,28 +95,29 @@ public class ClusterMonitor extends Thread {
 		
 		if (args[off].equalsIgnoreCase("all"))
 		{
-			List<Integer> systems, systems_old = new ArrayList<Integer>();
+			List<Integer> systems;
 			while (true)
 			{
 				systems = (new mondata()).getSystemList();
 				if (systems == null) systems = new ArrayList<Integer>();
-				systems.removeAll(systems_old);
+				systems.removeAll(m_systems_old);		// start only new threads (ie new systems)
 				Iterator<Integer> it = systems.iterator();
 				ClusterMonitor monitor = null;
 				while (it.hasNext())
 				{
 					Integer i = it.next();
 					monitor = new ClusterMonitor(i.intValue(), verbose);
-					if (monitor != null) systems_old.add(i);
+					if (monitor != null) m_systems_old.add(i);
 					monitor.initialise();
 					monitor.start();
+					m_threadMap.put(i, monitor);
 				}
 				try {
 					Thread.sleep(30000);
 				} catch (Exception ex) {
 					// Nothing to do
 				}
-				if (systems.isEmpty() && systems_old.isEmpty()) {
+				if (systems.isEmpty() && m_systems_old.isEmpty()) {
 					System.out.println("No systems found to monitor, waiting for systems to be deployed.");
 					try {
 						Thread.sleep(10000);
@@ -165,7 +174,7 @@ public class ClusterMonitor extends Thread {
 		m_verbose = verbose;
 		m_systemID = systemID;
 		m_confdb = new mondata(m_systemID);
-		m_interval = m_confdb.getSystemMonitorInterval();
+		m_interval = 30;
 		m_gcdMonitorInterval = m_interval;
 		m_observedValues = new LinkedHashMap<Integer, String>();
 	}
@@ -201,15 +210,22 @@ public class ClusterMonitor extends Thread {
 	 * routine to allow the monitor to re-read the configuration periodically and hence take note
 	 * of new monitors.
 	 */
-	private void refreshconfig()
+	private boolean refreshconfig()
 	{
 		if (m_verbose)
 			System.out.println("Reading configuration data");
 		List<Integer> nodeIDList = m_confdb.getNodeList();
+		int countNodeFail = 0;
 		while (nodeIDList == null || nodeIDList.isEmpty())
 		{
 			System.err.println("No nodes configured in system " + m_systemID + ".");
 			try {
+				if (++countNodeFail > 3) {
+					int index = m_systems_old.indexOf(m_systemID);
+					m_systems_old.remove(index);
+					m_threadMap.get((Integer) m_systemID).interrupt();
+					return false;
+				}
 				Thread.sleep(10000);
 			} catch (Exception e) {
 				System.err.println("Failed while waiting for nodes: " + e.getLocalizedMessage());
@@ -298,13 +314,13 @@ public class ClusterMonitor extends Thread {
 				m_gcdMonitorInterval = m_interval;   // disable polling functionality
 			}
 		}
+		return true;
 	}
 
 	/**
 	 * Run the actual monitors in a loop. This function never returns, it loops
 	 * running each monitor in turn, for each of the hosts, and sleeps once a complete
-	 * cycle has been completed. The sleep time is controlled by a SystemProperty entry
-	 * in the database.
+	 * cycle has been completed.
 	 * 
 	 * In addition to recording values for each of the nodes, certain probes are also
 	 * accumulated across all nodes and stored as a system probe value.
@@ -314,7 +330,11 @@ public class ClusterMonitor extends Thread {
 		while (true)
 		{
 			try {
-				if (m_confdb.testChanges()) refreshconfig();
+				if (m_confdb.testChanges()) {
+					Thread.currentThread();
+					if ((! refreshconfig()) || Thread.interrupted())
+						throw new InterruptedException();
+				}
 				if (m_verbose)
 					System.out.println("Probe");
 
@@ -397,6 +417,8 @@ public class ClusterMonitor extends Thread {
 				} catch (Exception ex) {
 					// Ignore exception
 				}
+			} catch (InterruptedException e) {
+				return;
 			} catch (Exception ex) {
 				System.err.println("Probe exception: " + ex.getMessage());
 			}

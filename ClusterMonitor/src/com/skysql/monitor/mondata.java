@@ -176,7 +176,7 @@ public class mondata {
 		Credential cred;
 		try {
 			GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
-			if (gsonNode != null) {
+			if (gsonNode != null && gsonNode.getNode(0).getDbUserName() != null) {
 				cred = new Credential(gsonNode.getNode(0).getDbUserName(),
 						gsonNode.getNode(0).getDbPassword());
 			} else {
