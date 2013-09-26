@@ -76,7 +76,7 @@ public class globalMonitor extends monitor {
 	{
 		String value = m_global.getStatusOrVariable(m_sql);
 		if (verbose)
-			System.out.println("globalMonitor: " + m_sql + " set value " + value);
+			Logging.debug("globalMonitor: " + m_sql + " set value " + value);
 		if (m_delta)
 		{
 			if (m_lastAbsValue != null)
@@ -85,7 +85,7 @@ public class globalMonitor extends monitor {
 				Long delta = absValue - m_lastAbsValue;
 				if (delta < 0)
 				{
-					System.out.println("Negative delta value for probe, absolute value is " + absValue + " last absolute value " + m_lastAbsValue);
+					Logging.debug("Negative delta value for probe, absolute value is " + absValue + " last absolute value " + m_lastAbsValue);
 					delta = new Long(0);
 				}
 				DecimalFormat format = new DecimalFormat("###############0");

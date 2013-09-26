@@ -105,11 +105,11 @@ public class node implements Runnable {
 		String address = confDB.getNodePrivateIP(nodeNo);
 		if (address == null)
 		{
-			System.err.println("Unable to obtain address for node " + nodeNo);
+			Logging.error("Unable to obtain address for node " + nodeNo);
 		}
 		m_URL = "jdbc:mysql://" + address + "/information_schema";
 		connect();
-		System.out.println("Created node: " + this);
+		Logging.info("Created node: " + this);
 	}
 
 	/**
@@ -117,14 +117,14 @@ public class node implements Runnable {
 	 */
 	public synchronized void close()
 	{
-		System.out.println("Disconnect from monitored database " + m_URL);
+		Logging.info("Disconnect from monitored database " + m_URL);
 		try {
 			if (m_connected)
 				m_mondb.close();
 		} catch (SQLException sqlex)
 		{
-			System.out.println("Close failed: " + sqlex.getMessage());
-			System.out.println("ErrorCode: " + sqlex.getErrorCode() + ": SQLState: " + sqlex.getSQLState());
+			Logging.error("Close failed: " + sqlex.getMessage());
+			Logging.error("ErrorCode: " + sqlex.getErrorCode() + ": SQLState: " + sqlex.getSQLState());
 		}
 		m_connected = false;
 	}
@@ -136,30 +136,29 @@ public class node implements Runnable {
 	 */
 	private synchronized void connect() 
 	{
-		System.out.println("Try to connect to monitored database " + m_URL);
+		Logging.info("Try to connect to monitored database " + m_URL);
 		if (m_connecting)
 		{
 			m_tempts++;
-			System.out.println("\n    Already running connection thread - do not run another."
+			Logging.warn("\n    Already running connection thread - do not run another."
 					+ "\n	Attempt number " + m_tempts);
 			if (m_tempts >= 10) {
-				System.out.println("	Limit reached: reset this connection.");
+				Logging.warn("	Limit reached: reset this connection.");
 				m_connecting = false;
 			}
-			System.out.println();
 			return;
 		}
 		m_tempts = 1;
 		if (m_connected)
 		{
-			System.out.println("    Still appear to be connected, disconnect first");
+			Logging.warn("    Still appear to be connected, disconnect first");
 			this.close();
 		}
 		m_connecting = true;
 		String address = m_confdb.getNodePrivateIP(m_nodeNo);
 		if (address == null)
 		{
-			System.err.println("Unable to obtain address for node " + m_nodeNo);
+			Logging.error("Unable to obtain address for node " + m_nodeNo);
 		}
 		m_URL = "jdbc:mysql://" + address + "/information_schema";
 		m_conthread = new Thread(this);
@@ -177,17 +176,17 @@ public class node implements Runnable {
 			  Credential cred = m_confdb.getNodeMonitorCredentials(m_nodeNo);
 			  m_mondb = DriverManager.getConnection(m_URL + "?socketTimeout=60000", cred.getUsername(), cred.getPassword());
 			  m_connected = true;
-			  System.out.println("Connected");
+			  Logging.info("Connected");
 		}
 		catch (SQLException sqlex)
 		{
 			  m_connected = false;
-			  System.out.println("Failed: " + sqlex.getMessage());
+			  Logging.error("Failed: " + sqlex.getMessage());
 		}
 		catch (Exception ex)
 		{
 			  m_connected = false;
-			  System.out.println("Failed: " + ex.getMessage());
+			  Logging.error("Failed: " + ex.getMessage());
 		}
 		m_connecting = false;
 	}
@@ -215,8 +214,8 @@ public class node implements Runnable {
 		}
 		catch (SQLException sqlex)
 		{
-			System.out.println("Probe failed: " + sql + ": " + sqlex.getMessage());
-			System.out.println("ErrorCode: " + sqlex.getErrorCode() + ": SQLState: " + sqlex.getSQLState());
+			Logging.error("Probe failed: " + sql + ": " + sqlex.getMessage());
+			Logging.error("ErrorCode: " + sqlex.getErrorCode() + ": SQLState: " + sqlex.getSQLState());
 			try {
 				this.close();
 			} catch (Exception ex) {
@@ -293,8 +292,8 @@ public class node implements Runnable {
 		}
 		catch (SQLException sqlex)
 		{
-			System.out.println("Probe failed: " + sql + ": " + sqlex.getMessage());
-			System.out.println("ErrorCode: " + sqlex.getErrorCode() + ": SQLState: " + sqlex.getSQLState());
+			Logging.error("Probe failed: " + sql + ": " + sqlex.getMessage());
+			Logging.error("ErrorCode: " + sqlex.getErrorCode() + ": SQLState: " + sqlex.getSQLState());
 			try {
 				this.close();
 			} catch (Exception ex) {

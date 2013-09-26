@@ -105,7 +105,7 @@ public class monAPI {
 	 */
 	public boolean MonitorValue(int systemID, String monitorKey, String value) {
 		String apiRequest = "system/" + systemID + "/monitor/" + monitorKey + "/data";
-		System.err.println("MONITOR REQUEST: " + apiRequest + " value: " + value);
+		Logging.info("MONITOR REQUEST: " + apiRequest + " value: " + value);
 		return restPost(apiRequest, new String[] {"value"}, new String[] {value});
 	}
 	/**
@@ -144,7 +144,7 @@ public class monAPI {
 	 * @return
 	 */
 	public boolean UpdateValue(String restRequest, String[] pName, String[] pValue) {
-		System.err.println("UPDATE REQUEST: " + restRequest);
+		Logging.info("UPDATE REQUEST: " + restRequest);
 		String result = updateValue(restRequest, pName, pValue);
 		if (result == null) return false;
 		return true;
@@ -174,13 +174,12 @@ public class monAPI {
 	public String getReturnedJson(String restRequest, String[] pName, String[] pValue) {
 		String outJson = restGet(restRequest, pName, pValue);
 		if (outJson == null) {
-			System.err.println("Failed: Output Json: " + outJson);
-			System.err.println("        URI request: " + restRequest);
-			System.err.print("        Parameters names and values:");
+			Logging.error("Failed: Output Json: " + outJson);
+			Logging.debug("        URI request: " + restRequest);
+			Logging.debug("        Parameters names and values:");
 			for (int i=0; i<pName.length; i++) {
-				System.err.print(" " + pName[i] + "=" + pValue[i]);
+				Logging.debug(" " + pName[i] + "=" + pValue[i]);
 			}
-			System.err.println();
 			return null;
 		}
 		return outJson;
@@ -217,10 +216,10 @@ public class monAPI {
 				result = "";
 			}
 		} catch (ConnectException e) {
-			System.err.println("Cannot connect to the web server.");
+			Logging.error("Cannot connect to the web server.");
 			return "";
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			Logging.error(e.getMessage());
 			return "";
 		}
 		return result;
@@ -264,10 +263,10 @@ public class monAPI {
 					+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
 		} catch (ConnectException e) {
-			System.err.println("Cannot connect to the web server.");
+			Logging.error("Cannot connect to the web server.");
 			return null;
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			Logging.error(e.getMessage());
 			return null;
 		}
 		return result;
@@ -593,7 +592,7 @@ public class monAPI {
 			Class<? extends Object> classRequest;
 			Class<? extends Object> classOne, classTwo;
 			getInstance().backupBatchQueue();
-			System.err.println("-------------------------------------------------------\n" +
+			Logging.info("-------------------------------------------------------\n" +
 					"START BUFFERED REQUESTS: " + getInstance().stack_bkp.size() + " queued requests.");
 			for (List<Object> batchCmd : getInstance().stack_bkp) {
 				try {
@@ -605,13 +604,13 @@ public class monAPI {
 					method.invoke(getInstance().mapi,
 							batchCmd.get(1), batchCmd.get(2), batchCmd.get(3));
 				} catch (ClassCastException e) {
-					System.err.println("Method " + (String) batchCmd.get(0)
+					Logging.debug("Method " + (String) batchCmd.get(0)
 							+ ": the parameters must be strings or extensions, got instead "
 							+ batchCmd.get(1).getClass().getSimpleName() + ", " 
 							+ batchCmd.get(2).getClass().getSimpleName() + ", "
 							+ batchCmd.get(3).getClass().getSimpleName());
 				} catch (NoSuchMethodException e) {
-					System.err.println("No method " + (String) batchCmd.get(0)
+					Logging.debug("No method " + (String) batchCmd.get(0)
 							+ " with parameters of type "
 							+ batchCmd.get(1).getClass().getSimpleName() + ", "
 							+ batchCmd.get(2).getClass().getSimpleName() + ", "
@@ -621,7 +620,7 @@ public class monAPI {
 				}
 			}
 			getInstance().stack_bkp.clear();
-			System.err.println("STOP BUFFERED REQUESTS\n"
+			Logging.info("STOP BUFFERED REQUESTS\n"
 					+ "-------------------------------------------------------");
 		}
 	}

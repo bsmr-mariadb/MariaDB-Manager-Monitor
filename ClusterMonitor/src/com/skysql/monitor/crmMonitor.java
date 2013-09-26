@@ -82,7 +82,7 @@ public class crmMonitor extends monitor {
 			return;
 		}
 		if (verbose)
-			System.out.println("Parse crm status bynode");
+			Logging.info("Parse crm status bynode");
 		try {
 			Process process = Runtime.getRuntime().exec(m_sql);
 			InputStream probe = process.getInputStream();
@@ -93,7 +93,7 @@ public class crmMonitor extends monitor {
 			while ((line = in.readLine()) != null)
 			{
 				if (verbose)
-					System.out.println(line);
+					Logging.info(line);
 				if (line.matches("Node.*"))
 				{
 					int beginIndex = line.indexOf("node");
@@ -101,11 +101,11 @@ public class crmMonitor extends monitor {
 					Integer node = new Integer(line.substring(beginIndex + 4, endIndex));
 					nodeNo = node.intValue();
 					if (verbose)
-						System.out.println(">>> Node is: " + nodeNo);
+						Logging.info(">>> Node is: " + nodeNo);
 					if (line.matches(".*OFFLINE.*"))
 					{
 						if (verbose)
-							System.out.println(">>> Set Node Status: " + nodeNo + " OFFLINE");
+							Logging.info(">>> Set Node Status: " + nodeNo + " OFFLINE");
 						crmSetState(nodeNo, "OFFLINE", verbose);
 					}
 				}
@@ -126,7 +126,7 @@ public class crmMonitor extends monitor {
 						Integer node = new Integer(line.substring(beginIndex + 9, endIndex));
 						nodeNo = node.intValue();
 						if (verbose)
-							System.out.println(">>> Node is: " + nodeNo +". State is: " + state);
+							Logging.info(">>> Node is: " + nodeNo +". State is: " + state);
 					}
 					else
 					{
@@ -135,7 +135,7 @@ public class crmMonitor extends monitor {
 						state = words[words.length-1];
 
 						if (verbose)
-							System.out.println(">>> Node is: " + nodeNo +". State is: " + state);
+							Logging.info(">>> Node is: " + nodeNo +". State is: " + state);
 					}
 					crmSetState(nodeNo, state, verbose);
 				}
@@ -150,10 +150,10 @@ public class crmMonitor extends monitor {
 				process.exitValue();
 			} catch (Exception pex)
 			{
-				System.out.println("process.exitValue: " + pex.getLocalizedMessage());
+				Logging.error("process.exitValue: " + pex.getLocalizedMessage());
 			}
 		} catch (Exception ex) {
-			System.err.println("CRM Probe exception: " + ex.getMessage());
+			Logging.error("CRM Probe exception: " + ex.getMessage());
 		}
 	}
 	
@@ -171,17 +171,17 @@ public class crmMonitor extends monitor {
 		
 		if (value == null)
 		{
-			System.out.println("Unable to map state " + state);
+			Logging.warn("Unable to map state " + state);
 			return;
 		}
 		if (verbose)
-			System.out.println("Set Node State: Node: " + nodeNo + " State: " + value + "(mapped from " + state + ")");
+			Logging.info("Set Node State: Node: " + nodeNo + " State: " + value + "(mapped from " + state + ")");
 
 		m_confdb.monitorData(nodeNo, m_monitor_id, value);
 		try {
 			m_confdb.setNodeState(nodeNo, (new Integer(value)).intValue());
 		} catch (Exception ex) {
-			System.err.println("Can not set node state of " + value + " or node " + nodeNo);
+			Logging.error("Can not set node state of " + value + " or node " + nodeNo);
 		}
 	}
 

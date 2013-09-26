@@ -58,12 +58,12 @@ public class nodeStateMonitor extends monitor {
 		}
 		if (verbose)
 		{
-			System.out.println("probe: " + m_sql + " new value " + value);
+			Logging.debug("probe: " + m_sql + " new value " + value);
 		}
 		try {
 			m_confdb.setNodeState(nodeNo, (new Integer(value)).intValue());
 		} catch (Exception ex) {
-			System.err.println("Can not set node state of " + value + " or node " + nodeNo);
+			Logging.error("Can not set node state of " + value + " or node " + nodeNo);
 		}
 		saveObservation(value);
 		m_lastValue = value;

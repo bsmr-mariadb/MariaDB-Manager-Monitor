@@ -78,7 +78,7 @@ public class ClusterMonitor extends Thread {
 	{
 		if (args.length != 1 && args.length != 2)
 		{
-			System.err.println("Usage: ClusterMonitor [-v]  <System ID>");
+			Logging.error("Usage: ClusterMonitor [-v]  <System ID>");
 			System.exit(1);
 		}
 		int off = 0;
@@ -90,8 +90,8 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		System.err.println("Starting ClusterMonitor v1.6-2");
-		System.err.println("==============================");
+		Logging.info("Starting ClusterMonitor v1.6-2");
+		Logging.info("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
 		{
@@ -118,11 +118,11 @@ public class ClusterMonitor extends Thread {
 					// Nothing to do
 				}
 				if (systems.isEmpty() && m_systems_old.isEmpty()) {
-					System.out.println("No systems found to monitor, waiting for systems to be deployed.");
+					Logging.warn("No systems found to monitor, waiting for systems to be deployed.");
 					try {
 						Thread.sleep(10000);
 					} catch (Exception e) {
-						System.err.println("Sleep on current thread failed: " + e.getLocalizedMessage());
+						Logging.error("Sleep on current thread failed: " + e.getLocalizedMessage());
 					}
 				}
 			}
@@ -143,7 +143,7 @@ public class ClusterMonitor extends Thread {
 			}
 			if (! found)
 			{
-				System.err.println("Unable to find the target system, " + targetSystem + " in your database.");
+				Logging.error("Unable to find the target system, " + targetSystem + " in your database.");
 				System.exit(1);
 			}
 			ClusterMonitor monitor = new ClusterMonitor(targetSystem, verbose);
@@ -196,8 +196,8 @@ public class ClusterMonitor extends Thread {
 //					PublicIPMonitor ipmon = new PublicIPMonitor(confdb, m_verbose);
 //					ipmon.start();
 //				} catch (NoClassDefFoundError ex) {
-//					System.err.println("Unable to run IPMonitor: Class " + ex.getLocalizedMessage() + " is not available.");
-//					System.err.println("IP Monitoring functionality has been suspended.");
+//					Logging.error("Unable to run IPMonitor: Class " + ex.getLocalizedMessage() + " is not available.");
+//					Logging.error("IP Monitoring functionality has been suspended.");
 //				}
 //			}
 //		} catch (Exception ex) {
@@ -213,12 +213,12 @@ public class ClusterMonitor extends Thread {
 	private boolean refreshconfig()
 	{
 		if (m_verbose)
-			System.out.println("Reading configuration data");
+			Logging.info("Reading configuration data");
 		List<Integer> nodeIDList = m_confdb.getNodeList();
 		int countNodeFail = 0;
 		while (nodeIDList == null || nodeIDList.isEmpty())
 		{
-			System.err.println("No nodes configured in system " + m_systemID + ".");
+			Logging.warn("No nodes configured in system " + m_systemID + ".");
 			try {
 				if (++countNodeFail > 3) {
 					int index = m_systems_old.indexOf(m_systemID);
@@ -228,12 +228,12 @@ public class ClusterMonitor extends Thread {
 				}
 				Thread.sleep(10000);
 			} catch (Exception e) {
-				System.err.println("Failed while waiting for nodes: " + e.getLocalizedMessage());
+				Logging.warn("Failed while waiting for nodes: " + e.getLocalizedMessage());
 			}
 			nodeIDList = m_confdb.getNodeList();
 		}
 		if (m_verbose)
-			System.out.println(nodeIDList.size() + " node(s) to monitor");
+			Logging.info(nodeIDList.size() + " node(s) to monitor");
 		if (m_nodeList != null)
 		{
 			Iterator<node> node_it = m_nodeList.iterator();
@@ -253,11 +253,11 @@ public class ClusterMonitor extends Thread {
 		List<Integer> monitorIDList = m_confdb.getMonitorIdList();
 		if (monitorIDList == null)
 		{
-			System.err.println("No monitors configured to run.");
+			Logging.warn("No monitors configured to run.");
 			System.exit(1);
 		}
 		if (m_verbose)
-			System.out.println(monitorIDList.size() + " distinct monitors");
+			Logging.info(monitorIDList.size() + " distinct monitors");
 //		m_interval = m_confdb.getSystemMonitorInterval();
 		m_interval = 30;
 		m_monitorList = new ArrayList<List<monitor>>();
@@ -306,7 +306,7 @@ public class ClusterMonitor extends Thread {
 				}
 				else
 				{
-					System.err.println("Unsupported monitor type: " + type);
+					Logging.warn("Unsupported monitor type: " + type);
 				}
 				if (! mlist.isEmpty())
 					m_gcdMonitorInterval = BigInteger.valueOf(m_gcdMonitorInterval)
@@ -336,7 +336,7 @@ public class ClusterMonitor extends Thread {
 						throw new InterruptedException();
 				}
 				if (m_verbose)
-					System.out.println("Probe");
+					Logging.info("Probe");
 
 				// Ping all the nodes before we do a real probe
 				Iterator<node> node_it = m_nodeList.iterator();
@@ -372,10 +372,10 @@ public class ClusterMonitor extends Thread {
 								if (value != null)
 									system_value += (new Double(value)).doubleValue();
 							} catch (Exception ex) {
-								System.err.println("Exception converting probe value '" + value + "' for monitor ID " + id);
+								Logging.error("Exception converting probe value '" + value + "' for monitor ID " + id);
 							}
 							if (m_verbose)
-								System.out.println("    Probe " + id + " returns value " + m.getValue());
+								Logging.info("    Probe " + id + " returns value " + m.getValue());
 						}
 					}
 
@@ -397,19 +397,19 @@ public class ClusterMonitor extends Thread {
 						DecimalFormat fmt = new DecimalFormat(format);
 						m_observedValues.put(id, fmt.format(system_value));
 						if (m_verbose)
-							System.out.println("    Probe system value " + system_value);
+							Logging.info("    Probe system value " + system_value);
 					}
 				}
 				// Update the observations: system
 				if (updateObservations())
-					System.out.println("System " + m_systemID + " monitor data updated.");
+					Logging.info("System " + m_systemID + " monitor data updated.");
 				// Update the observations: nodes in this system
 				node_it = m_nodeList.iterator();
 				while (node_it.hasNext())
 				{
 					node n = node_it.next();
 					if(n.updateObservations())
-						System.out.println("Node " + m_confdb.getNodeName(n.getID()) + " of system " + n.getSystemID() + " monitor data updated.");
+						Logging.info("Node " + m_confdb.getNodeName(n.getID()) + " of system " + n.getSystemID() + " monitor data updated.");
 				}
 				// sleep
 				try {
@@ -420,7 +420,7 @@ public class ClusterMonitor extends Thread {
 			} catch (InterruptedException e) {
 				return;
 			} catch (Exception ex) {
-				System.err.println("Probe exception: " + ex.getMessage());
+				Logging.error("Probe exception: " + ex.getMessage());
 			}
 		}
 	}

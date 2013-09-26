@@ -19,6 +19,7 @@
 package com.skysql.monitor;
 
 import java.util.*;
+
 import com.skysql.monitor.mondata;
 
 /**
@@ -37,7 +38,7 @@ public class SetNodeState {
 	{
 		if (args.length != 4)
 		{
-			System.err.println("Usage: SetNodeState <System ID> <node ID> <dbfile> <state>");
+			Logging.error("Usage: SetNodeState <System ID> <node ID> <dbfile> <state>");
 			System.exit(1);
 		}
 		SetNodeState obj = new SetNodeState(new Integer(args[0]).intValue(), new Integer(args[1]).intValue(), args[2]);
@@ -56,19 +57,19 @@ public class SetNodeState {
 		int monid = m_confdb.getNamedMonitor("Node State");
 		if (monid == -1)
 		{
-			System.err.println("Can't find monitor \"Node State\".");
+			Logging.error("Can't find monitor \"Node State\".");
 			System.exit(1);
 		}
 		int stateid = m_confdb.getNodeStateId(state);
 		if (stateid == -1)
 		{
-			System.err.println("Unknown node state " + state);
-			System.err.println("Valid states are:");
+			Logging.error("Unknown node state " + state);
+			Logging.error("Valid states are:");
 			List<String> states = m_confdb.getNodeValidStates();
 			Iterator<String> it = states.iterator();
 			while (it.hasNext())
 			{
-				System.err.println("    " + it.next());
+				Logging.error("    " + it.next());
 			}
 			System.exit(1);
 		}

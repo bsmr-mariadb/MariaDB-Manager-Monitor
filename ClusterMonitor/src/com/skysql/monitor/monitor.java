@@ -94,7 +94,7 @@ public class monitor {
 		String value = m_node.execute(m_sql);
 		if (verbose)
 		{
-			System.out.println("probe: " + m_sql + " Last value " + m_lastValue + " new value " + value);
+			Logging.debug("probe: " + m_sql + " Last value " + m_lastValue + " new value " + value);
 		}
 		if (value == null)
 		{

@@ -14,7 +14,7 @@ Release: 		%{release}
 Source: 		%{name}-%{version}-%{release}.tar.gz
 Prefix: 		/
 Group: 			Development/Tools
-Requires:		java-1.6.0
+Requires:		java-1.6.0, rsyslog
 #BuildRequires:		java-1.6.0-openjdk
 
 %description
@@ -35,7 +35,7 @@ mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.sh $RPM_BUILD_ROOT%{install_path}
 cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
-#cp start_monitor.sh $RPM_BUILD_ROOT%{install_path}
+cp SkySQL-monitor-syslog.conf /etc/rsyslog.d/
 
 %clean
 
@@ -45,7 +45,7 @@ cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
 %{install_path}ClusterMonitor.jar
 %{install_path}ClusterMonitor.sh
 %{install_path}MonitorShutdown.sh
-#%{install_path}start_monitor.sh
+%{install_path}SkySQL-monitor-syslog.conf
 
 %changelog
 * Wed Aug 1 2013 Massimo Siani <m.siani@digitalp.eu> - 1.5.1

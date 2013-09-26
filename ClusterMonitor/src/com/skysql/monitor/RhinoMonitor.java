@@ -97,7 +97,7 @@ public class RhinoMonitor extends monitor {
 				return ( (Double) cs.eval(bindings) ).toString();
 			} else return ( (Double) engine.eval(m_sql, bindings) ).toString();
 		} catch (Exception e) {
-			System.err.println("Error in JavaScript: " + e.getMessage());
+			Logging.error("Error in JavaScript: " + e.getMessage());
 			return null;
 		}
 	}

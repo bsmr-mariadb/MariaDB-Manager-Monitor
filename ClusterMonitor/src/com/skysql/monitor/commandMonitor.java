@@ -88,7 +88,7 @@ public class commandMonitor extends monitor {
 		}
 		catch (Exception ex)
 		{
-			System.err.println("Command monitor exception: " + ex.getMessage() + " in monitor " + m_id);
+			Logging.error("Command monitor exception: " + ex.getMessage() + " in monitor " + m_id);
 		}
 		saveObservation(value);
 		m_lastValue = value;

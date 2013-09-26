@@ -65,17 +65,17 @@ public class GsonManager {
 					// print errors
 					if (gsonErrors.getErrors() != null) {
 						errorFound = true;
-						System.err.println("The API returned the following error(s): ");
+						Logging.error("The API returned the following error(s): ");
 						for (String error : gsonErrors.getErrors()) {
-							System.err.println(error);
+							Logging.error(error);
 						}
 					}
 					// print warnings
 					if (gsonErrors.getWarnings() != null) {
 						errorFound = true;
-						System.err.println("The API returned the following warning(s): ");
+						Logging.warn("The API returned the following warning(s): ");
 						for (String warning : gsonErrors.getWarnings()) {
-							System.err.println(warning);
+							Logging.warn(warning);
 						}
 					}
 					if (errorFound) return null;

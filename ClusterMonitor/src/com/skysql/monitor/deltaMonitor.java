@@ -56,7 +56,7 @@ public class deltaMonitor extends monitor {
 		String value = m_node.execute(m_sql);
 		if (verbose)
 		{
-			System.out.println("probe: " + m_sql + " Last value " + m_lastValue + " new value " + value);
+			Logging.debug("probe: " + m_sql + " Last value " + m_lastValue + " new value " + value);
 		}
 		if (value != null)
 		{
@@ -66,7 +66,7 @@ public class deltaMonitor extends monitor {
 				Long delta = absValue - lastAbsValue;
 				if (delta < 0)
 				{
-					System.out.println("Negative delta value for probe, absolute value is " + absValue + " last absolute value " + lastAbsValue);
+					Logging.debug("Negative delta value for probe, absolute value is " + absValue + " last absolute value " + lastAbsValue);
 					delta = new Long(0);
 				}
 				DecimalFormat format = new DecimalFormat("###############0");

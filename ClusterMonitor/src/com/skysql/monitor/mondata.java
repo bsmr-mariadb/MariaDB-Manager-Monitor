@@ -190,7 +190,7 @@ public class mondata {
 			}
 			return cred;
 		} catch (Exception ex) {
-			System.err.println("API Failed: " + apiRequest + ": " + ex.getMessage());
+			Logging.error("API Failed: " + apiRequest + ": " + ex.getMessage());
 			return null;
 		}
 	}
@@ -426,7 +426,7 @@ public class mondata {
 			apiRequest = "system/" + m_systemID;
 			m_api.UpdateValue(apiRequest, "state", systemState);
 		} catch (Exception e) {
-			System.err.println("Update System State Failed: " + e.getMessage());
+			Logging.error("Update System State Failed: " + e.getMessage());
 		}
 	}
 	/********************************************************
@@ -444,14 +444,14 @@ public class mondata {
 		try {
 			GsonUpdatedAPI gsonUpdatedAPI = updateValue(apiRequest, GsonUpdatedAPI.class, new String[]{"stateid"}, new String[]{Integer.toString(stateid)});
 			if (gsonUpdatedAPI != null) {
-				System.out.println(gsonUpdatedAPI.getUpdateCount() + " row(s) updated, " + gsonUpdatedAPI.getInsertedKey() + " new keys added.");
+				Logging.info(gsonUpdatedAPI.getUpdateCount() + " row(s) updated, " + gsonUpdatedAPI.getInsertedKey() + " new keys added.");
 				if (gsonUpdatedAPI.getUpdateCount() == 0)
-					System.err.println("Failed to update node state: " + apiRequest + " to state " + stateid);
+					Logging.error("Failed to update node state: " + apiRequest + " to state " + stateid);
 			}
 			if (gsonUpdatedAPI.getErrors() != null) throw new RuntimeException(gsonUpdatedAPI.getErrors().get(0));
 			if (gsonUpdatedAPI.getWarnings() != null) throw new RuntimeException(gsonUpdatedAPI.getWarnings().get(0));
 		} catch (Exception e) {
-			System.err.println("API Failed: " + apiRequest + ": "+ e.getMessage());
+			Logging.error("API Failed: " + apiRequest + ": "+ e.getMessage());
 		}
 	}
 	/**
@@ -541,7 +541,7 @@ public class mondata {
 	public boolean bulkMonitorData(List<Integer> monitorIDs, List<Integer> systemIDs, List<Integer> nodeIDs, List<String> values) {
 		String apiRequest = "monitordata";
 		if ( !(monitorIDs.size() == systemIDs.size() && monitorIDs.size() == nodeIDs.size() && monitorIDs.size() == values.size()) ) {
-			System.err.println("Bulk data failed: arrays must be of the same size: got "
+			Logging.error("Bulk data failed: arrays must be of the same size: got "
 					+ monitorIDs.size() + " monitors, " + systemIDs.size() + " systems, "
 					+ nodeIDs.size() + " nodes and " + values.size() + " values.");
 			return false;
