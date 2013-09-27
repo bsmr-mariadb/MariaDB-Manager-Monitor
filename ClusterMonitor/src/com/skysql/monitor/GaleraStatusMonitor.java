@@ -21,6 +21,7 @@ package com.skysql.monitor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -131,10 +132,9 @@ public class GaleraStatusMonitor extends monitor {
 		Iterator<node> nodeIt = getInstances().get(m_node.getSystemID()).iterator();
 		HashMap<String, List<node>> hmUUID = new HashMap<String, List<node>>();
 		HashMap<node, String> hmIncAddress = new HashMap<node, String>();
-		List<node> nodeList = new ArrayList<node>();
 		while (nodeIt.hasNext()) {
 			node n = nodeIt.next();
-			nodeList.clear();
+			List<node> nodeList = new ArrayList<node>();
 			String monitorState = m_confdb.getNodeStateFromId(Integer.parseInt(n.execute(m_sql)));
 			if (! monitorState.equalsIgnoreCase("joined")) {
 				n.saveObservation(m_monitor_id, monitorState);
@@ -150,26 +150,55 @@ public class GaleraStatusMonitor extends monitor {
 			hmUUID.put(UUID, nodeList);
 			hmIncAddress.put(n, wsrepIncomingAddress);
 		}
+		boolean notFinished = true;
 		if (hmUUID.keySet().size() == 1) {
 			// only one UUID: next check is incoming address
 			if (checkIncomingAddress(hmIncAddress)) {
 				for (node n : hmIncAddress.keySet()) {
 					n.saveObservation(m_monitor_id, "104");
 				}
-				updateTime();
-				return;
+				notFinished = false;
 			}
 		}
-		if (isMajority()) {
-			// TODO
+		if (notFinished) {
+			for (node n : isMajority(hmUUID, hmIncAddress)) {
+				n.saveObservation(m_monitor_id, "104");
+				hmIncAddress.remove(n);
+			}
 		}
-		nodeIt = hmIncAddress.keySet().iterator();
-		while (nodeIt.hasNext()) {
-			node n = nodeIt.next();
-			n.saveObservation(m_monitor_id, "101");
+		if (notFinished) {
+			nodeIt = hmIncAddress.keySet().iterator();
+			while (nodeIt.hasNext()) {
+				node n = nodeIt.next();
+				n.saveObservation(m_monitor_id, "101");
+			}
 		}
+		setSystemState();
 		updateTime();
 		return;
+	}
+	
+	/**
+	 * Algorithm to assign the state to the system.
+	 */
+	public void setSystemState() {
+		List<String> states = m_confdb.getNodeStates();
+		String systemState;
+		Set<String> statesSet = new HashSet<String>(states);
+		if (states.contains("incorrectly_joined")) {
+			systemState = "inconsistent";
+		}
+		else if (! states.contains("joined")) {
+			systemState =  "down";
+		}
+		else if (states.size() < 3) {
+			systemState = "limited_availability";
+		}
+		else if (statesSet.size() == 1) {
+			systemState = "joined";
+		}
+		else systemState = "available";
+		m_confdb.setSystemState(systemState);
 	}
 	
 	/**
@@ -195,8 +224,44 @@ public class GaleraStatusMonitor extends monitor {
 		return isCluster;
 	}
 	
-	private boolean isMajority() {
-		return true;
+	/**
+	 * If there is a majority of nodes correctly joined.
+	 * 
+	 * @param hmIncAddress 
+	 * @param hmUUID 
+	 * 
+	 * @return	The list of nodes in the main cluster, an empty list if no main cluster exists
+	 */
+	private List<node> isMajority(HashMap<String, List<node>> hmUUID, HashMap<node, String> hmIncAddress) {
+		HashMap<Integer, List<node>> nodePartitions = new HashMap<Integer, List<node>>();
+		Integer partitionNo = 1;
+		int totalSize = 0;
+		for (String UUID : hmUUID.keySet()) {
+			List<node> toIterateOn = hmUUID.get(UUID);
+			totalSize += toIterateOn.size();
+			List<node> toIterateExt = hmUUID.get(UUID);
+			for (node n : toIterateOn) {		// do not use toIterateOn here, only below
+				toIterateOn.remove(n);
+				String hostname = m_confdb.getNodeHostName(n.getID());
+				List<node> partitionNodes = new ArrayList<node>();
+				partitionNodes.add(n);
+				for (node m : toIterateOn) {
+					if (hmIncAddress.get(m).contains(hostname)) {
+						partitionNodes.add(m);
+						toIterateOn.remove(m);
+					}
+				}
+				nodePartitions.put(partitionNo, partitionNodes);
+				partitionNo++;
+			}
+		}
+		for (Integer i : nodePartitions.keySet()) {
+			List<node> nl = nodePartitions.get(i);
+			if (nl.size() > totalSize/2) {
+				return nl;
+			}
+		}
+		return new ArrayList<node>();
 	}
 	
 	/**

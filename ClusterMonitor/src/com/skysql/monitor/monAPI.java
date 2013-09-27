@@ -592,8 +592,7 @@ public class monAPI {
 			Class<? extends Object> classRequest;
 			Class<? extends Object> classOne, classTwo;
 			getInstance().backupBatchQueue();
-			Logging.info("-------------------------------------------------------\n" +
-					"START BUFFERED REQUESTS: " + getInstance().stack_bkp.size() + " queued requests.");
+			Logging.info("START BUFFERED REQUESTS: " + getInstance().stack_bkp.size() + " queued requests.");
 			for (List<Object> batchCmd : getInstance().stack_bkp) {
 				try {
 					classRequest = batchCmd.get(1).getClass();
@@ -620,8 +619,7 @@ public class monAPI {
 				}
 			}
 			getInstance().stack_bkp.clear();
-			Logging.info("STOP BUFFERED REQUESTS\n"
-					+ "-------------------------------------------------------");
+			Logging.info("STOP BUFFERED REQUESTS");
 		}
 	}
 }

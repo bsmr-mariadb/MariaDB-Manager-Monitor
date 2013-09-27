@@ -210,6 +210,20 @@ public class mondata {
 		return result;
 	}
 	/**
+	 * Return the list of the states of the nodes in the system.
+	 * 
+	 * @return	The list of states
+	 */
+	public List<String> getNodeStates() {
+		String apiRequest = "system/" + m_systemID + "/node";
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		List<String> result = new ArrayList<String>();
+		for (int i=0; i<gsonNode.getNodes().size(); i++) {
+			result.add(gsonNode.getNodes().get(i).getState());
+		}
+		return result;
+	}
+	/**
 	 * Get the name of the node. If the name has not been set, returns
 	 * the ID of the node.
 	 * 
@@ -428,6 +442,18 @@ public class mondata {
 		} catch (Exception e) {
 			Logging.error("Update System State Failed: " + e.getMessage());
 		}
+	}
+	
+	/**
+	 * Set the state of the system.
+	 * 
+	 * @param state		the state to which the system must be set
+	 */
+	public void setSystemState(String state) {
+		String apiRequest = "system/" + m_systemID;
+		String[] pName = new String[] {"systemtype", "state"};
+		String[] pValue = new String[] {m_systemType, state};
+		m_api.updateValue(apiRequest, pName, pValue);
 	}
 	/********************************************************
 	 * Node

@@ -104,7 +104,7 @@ public class Logging {
 	private Logging() {
 		m_syslog = Syslog.getInstance(m_protocol);
 		m_syslog.getConfig().setFacility(SyslogFacility.local6);
-		String prefix = "MariaDB-Manager-<Monitor>: ";
+		String prefix = "MariaDB-Manager-Monitor: ";
 		Random random = new Random();
 		prefix += "[" + random.nextInt(999999) + "] ";
 		PrefixSyslogMessageModifier prefixModifier = new PrefixSyslogMessageModifier(prefix);
