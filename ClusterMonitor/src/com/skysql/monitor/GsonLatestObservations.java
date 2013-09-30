@@ -63,7 +63,7 @@ public class GsonLatestObservations {
 		m_node = new LinkedHashMap<Integer, LinkedHashMap<Integer, GsonNode.Nodes>>(1);
 		m_systemDates = new LinkedHashMap<Integer, String>(1);
 		m_nodeDates = new LinkedHashMap<Integer, LinkedHashMap<Integer,String>>(1);
-		m_standardDate = "Thu, 01 Jan 1970 00:00:01 +0100";
+		m_standardDate = "Thu, 01 Jan 1970 01:00:00 +0100";
 	}
 
 	/**

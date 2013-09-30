@@ -32,17 +32,18 @@ import com.nesscomputing.syslog4j.impl.message.modifier.text.PrefixSyslogMessage
  *
  */
 public class Logging {
-	/**
-	 * Instance to handle the logging mechanism.
-	 */
+	/** Instance to handle the logging mechanism. */
 	private SyslogIF				m_syslog;
-	/**
-	 * Instance of this singleton.
-	 */
+	/** Instance of this singleton. */
 	private static volatile Logging		INSTANCE = null;
+	/** Host that runs the syslog daemon. */
 	private String						m_host = "127.0.0.1";
+	/** Syslog protocol. */
 	private String						m_protocol = "udp";
+	/** Syslog port. */
 	private int							m_port = 514;
+	/** The prefix of every log string. */
+	private String						m_prefix;
 	
 	/**
 	 * @return	this instance
@@ -54,7 +55,7 @@ public class Logging {
 		return INSTANCE;
 	}
 	/**
-	 * @return	the syslog interface
+	 * @return	The syslog interface
 	 */
 	private static SyslogIF getSyslog() {
 		return getInstance().m_syslog;
@@ -63,7 +64,7 @@ public class Logging {
 	/**
 	 * Set a host different from 127.0.0.1
 	 * 
-	 * @param host the log host
+	 * @param host The log host
 	 */
 	public static Logging setHost(String host) {
 		getInstance().m_host = host;
@@ -72,7 +73,7 @@ public class Logging {
 	}
 
 	/**
-	 * Set a protocol different from udp.
+	 * Set a protocol different from the default.
 	 * 
 	 * @param protocol the protocol to set
 	 */
@@ -104,10 +105,10 @@ public class Logging {
 	private Logging() {
 		m_syslog = Syslog.getInstance(m_protocol);
 		m_syslog.getConfig().setFacility(SyslogFacility.local6);
-		String prefix = "MariaDB-Manager-Monitor: ";
+		m_prefix = "MariaDB-Manager-Monitor: ";
 		Random random = new Random();
-		prefix += "[" + random.nextInt(999999) + "] ";
-		PrefixSyslogMessageModifier prefixModifier = new PrefixSyslogMessageModifier(prefix);
+		m_prefix += "[" + random.nextInt(999999) + "] ";
+		PrefixSyslogMessageModifier prefixModifier = new PrefixSyslogMessageModifier(m_prefix);
 		m_syslog.getConfig().addMessageModifier(prefixModifier);
 	}
 	
@@ -119,7 +120,9 @@ public class Logging {
 	public static void info(String message) {
 		try {
 			getSyslog().info(message);
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			System.out.println("info log.");
+		}
 	}
 	
 	/**

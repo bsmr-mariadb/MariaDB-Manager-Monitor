@@ -105,7 +105,6 @@ public class monAPI {
 	 */
 	public boolean MonitorValue(int systemID, String monitorKey, String value) {
 		String apiRequest = "system/" + systemID + "/monitor/" + monitorKey + "/data";
-		Logging.info("MONITOR REQUEST: " + apiRequest + " value: " + value);
 		return restPost(apiRequest, new String[] {"value"}, new String[] {value});
 	}
 	/**
@@ -144,7 +143,6 @@ public class monAPI {
 	 * @return
 	 */
 	public boolean UpdateValue(String restRequest, String[] pName, String[] pValue) {
-		Logging.info("UPDATE REQUEST: " + restRequest);
 		String result = updateValue(restRequest, pName, pValue);
 		if (result == null) return false;
 		return true;
@@ -176,9 +174,27 @@ public class monAPI {
 		if (outJson == null) {
 			Logging.error("Failed: Output Json: " + outJson);
 			Logging.debug("        URI request: " + restRequest);
-			Logging.debug("        Parameters names and values:");
-			for (int i=0; i<pName.length; i++) {
-				Logging.debug(" " + pName[i] + "=" + pValue[i]);
+			if (pName.length > 0) {
+				Logging.debug("        Parameters names and values:");
+				for (int i=0; i<pName.length; i++) {
+					Logging.debug(" " + pName[i] + "=" + pValue[i]);
+				}
+			}
+			return null;
+		}
+		return outJson;
+	}
+	
+	public String getReturnedJson(String restRequest, String[] pName, String[] pValue, String lastUpdate) {
+		String outJson = restModified(restRequest, pName, pValue, lastUpdate);
+		if (outJson == null) {
+			Logging.error("Failed: Output Json: " + outJson);
+			Logging.debug("        URI request: " + restRequest);
+			if (pName.length > 0) {
+				Logging.debug("        Parameters names and values:");
+				for (int i=0; i<pName.length; i++) {
+					Logging.debug(" " + pName[i] + "=" + pValue[i]);
+				}
 			}
 			return null;
 		}

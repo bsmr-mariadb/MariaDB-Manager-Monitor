@@ -135,9 +135,14 @@ public class GaleraStatusMonitor extends monitor {
 		while (nodeIt.hasNext()) {
 			node n = nodeIt.next();
 			List<node> nodeList = new ArrayList<node>();
-			String monitorState = m_confdb.getNodeStateFromId(Integer.parseInt(n.execute(m_sql)));
-			if (! monitorState.equalsIgnoreCase("joined")) {
-				n.saveObservation(m_monitor_id, monitorState);
+			try {
+				Integer nodeStateID = Integer.parseInt(n.execute(m_sql));
+				String monitorState = m_confdb.getNodeStateFromId(nodeStateID);
+				if (! monitorState.equalsIgnoreCase("joined")) {
+					m_confdb.setNodeState(n.getID(), nodeStateID);
+					continue;
+				}
+			} catch (Exception e) {
 				continue;
 			}
 			m_globalStatus = globalStatusObject.getInstance(n);
@@ -155,14 +160,14 @@ public class GaleraStatusMonitor extends monitor {
 			// only one UUID: next check is incoming address
 			if (checkIncomingAddress(hmIncAddress)) {
 				for (node n : hmIncAddress.keySet()) {
-					n.saveObservation(m_monitor_id, "104");
+					m_confdb.setNodeState(n.getID(), 104);
 				}
 				notFinished = false;
 			}
 		}
 		if (notFinished) {
 			for (node n : isMajority(hmUUID, hmIncAddress)) {
-				n.saveObservation(m_monitor_id, "104");
+				m_confdb.setNodeState(n.getID(), 104);
 				hmIncAddress.remove(n);
 			}
 		}
@@ -170,11 +175,12 @@ public class GaleraStatusMonitor extends monitor {
 			nodeIt = hmIncAddress.keySet().iterator();
 			while (nodeIt.hasNext()) {
 				node n = nodeIt.next();
-				n.saveObservation(m_monitor_id, "101");
+				m_confdb.setNodeState(n.getID(), 98);
 			}
 		}
 		setSystemState();
 		updateTime();
+		Logging.info("Probe 19 for system " + m_systemID + " done.");
 		return;
 	}
 	
@@ -211,7 +217,7 @@ public class GaleraStatusMonitor extends monitor {
 	private boolean checkIncomingAddress(HashMap<node, String> incomingAddress) {
 		boolean isCluster = true;
 		Set<node> nodeSet = incomingAddress.keySet();
-		Set<node> nodeSetb = incomingAddress.keySet();
+		Set<node> nodeSetb = new HashSet<node>(incomingAddress.keySet());
 		for (node n : nodeSet) {
 			String hostname = m_confdb.getNodeHostName(n.getID());
 			nodeSetb.remove(n);
@@ -238,17 +244,16 @@ public class GaleraStatusMonitor extends monitor {
 		int totalSize = 0;
 		for (String UUID : hmUUID.keySet()) {
 			List<node> toIterateOn = hmUUID.get(UUID);
+			List<node> toIterateOnb = new ArrayList<node>(hmUUID.get(UUID));
 			totalSize += toIterateOn.size();
-			List<node> toIterateExt = hmUUID.get(UUID);
 			for (node n : toIterateOn) {		// do not use toIterateOn here, only below
-				toIterateOn.remove(n);
+				toIterateOnb.remove(n);
 				String hostname = m_confdb.getNodeHostName(n.getID());
 				List<node> partitionNodes = new ArrayList<node>();
 				partitionNodes.add(n);
-				for (node m : toIterateOn) {
+				for (node m : toIterateOnb) {
 					if (hmIncAddress.get(m).contains(hostname)) {
 						partitionNodes.add(m);
-						toIterateOn.remove(m);
 					}
 				}
 				nodePartitions.put(partitionNo, partitionNodes);

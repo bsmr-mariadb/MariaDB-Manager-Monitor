@@ -330,8 +330,7 @@ public class ClusterMonitor extends Thread {
 		while (true)
 		{
 			try {
-				if (m_confdb.testChanges()) {
-					Thread.currentThread();
+				if (m_confdb.getProvisionedNodes()) {
 					if ((! refreshconfig()) || Thread.interrupted())
 						throw new InterruptedException();
 				}
@@ -375,7 +374,8 @@ public class ClusterMonitor extends Thread {
 								Logging.error("Exception converting probe value '" + value + "' for monitor ID " + id);
 							}
 							if (m_verbose)
-								Logging.info("    Probe " + id + " returns value " + m.getValue());
+								Logging.info("    Probe " + id + " on node " + m.m_node.getID() + " of system " +
+										m.m_node.getSystemID() + " returns value " + m.getValue());
 						}
 					}
 
@@ -411,16 +411,17 @@ public class ClusterMonitor extends Thread {
 					if(n.updateObservations())
 						Logging.info("Node " + m_confdb.getNodeName(n.getID()) + " of system " + n.getSystemID() + " monitor data updated.");
 				}
-				// sleep
-				try {
-					Thread.sleep(m_gcdMonitorInterval * 1000);	// Sleep for 30 seconds
-				} catch (Exception ex) {
-					// Ignore exception
-				}
+				
 			} catch (InterruptedException e) {
 				return;
 			} catch (Exception ex) {
 				Logging.error("Probe exception: " + ex.getMessage());
+			} finally {
+				try {
+					Thread.sleep(m_gcdMonitorInterval * 1000);
+				} catch (InterruptedException e) {
+					// ignore
+				}
 			}
 		}
 	}

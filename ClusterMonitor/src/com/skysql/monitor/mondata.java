@@ -59,14 +59,28 @@ public class mondata {
 	}
 	
 	/**
-	 * Fetch the Java object that corresponds to an API URI.
+	 * Fetch the Java object that corresponds to an API URI with GET method.
 	 * 
-	 * @param apiRequest
-	 * @param objectClass the class of the Java object, e.g. MyClass.class
-	 * @return the Java object
+	 * @param apiRequest		the API URI
+	 * @param objectClass		the class of the Java object, e.g. MyClass.class
+	 * @return					the Java object
 	 */
 	private <T> T getObjectFromAPI(String apiRequest, Class<T> objectClass) {
 		String getJson = m_api.getReturnedJson(apiRequest, new String[]{""}, new String[] {""});
+		T object = GsonManager.fromJson(getJson, objectClass);
+		return object;
+	}
+	/**
+	 * Fetch the Java object that corresponds to an API URI with GET method.
+	 * Allows to specify the date that will be specified in the If-Modified-Since.
+	 * 
+	 * @param apiRequest		the API URI
+	 * @param objectClass		the class of the Java object, e.g. MyClass.class
+	 * @param lastUpdate		the date to set in the If-Modified-Since header
+	 * @return					the Java object
+	 */
+	private <T> T getObjectFromAPI(String apiRequest, Class<T> objectClass, String lastUpdate) {
+		String getJson = m_api.getReturnedJson(apiRequest, null, null, lastUpdate);
 		T object = GsonManager.fromJson(getJson, objectClass);
 		return object;
 	}
@@ -453,7 +467,18 @@ public class mondata {
 		String apiRequest = "system/" + m_systemID;
 		String[] pName = new String[] {"systemtype", "state"};
 		String[] pValue = new String[] {m_systemType, state};
-		m_api.updateValue(apiRequest, pName, pValue);
+		try {
+			GsonUpdatedAPI gsonUpdatedAPI = updateValue(apiRequest, GsonUpdatedAPI.class, pName, pValue);
+			if (gsonUpdatedAPI != null) {
+				Logging.info(gsonUpdatedAPI.getUpdateCount() + " row(s) updated, " + gsonUpdatedAPI.getInsertedKey() + " new keys added.");
+				if (gsonUpdatedAPI.getUpdateCount() == 0)
+					Logging.error("Failed to update node state: " + apiRequest + " to state " + state);
+			}
+			if (gsonUpdatedAPI.getErrors() != null) throw new RuntimeException(gsonUpdatedAPI.getErrors().get(0));
+			if (gsonUpdatedAPI.getWarnings() != null) throw new RuntimeException(gsonUpdatedAPI.getWarnings().get(0));
+		} catch (Exception e) {
+			Logging.error("API Failed: " + apiRequest + ": "+ e.getMessage());
+		}
 	}
 	/********************************************************
 	 * Node
@@ -467,8 +492,10 @@ public class mondata {
 	public void setNodeState(int nodeid, int stateid)
 	{
 		String apiRequest = "system/" + m_systemID + "/node/" + nodeid;
+		String[] pName = new String[] {"stateid"};
+		String[] pValue = new String[] {Integer.toString(stateid)};
 		try {
-			GsonUpdatedAPI gsonUpdatedAPI = updateValue(apiRequest, GsonUpdatedAPI.class, new String[]{"stateid"}, new String[]{Integer.toString(stateid)});
+			GsonUpdatedAPI gsonUpdatedAPI = updateValue(apiRequest, GsonUpdatedAPI.class, pName, pValue);
 			if (gsonUpdatedAPI != null) {
 				Logging.info(gsonUpdatedAPI.getUpdateCount() + " row(s) updated, " + gsonUpdatedAPI.getInsertedKey() + " new keys added.");
 				if (gsonUpdatedAPI.getUpdateCount() == 0)
@@ -598,10 +625,9 @@ public class mondata {
 	 */
 	public boolean testChanges() {
 		String now = m_dataChanged.getSystemUpdateDate(m_systemID);
-		String json = m_api.restModified("system/" + m_systemID, null, null, now);
-		boolean isChanged = (json == "" ? false : true);
+		GsonSystem gsonSystem = getObjectFromAPI("system/" + m_systemID, GsonSystem.class, now);
+		boolean isChanged = (gsonSystem == null ? false : true);
 		if (isChanged) {
-			GsonSystem gsonSystem = GsonManager.fromJson(json, GsonSystem.class);
 			m_dataChanged.setLastSystem(gsonSystem);
 		}
 		boolean toUpdate = isChanged;
@@ -609,14 +635,37 @@ public class mondata {
 		while (it.hasNext()) {
 			Integer nodeid = it.next();
 			now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeid);
-			json = m_api.restModified("system/" + m_systemID + "/node/" + nodeid, null, null, now);
-			isChanged = (json == "" ? false : true);
+			GsonNode gsonNode = getObjectFromAPI("system/" + m_systemID + "/node/" + nodeid, GsonNode.class, now);
+			isChanged = (gsonNode == null ? false : true);
 			if (isChanged) {
-				GsonNode gsonNode = GsonManager.fromJson(json, GsonNode.class);
 				m_dataChanged.setLastNode(gsonNode);
 			}
 			toUpdate = toUpdate || isChanged;
 		}
 		return toUpdate;
+	}
+	
+	public boolean getProvisionedNodes() {
+		String now;
+		Iterator<Integer> nodeIt = getNodeList().iterator();
+		boolean isChanged = true;
+		while (nodeIt.hasNext()) {
+			Integer nodeID = nodeIt.next();
+			now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeID);
+			GsonProvisionedNode gsonProvisionedNode = getObjectFromAPI("provisionednode", GsonProvisionedNode.class, now);
+			isChanged = (gsonProvisionedNode == null || gsonProvisionedNode.getProvisionedNodes() == null ? false : true);
+			if (isChanged == true) {
+				Iterator<GsonProvisionedNode.ProvisionedNodes> it = gsonProvisionedNode.getProvisionedNodes().iterator();
+				while (it.hasNext()) {
+					GsonProvisionedNode.ProvisionedNodes provisionedNode = it.next();
+					String ser = GsonManager.toJson(provisionedNode);
+					ser = "{ \"node\": " + ser + "}";
+					GsonNode gsonNode = GsonManager.fromJson(ser, GsonNode.class);
+					m_dataChanged.setLastNode(gsonNode);
+				}
+				break;
+			}
+		}
+		return isChanged;
 	}
 }

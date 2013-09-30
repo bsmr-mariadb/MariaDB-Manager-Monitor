@@ -140,8 +140,8 @@ public class node implements Runnable {
 		if (m_connecting)
 		{
 			m_tempts++;
-			Logging.warn("\n    Already running connection thread - do not run another."
-					+ "\n	Attempt number " + m_tempts);
+			Logging.warn("    Already running connection thread - do not run another."
+					+ "	Attempt number " + m_tempts);
 			if (m_tempts >= 10) {
 				Logging.warn("	Limit reached: reset this connection.");
 				m_connecting = false;

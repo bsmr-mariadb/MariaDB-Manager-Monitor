@@ -25,6 +25,12 @@
 
 CHANGELOG
 
+* Mon Sep 30 2013 Massimo Siani <massimo.siani@skysql.com>
+- Add Galera nodes membership.
+- Switch to syslog.
+- Add provisioned node API support.
+- Refresh based on If-Modified-Since.
+
 * Tue Sep 10 2013 Massimo Siani <massimo.siani@skysql.com>
 - Fixed node state API incompatibility.
 - Removed json simple, and switched to JSON objects only.
