@@ -25,6 +25,10 @@
 
 CHANGELOG
 
+* Tue Oct 1 2013 Massimo Siani <massimo.siani@skysql.com>
+- Bug fix
+- Fix .spec file
+
 * Mon Sep 30 2013 Massimo Siani <massimo.siani@skysql.com>
 - Add Galera nodes membership.
 - Switch to syslog.

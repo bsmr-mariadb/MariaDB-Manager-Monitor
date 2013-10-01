@@ -14,7 +14,7 @@ Release: 		%{release}
 Source: 		%{name}-%{version}-%{release}.tar.gz
 Prefix: 		/
 Group: 			Development/Tools
-Requires:		java-1.6.0, rsyslog
+Requires:		java-1.7.0, rsyslog
 #BuildRequires:		java-1.6.0-openjdk
 
 %description
@@ -27,15 +27,17 @@ SkySQL monitor
 %build
 
 %post
-touch /var/log/SkySQL-ClusterMonitor.log
-chown apache:apache /var/log/SkySQL-ClusterMonitor.log
+touch /var/log/SkySQL-monitor.log
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.sh $RPM_BUILD_ROOT%{install_path}
 cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
-cp SkySQL-monitor-syslog.conf /etc/rsyslog.d/
+cp SkySQL-monitor-syslog.conf /etc/rsyslog.d/SkySQL-monitor-syslog.conf
+sed -i 's/#$ModLoad imudp/$ModLoad imudp' /etc/rsyslog.conf
+sed -i 's/#$UDPServerRun 514/$UDPServerRun 514' /etc/rsyslog.conf
+
 
 %clean
 
@@ -45,10 +47,47 @@ cp SkySQL-monitor-syslog.conf /etc/rsyslog.d/
 %{install_path}ClusterMonitor.jar
 %{install_path}ClusterMonitor.sh
 %{install_path}MonitorShutdown.sh
-%{install_path}SkySQL-monitor-syslog.conf
+/etc/rsyslog.d/SkySQL-monitor-syslog.conf
 
 %changelog
-* Wed Aug 1 2013 Massimo Siani <m.siani@digitalp.eu> - 1.5.1
+
+* Tue Oct 1 2013 Massimo Siani <massimo.siani@skysql.com>
+- Bug fix
+- Fix .spec file
+
+* Mon Sep 30 2013 Massimo Siani <massimo.siani@skysql.com>
+- Add Galera nodes membership.
+- Switch to syslog.
+- Add provisioned node API support.
+- Refresh based on If-Modified-Since.
+
+* Tue Sep 10 2013 Massimo Siani <massimo.siani@skysql.com>
+- Fixed node state API incompatibility.
+- Removed json simple, and switched to JSON objects only.
+
+* Thu Sep 5 2013 Massimo Siani <massimo.siani@skysql.com>
+- Remove any reference to SQLite db file.
+
+* Wed Sep 4 2013 Massimo Siani <massimo.siani@skysql.com>
+- Implemented Gson
+
+* Tue Sep 3 2013 Massimo Siani <massimo.siani@skysql.com>
+- Fixings
+
+* Thu Aug 29 2013 Massimo Siani <massimo.siani@skysql.com> - 1.6.0
+- Added: GET API calls compatible with new API
+
+* Fri Aug 16 2013 Massimo Siani <massimo.siani@skysql.com> - 1.5.3
+- Fixed: jdbc connection hangs on a node shutdown
+
+* Fri Aug 2 2013 Massimo Siani <massimo.siani@skysql.com> - 1.5.2
+- Added: no quit if no systems and/or nodes found
+- Added: refresh rate set to 10 seconds until at least one node is defined
+- Added: methods for JavaScript calls
+- Fixed: if the connection hangs, close it and reconnect
+- Removed Amazon unused library, size decreased to less than 1MB
+
+* Wed Aug 1 2013 Massimo Siani <massimo.siani@skysql.com> - 1.5.1
 - Fixed various bugs
 - Use API
 - Keep looking for nodes if systems exist
