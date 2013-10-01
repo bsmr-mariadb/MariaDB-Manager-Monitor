@@ -457,7 +457,6 @@ public class mondata {
 			Logging.error("Update System State Failed: " + e.getMessage());
 		}
 	}
-	
 	/**
 	 * Set the state of the system.
 	 * 
@@ -470,9 +469,8 @@ public class mondata {
 		try {
 			GsonUpdatedAPI gsonUpdatedAPI = updateValue(apiRequest, GsonUpdatedAPI.class, pName, pValue);
 			if (gsonUpdatedAPI != null) {
-				Logging.info(gsonUpdatedAPI.getUpdateCount() + " row(s) updated, " + gsonUpdatedAPI.getInsertedKey() + " new keys added.");
 				if (gsonUpdatedAPI.getUpdateCount() == 0)
-					Logging.error("Failed to update node state: " + apiRequest + " to state " + state);
+					Logging.error("Failed to update system " + m_systemID + " to state " + state);
 			}
 			if (gsonUpdatedAPI.getErrors() != null) throw new RuntimeException(gsonUpdatedAPI.getErrors().get(0));
 			if (gsonUpdatedAPI.getWarnings() != null) throw new RuntimeException(gsonUpdatedAPI.getWarnings().get(0));
@@ -497,9 +495,8 @@ public class mondata {
 		try {
 			GsonUpdatedAPI gsonUpdatedAPI = updateValue(apiRequest, GsonUpdatedAPI.class, pName, pValue);
 			if (gsonUpdatedAPI != null) {
-				Logging.info(gsonUpdatedAPI.getUpdateCount() + " row(s) updated, " + gsonUpdatedAPI.getInsertedKey() + " new keys added.");
 				if (gsonUpdatedAPI.getUpdateCount() == 0)
-					Logging.error("Failed to update node state: " + apiRequest + " to state " + stateid);
+					Logging.error("Failed to update node " + nodeid + " of system " + m_systemID + " to state " + stateid);
 			}
 			if (gsonUpdatedAPI.getErrors() != null) throw new RuntimeException(gsonUpdatedAPI.getErrors().get(0));
 			if (gsonUpdatedAPI.getWarnings() != null) throw new RuntimeException(gsonUpdatedAPI.getWarnings().get(0));
@@ -616,6 +613,7 @@ public class mondata {
 		return m_api.bulkMonitorValue(apiRequest, fields, parameters);
 	}
 	/**
+	 * DEPRECATED.
 	 * Compare the date when the current instance last updated the objects in the
 	 * current system with the last update date retrieved from the API. If necessary,
 	 * the updated objects are saved in place of the older ones. If this happens,
@@ -645,6 +643,14 @@ public class mondata {
 		return toUpdate;
 	}
 	
+	/**
+	 * Compare the date when the current instance last updated the objects in the
+	 * current system with the last update date retrieved from the API. If necessary,
+	 * the updated objects are saved in place of the older ones. If this happens,
+	 * a return value of true is returned.
+	 * 
+	 * @return		true if the objects have been updated, false otherwise
+	 */
 	public boolean getProvisionedNodes() {
 		String now;
 		Iterator<Integer> nodeIt = getNodeList().iterator();

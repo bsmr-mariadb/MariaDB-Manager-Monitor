@@ -180,7 +180,7 @@ public class GaleraStatusMonitor extends monitor {
 		}
 		setSystemState();
 		updateTime();
-		Logging.info("Probe 19 for system " + m_systemID + " done.");
+		Logging.info("Probe " + getID() + " for system " + m_systemID + " done.");
 		return;
 	}
 	
@@ -191,7 +191,7 @@ public class GaleraStatusMonitor extends monitor {
 		List<String> states = m_confdb.getNodeStates();
 		String systemState;
 		Set<String> statesSet = new HashSet<String>(states);
-		if (states.contains("incorrectly_joined")) {
+		if (states.contains("incorrectly-joined")) {
 			systemState = "inconsistent";
 		}
 		else if (! states.contains("joined")) {

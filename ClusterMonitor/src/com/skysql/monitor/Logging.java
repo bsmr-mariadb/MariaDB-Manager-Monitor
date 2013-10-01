@@ -33,7 +33,7 @@ import com.nesscomputing.syslog4j.impl.message.modifier.text.PrefixSyslogMessage
  */
 public class Logging {
 	/** Instance to handle the logging mechanism. */
-	private SyslogIF				m_syslog;
+	private SyslogIF					m_syslog;
 	/** Instance of this singleton. */
 	private static volatile Logging		INSTANCE = null;
 	/** Host that runs the syslog daemon. */

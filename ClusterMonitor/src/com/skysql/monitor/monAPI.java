@@ -131,19 +131,7 @@ public class monAPI {
 	public boolean UpdateValue(String restRequest, String pName, String pValue) {
 		String[] newpName = {pName};
 		String[] newpValue = {pValue};
-		return UpdateValue(restRequest, newpName, newpValue);
-	}
-	/**
-	 * DEPRECATED.
-	 * API call which requires to modify something.
-	 * 
-	 * @param restRequest
-	 * @param pName
-	 * @param pValue
-	 * @return
-	 */
-	public boolean UpdateValue(String restRequest, String[] pName, String[] pValue) {
-		String result = updateValue(restRequest, pName, pValue);
+		String result = updateValue(restRequest, newpName, newpValue);
 		if (result == null) return false;
 		return true;
 	}
@@ -151,9 +139,9 @@ public class monAPI {
 	/**
 	 * API call which requires to modify something.
 	 * 
-	 * @param restRequest
-	 * @param pName
-	 * @param pValue
+	 * @param restRequest	the API URI
+	 * @param pName			an array with the names of the parameters
+	 * @param pValue		an array with the values of the parameters
 	 * @return				the Json from the API as is, or null if an error occurred.
 	 */
 	public String updateValue(String restRequest, String[] pName, String[] pValue) {
@@ -174,34 +162,42 @@ public class monAPI {
 		if (outJson == null) {
 			Logging.error("Failed: Output Json: " + outJson);
 			Logging.debug("        URI request: " + restRequest);
-			if (pName.length > 0) {
-				Logging.debug("        Parameters names and values:");
-				for (int i=0; i<pName.length; i++) {
-					Logging.debug(" " + pName[i] + "=" + pValue[i]);
-				}
-			}
 			return null;
 		}
 		return outJson;
 	}
 	
+	/**
+	 * Returns the Json that comes from the API. Only for GET requests.
+	 * Sets the If-Modified-Since header, although it does not bounce
+	 * the http code 304.
+	 * 
+	 * @param restRequest		the API URI
+	 * @param pName				an array with the names of the parameters, can be null
+	 * @param pValue			an array with the values of the parameters, can be null
+	 * @param lastUpdate		the date for the If-Modified-Since header in RFC 2822 format 
+	 * @return					the output Json, empty string if code 304 is returned
+	 */
 	public String getReturnedJson(String restRequest, String[] pName, String[] pValue, String lastUpdate) {
 		String outJson = restModified(restRequest, pName, pValue, lastUpdate);
 		if (outJson == null) {
 			Logging.error("Failed: Output Json: " + outJson);
 			Logging.debug("        URI request: " + restRequest);
-			if (pName.length > 0) {
-				Logging.debug("        Parameters names and values:");
-				for (int i=0; i<pName.length; i++) {
-					Logging.debug(" " + pName[i] + "=" + pValue[i]);
-				}
-			}
 			return null;
 		}
 		return outJson;
 	}
 	
-	public String restModified(String restRequest, String[] pName, String[] pValue, String lastUpdate) {
+	/**
+	 * Send a GET request to the API and set the If-Modified-Since header.
+	 * 
+	 * @param restRequest	The URL, excluding the fixed stem
+	 * @param pName[]		The parameter names for the GET request
+	 * @param pValue[]		The parameter values for the GET request
+	 * @param lastUpdate	The If-Modified-Since date, in RFC 2822 format
+	 * @return				The output of the API (a JSON string)
+	 */
+	private String restModified(String restRequest, String[] pName, String[] pValue, String lastUpdate) {
 		String result = "";
 		String value = "";
 		if (pName != null && pValue != null) {
@@ -242,7 +238,7 @@ public class monAPI {
 	}
 	
 	/**
-	 * Send a GET request to the API
+	 * Send a GET request to the API.
 	 * 
 	 * @param restRequest	The URL, excluding the fixed stem
 	 * @param pName[]		The parameter names for the GET request
