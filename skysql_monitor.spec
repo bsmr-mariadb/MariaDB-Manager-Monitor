@@ -28,16 +28,13 @@ SkySQL monitor
 
 %post
 touch /var/log/SkySQL-monitor.log
+#./skysql-monitor.sh
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.sh $RPM_BUILD_ROOT%{install_path}
 cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
-cp SkySQL-monitor-syslog.conf /etc/rsyslog.d/SkySQL-monitor-syslog.conf
-sed -i 's/#$ModLoad imudp/$ModLoad imudp' /etc/rsyslog.conf
-sed -i 's/#$UDPServerRun 514/$UDPServerRun 514' /etc/rsyslog.conf
-
 
 %clean
 
@@ -47,7 +44,6 @@ sed -i 's/#$UDPServerRun 514/$UDPServerRun 514' /etc/rsyslog.conf
 %{install_path}ClusterMonitor.jar
 %{install_path}ClusterMonitor.sh
 %{install_path}MonitorShutdown.sh
-/etc/rsyslog.d/SkySQL-monitor-syslog.conf
 
 %changelog
 
