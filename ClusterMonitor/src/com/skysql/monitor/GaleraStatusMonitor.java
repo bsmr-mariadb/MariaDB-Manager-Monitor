@@ -62,9 +62,10 @@ public class GaleraStatusMonitor extends monitor {
 	private static HashMap<Integer, Long>		m_updatedSystems;
 
 	/**
-	 * Get the instance.
+	 * Get the table (system id's, list of nodes with that system id).
+	 * The corresponding object is static.
 	 * 
-	 * @return
+	 * @return	the table (system id, list of nodes)
 	 */
 	private synchronized HashMap<Integer, List<node>> getInstances() {
 		if (INSTANCES == null) {
@@ -122,9 +123,11 @@ public class GaleraStatusMonitor extends monitor {
 	}
 	
 	/**
-	 * Check the nodes and assign them their state.
+	 * Check the nodes and assign them their state. Also assign the system state,
+	 * based on the result of the node states probe.
+	 * Overrides the method in the parent class.
 	 * 
-	 * @param systemID	the id of the system whose nodes are to be checked
+	 * @param verbose
 	 */
 	public synchronized void probe(boolean verbose) {
 		if (now() - m_updatedSystems.get(m_node.getSystemID()) <= UPDATE_THRESHOLD)
@@ -185,19 +188,25 @@ public class GaleraStatusMonitor extends monitor {
 	}
 	
 	/**
-	 * Algorithm to assign the state to the system.
+	 * Algorithm to assign the state to the system. It is based only on
+	 * the list of states returned by the API, so it does not check
+	 * if anything has changed.
 	 */
 	public void setSystemState() {
 		List<String> states = m_confdb.getNodeStates();
 		String systemState;
 		Set<String> statesSet = new HashSet<String>(states);
+		int numOfJoined = 0;
+		for (String state : states) {
+			if (state.equalsIgnoreCase("joined")) numOfJoined++;
+		}
 		if (states.contains("incorrectly-joined")) {
 			systemState = "inconsistent";
 		}
 		else if (! states.contains("joined")) {
 			systemState =  "down";
 		}
-		else if (states.size() < 3) {
+		else if (states.size() < 3 || numOfJoined < 3) {
 			systemState = "limited_availability";
 		}
 		else if (statesSet.size() == 1) {
@@ -210,7 +219,7 @@ public class GaleraStatusMonitor extends monitor {
 	/**
 	 * Check whether all the nodes appear in the incoming address variable.
 	 * 
-	 * @param incomingAddress	a table which contains the INCOMING_ADDRESSES variable
+	 * @param incomingAddress	a table which contains the INCOMING_ADDRESSESES variable
 	 * @return	true if and only if all the nodes appear in all the other nodes'
 	 * INCOMING_ADDRESSES variable
 	 */
@@ -233,8 +242,8 @@ public class GaleraStatusMonitor extends monitor {
 	/**
 	 * If there is a majority of nodes correctly joined.
 	 * 
-	 * @param hmIncAddress 
-	 * @param hmUUID 
+	 * @param hmIncAddress	an HashMap of (node, incoming_addresses variable)
+	 * @param hmUUID		an HashMap of (UUID, list of nodes with that UUID)
 	 * 
 	 * @return	The list of nodes in the main cluster, an empty list if no main cluster exists
 	 */

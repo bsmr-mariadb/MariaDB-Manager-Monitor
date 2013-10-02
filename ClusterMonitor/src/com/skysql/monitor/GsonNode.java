@@ -33,10 +33,20 @@ public class GsonNode extends GsonErrors {
 	private List<Nodes> nodes;
 	
 	/**
-	 * Constructor.
+	 * Constructor for one node.
+	 * 
+	 * @param node	the node to be included in the object
 	 */
 	public GsonNode(Nodes node) {
 		this.node = node;
+	}
+	/**
+	 * Constructor for more than a node.
+	 * 
+	 * @param nodes	the list of nodes to be included in the object
+	 */
+	public GsonNode(List<Nodes> nodes) {
+		this.nodes = nodes;
 	}
 	
 	/**

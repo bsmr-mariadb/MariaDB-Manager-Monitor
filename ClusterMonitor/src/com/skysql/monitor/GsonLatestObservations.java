@@ -19,9 +19,13 @@
 package com.skysql.monitor;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
+
+import com.skysql.monitor.GsonNode.Nodes;
 
 /**
  * Handle the latest observations for all the Gson objects.
@@ -42,7 +46,7 @@ public class GsonLatestObservations {
 	 */
 	private LinkedHashMap<Integer, GsonSystem.Systems>							m_system;
 	/**
-	 * The table of (system ID, node IS, node) saved by the current instance.
+	 * The table of (system ID, node ID, node) saved by the current instance.
 	 */
 	private LinkedHashMap<Integer, LinkedHashMap<Integer, GsonNode.Nodes>>		m_node;
 	/**
@@ -93,6 +97,27 @@ public class GsonLatestObservations {
 	public GsonNode getNode (int systemID, int nodeID) {
 		try {
 			GsonNode gsonNode = new GsonNode(m_node.get(systemID).get(nodeID));
+			return gsonNode;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Return the object that corresponds to a list of all known nodes that belong
+	 * to a specified system.
+	 * 
+	 * @param systemID		the system id of the nodes
+	 * @return				the object of the nodes, or null
+	 */
+	public GsonNode getAllNodes (int systemID) {
+		try {
+			LinkedHashMap<Integer, Nodes> hmNodes = m_node.get(systemID);
+			List<GsonNode.Nodes> nodeList = new ArrayList<GsonNode.Nodes>();
+			for (Integer nodeID : hmNodes.keySet()) {
+				nodeList.add(hmNodes.get(nodeID));
+			}
+			GsonNode gsonNode = new GsonNode(nodeList);
 			return gsonNode;
 		} catch (Exception e) {
 			return null;

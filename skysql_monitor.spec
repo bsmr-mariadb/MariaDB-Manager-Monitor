@@ -28,13 +28,13 @@ SkySQL monitor
 
 %post
 touch /var/log/SkySQL-monitor.log
-#./skysql-monitor.sh
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.sh $RPM_BUILD_ROOT%{install_path}
 cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
+#./skysql-monitor.sh
 
 %clean
 

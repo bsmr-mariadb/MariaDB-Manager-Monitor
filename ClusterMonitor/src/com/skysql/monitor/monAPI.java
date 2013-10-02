@@ -151,14 +151,15 @@ public class monAPI {
 	
 	/**
 	 * Bounce the Json that comes from the API. Only for GET requests.
+	 * This is a convenient call for getReturnedJson(restRequest, pName, pValue, null).
 	 * 
-	 * @param restRequest
-	 * @param pName
-	 * @param pValue
-	 * @return the Json from the API as is, or null if an error occurred.
+	 * @param restRequest		the API URI
+	 * @param pName				an array with the names of the parameters, can be null
+	 * @param pValue			an array with the values of the parameters, can be null
+	 * @return					the Json from the API as is, or null if an error occurred.
 	 */
 	public String getReturnedJson(String restRequest, String[] pName, String[] pValue) {
-		String outJson = restGet(restRequest, pName, pValue);
+		String outJson = getReturnedJson(restRequest, pName, pValue, null);
 		if (outJson == null) {
 			Logging.error("Failed: Output Json: " + outJson);
 			Logging.debug("        URI request: " + restRequest);
@@ -179,7 +180,7 @@ public class monAPI {
 	 * @return					the output Json, empty string if code 304 is returned
 	 */
 	public String getReturnedJson(String restRequest, String[] pName, String[] pValue, String lastUpdate) {
-		String outJson = restModified(restRequest, pName, pValue, lastUpdate);
+		String outJson = restGet(restRequest, pName, pValue, lastUpdate);
 		if (outJson == null) {
 			Logging.error("Failed: Output Json: " + outJson);
 			Logging.debug("        URI request: " + restRequest);
@@ -190,6 +191,8 @@ public class monAPI {
 	
 	/**
 	 * Send a GET request to the API and set the If-Modified-Since header.
+	 * The lists of names and values of parameters to be passed to the API
+	 * may and has to be null if no parameter is to be passed to the API.
 	 * 
 	 * @param restRequest	The URL, excluding the fixed stem
 	 * @param pName[]		The parameter names for the GET request
@@ -197,31 +200,35 @@ public class monAPI {
 	 * @param lastUpdate	The If-Modified-Since date, in RFC 2822 format
 	 * @return				The output of the API (a JSON string)
 	 */
-	private String restModified(String restRequest, String[] pName, String[] pValue, String lastUpdate) {
+	private String restGet(String restRequest, String[] pName, String[] pValue, String lastUpdate) {
 		String result = "";
 		String value = "";
-		if (pName != null && pValue != null) {
+		if (pName != null && pValue != null && ! pName[0].isEmpty()) {
 			for (int i=0; i < pName.length; i++) {
 				value += "&" + pName[i] + "=" + pValue[i];
 			}
+			value = value.substring(1);
 		}
 		try {
-			// set up authorization for the redirected webpage (ie, $_POST variable)
+			// set up authorization
 			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
+			if (value != "")
+				reqString += "?" + value;
 			String rfcdate = setDate();
 		    String sb = this.setAuth(restRequest, rfcdate);
 	        
 			// set up connection
 		    URL postURL = new URL(reqString);
 			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-			apiConn.setRequestProperty("If-Modified-Since", lastUpdate);
-			value = setUpConn(apiConn, sb, rfcdate, value, "GET");
+			if (lastUpdate != null && lastUpdate != "")
+				apiConn.setRequestProperty("If-Modified-Since", lastUpdate);
+			setUpConn(apiConn, sb, rfcdate, value, "GET");
 			
 			// get output
 			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
 			String tmp;
 			while ((tmp = in.readLine()) != null)
-				result += tmp;
+				result += tmp + "\n";
 			in.close();
 
 			if (apiConn.getResponseCode() == 304) {
@@ -238,53 +245,6 @@ public class monAPI {
 	}
 	
 	/**
-	 * Send a GET request to the API.
-	 * 
-	 * @param restRequest	The URL, excluding the fixed stem
-	 * @param pName[]		The parameter names for the GET request
-	 * @param pValue[]		The parameter values for the GET request
-	 * @return				The output of the API (a JSON string)
-	 */
-	private String restGet(String restRequest, String[] pName, String[] pValue) {
-		String result = "";
-		String value = "";
-		for (int i=0; i < pName.length; i++) {
-			value += "&" + pName[i] + "=" + pValue[i];
-		}
-		try {
-			// set up authorization for the redirected webpage (ie, $_POST variable)
-			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
-			String rfcdate = setDate();
-		    String sb = this.setAuth(restRequest, rfcdate);
-	        
-			// set up connection
-		    URL postURL = new URL(reqString);
-			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-			value = setUpConn(apiConn, sb, rfcdate, value, "GET");
-			
-			// get output
-			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
-			String tmp;
-			while ((tmp = in.readLine()) != null) {
-				result += tmp + "\n";
-			}
-			in.close();
-
-			if (apiConn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error : "
-					+ apiConn.getResponseMessage() + ": returned data: " + result);
-			}
-		} catch (ConnectException e) {
-			Logging.error("Cannot connect to the web server.");
-			return null;
-		} catch (Exception e) {
-			Logging.error(e.getMessage());
-			return null;
-		}
-		return result;
-	}
-	
-	/**
 	 * Send a PUT request to the API
 	 * 
 	 * @param restRequest	The URL, excluding the fixed stem
@@ -295,8 +255,11 @@ public class monAPI {
 	private String restPut(String restRequest, String[] pName, String[] pValue) {
 		String result = "";
 		String value = "";
-		for (int i=0; i < pName.length; i++) {
-			value += "&" + pName[i] + "=" + pValue[i];
+		if (pName != null && pValue != null && ! pName[0].isEmpty()) {
+			for (int i=0; i < pName.length; i++) {
+				value += "&" + pName[i] + "=" + pValue[i];
+			}
+			value = value.substring(1);
 		}
 		try {
 			// set up authorization for the redirected webpage (ie, $_POST variable)
@@ -307,7 +270,7 @@ public class monAPI {
 			// set up connection
 			URL postURL = new URL(reqString);
 			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-			value = setUpConn(apiConn, sb, rfcdate, value, "PUT");
+			setUpConn(apiConn, sb, rfcdate, value, "PUT");
 
 			// get output
 			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
@@ -341,8 +304,11 @@ public class monAPI {
 	private boolean restPost(String restRequest, String[] pName, String[] pValue) {
 		String result = "";
 		String value = "";
-		for (int i=0; i < pName.length; i++) {
-			value += "&" + pName[i] + "=" + pValue[i];
+		if (pName != null && pValue != null && ! pName[0].isEmpty()) {
+			for (int i=0; i < pName.length; i++) {
+				value += "&" + pName[i] + "=" + pValue[i];
+			}
+			value = value.substring(1);
 		}
 		try {
 			// set up authorization for the redirected webpage (ie, $_POST variable)
@@ -353,7 +319,7 @@ public class monAPI {
 			// set up connection
 			URL postURL = new URL(reqString);
 			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-			value = setUpConn(apiConn, sb, rfcdate, value, "POST");
+			setUpConn(apiConn, sb, rfcdate, value, "POST");
 
 			// get output
 			BufferedReader in = new BufferedReader(new InputStreamReader(apiConn.getInputStream()));
@@ -441,7 +407,7 @@ public class monAPI {
 	 * @param value
 	 * @throws IOException
 	 */
-	private String setUpConn(HttpURLConnection apiConn, String sb, String rfcdate, String value, String method)
+	private void setUpConn(HttpURLConnection apiConn, String sb, String rfcdate, String value, String method)
 	throws IOException {
 		apiConn.setRequestMethod(method);
 		apiConn.setRequestProperty("Accept", "application/json");
@@ -454,18 +420,12 @@ public class monAPI {
 		apiConn.setDoOutput(true);
 		apiConn.setUseCaches(false);
 		if (value.length() > 1) {
-			value = value.substring(1);
-			if (value.substring(0,1).matches("=")) {
-				value = value.substring(1);
-			}
-		}
-		if (value.length() > 1) {
 			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
 			out.write(value);
 			out.flush();
 			out.close();
 		}
-		return value;
+		return;
 	}
 	/**
 	 * Run the buffer queue.

@@ -66,7 +66,7 @@ public class mondata {
 	 * @return					the Java object
 	 */
 	private <T> T getObjectFromAPI(String apiRequest, Class<T> objectClass) {
-		String getJson = m_api.getReturnedJson(apiRequest, new String[]{""}, new String[] {""});
+		String getJson = m_api.getReturnedJson(apiRequest, null, null);
 		T object = GsonManager.fromJson(getJson, objectClass);
 		return object;
 	}
@@ -83,6 +83,16 @@ public class mondata {
 		String getJson = m_api.getReturnedJson(apiRequest, null, null, lastUpdate);
 		T object = GsonManager.fromJson(getJson, objectClass);
 		return object;
+	}
+	
+	/**
+	 * Return the node object that the current instance stored in the cache.
+	 * 
+	 * @param nodeID	the node id
+	 * @return			the node object, may be null
+	 */
+	private GsonNode getNodeCached(int nodeID) {
+		return m_dataChanged.getNode(m_systemID, nodeID);
 	}
 	
 	/**
@@ -167,6 +177,15 @@ public class mondata {
 		return gsonNode == null ? null : gsonNode.getNodeIdList();
 	}
 	/**
+	 * Return the list of node id's to monitor as saved by the current instance.
+	 * 
+	 * @return The list of nodes in the instance cache
+	 */
+	public List<Integer> getNodeListCached() {
+		GsonNode gsonNode = m_dataChanged.getAllNodes(m_systemID);
+		return gsonNode == null ? null : gsonNode.getNodeIdList();
+	}
+	/**
 	 * Get the private IP address of the specified node.
 	 * 
 	 * @param NodeNo	The node number
@@ -174,8 +193,7 @@ public class mondata {
 	 */
 	public String getNodePrivateIP(int NodeNo)
 	{
-		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
-		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		GsonNode gsonNode = getNodeCached(NodeNo);
 		return gsonNode == null ? null : gsonNode.getNode(0).getPrivateIP();
 	}
 	/**
@@ -189,7 +207,7 @@ public class mondata {
 		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
 		Credential cred;
 		try {
-			GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+			GsonNode gsonNode = getNodeCached(NodeNo);
 			if (gsonNode != null && gsonNode.getNode(0).getDbUserName() != null) {
 				cred = new Credential(gsonNode.getNode(0).getDbUserName(),
 						gsonNode.getNode(0).getDbPassword());
@@ -245,8 +263,7 @@ public class mondata {
 	 * @return	the name or the ID of the node
 	 */
 	public String getNodeName(int NodeNo) {
-		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
-		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		GsonNode gsonNode = getNodeCached(NodeNo);
 		if (gsonNode != null) {
 			if (gsonNode.getNode(0).getName() != null) return gsonNode.getNode(0).getName();
 			else return Integer.toString(gsonNode.getNode(0).getNodeId());
@@ -261,8 +278,7 @@ public class mondata {
 	 * @return	the hostname or the ID of the node
 	 */
 	public String getNodeHostName(int NodeNo) {
-		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
-		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		GsonNode gsonNode = getNodeCached(NodeNo);
 		if (gsonNode != null) {
 			if (gsonNode.getNode(0).getHostname() != null) return gsonNode.getNode(0).getHostname();
 			else return Integer.toString(gsonNode.getNode(0).getNodeId());

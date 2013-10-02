@@ -214,7 +214,7 @@ public class ClusterMonitor extends Thread {
 	{
 		if (m_verbose)
 			Logging.info("Reading configuration data");
-		List<Integer> nodeIDList = m_confdb.getNodeList();
+		List<Integer> nodeIDList = m_confdb.getNodeListCached();
 		int countNodeFail = 0;
 		while (nodeIDList == null || nodeIDList.isEmpty())
 		{
