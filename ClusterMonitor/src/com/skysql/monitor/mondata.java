@@ -208,7 +208,8 @@ public class mondata {
 		Credential cred;
 		try {
 			GsonNode gsonNode = getNodeCached(NodeNo);
-			if (gsonNode != null && gsonNode.getNode(0).getDbUserName() != null) {
+			if (gsonNode != null && (! gsonNode.getNode(0).getDbUserName().isEmpty())
+					&& gsonNode.getNode(0).getDbUserName() != null) {
 				cred = new Credential(gsonNode.getNode(0).getDbUserName(),
 						gsonNode.getNode(0).getDbPassword());
 			} else {
@@ -260,7 +261,7 @@ public class mondata {
 	 * the ID of the node.
 	 * 
 	 * @param NodeNo	the node number
-	 * @return	the name or the ID of the node
+	 * @return			the name or the ID of the node
 	 */
 	public String getNodeName(int NodeNo) {
 		GsonNode gsonNode = getNodeCached(NodeNo);
@@ -275,7 +276,7 @@ public class mondata {
 	 * the ID of the node.
 	 * 
 	 * @param NodeNo	the node number
-	 * @return	the hostname or the ID of the node
+	 * @return			the hostname or the ID of the node
 	 */
 	public String getNodeHostName(int NodeNo) {
 		GsonNode gsonNode = getNodeCached(NodeNo);

@@ -196,9 +196,11 @@ public class GsonLatestObservations {
 			Iterator<GsonNode.Nodes> it = nodeObj.getNodes().iterator();
 			while (it.hasNext()) {
 				GsonNode.Nodes nodeTmp = it.next();
-				LinkedHashMap<Integer, GsonNode.Nodes> lhm = new LinkedHashMap<Integer, GsonNode.Nodes>(1);
 				int systemID = nodeTmp.getSystemId();
 				int nodeID = nodeTmp.getNodeId();
+				LinkedHashMap<Integer, GsonNode.Nodes> lhm = new LinkedHashMap<Integer, GsonNode.Nodes>(1);
+				if (m_node != null && m_node.containsKey(systemID))
+					lhm = m_node.get(systemID);
 				lhm.put(nodeID, nodeTmp);
 				m_node.put(systemID, lhm);
 				LinkedHashMap<Integer, String> lhmDate = new LinkedHashMap<Integer, String>(1);
