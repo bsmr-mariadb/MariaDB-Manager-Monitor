@@ -27,7 +27,6 @@ SkySQL monitor
 %build
 
 %post
-touch /var/log/SkySQL-monitor.log
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
@@ -36,9 +35,9 @@ cp ClusterMonitor.sh $RPM_BUILD_ROOT%{install_path}
 cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
 cp skysql-monitor.sh $RPM_BUILD_ROOT%{install_path}
 chmod +x $RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
-#mkdir -p /etc/rsyslog.d
 #touch /etc/rsyslog.conf
 #$RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
+#/etc/init.d/rsyslog restart
 
 %clean
 #rm -f $RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
@@ -52,6 +51,13 @@ chmod +x $RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
 %{install_path}skysql-monitor.sh
 
 %changelog
+
+* Mon Oct 7 2013 Massimo Siani <massimo.siani@skysql.com>
+- When a node is deleted, also remove its cached data
+
+* Fri Oct 4 2013 Massimo Siani <massimo.siani@skysql.com>
+- Fix a bug when retrieve node credentials
+- Fix a bug when caching node data
 
 * Tue Oct 1 2013 Massimo Siani <massimo.siani@skysql.com>
 - Bug fix

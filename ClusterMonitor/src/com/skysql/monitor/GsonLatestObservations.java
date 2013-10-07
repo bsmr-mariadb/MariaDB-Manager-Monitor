@@ -204,6 +204,8 @@ public class GsonLatestObservations {
 				lhm.put(nodeID, nodeTmp);
 				m_node.put(systemID, lhm);
 				LinkedHashMap<Integer, String> lhmDate = new LinkedHashMap<Integer, String>(1);
+				if (m_nodeDates != null && m_nodeDates.containsKey(systemID))
+					lhmDate = m_nodeDates.get(systemID);
 				lhmDate.put(nodeID, now);
 				m_nodeDates.put(systemID, lhmDate);
 			}
