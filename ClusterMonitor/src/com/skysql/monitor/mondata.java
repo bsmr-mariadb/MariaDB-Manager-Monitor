@@ -629,36 +629,6 @@ public class mondata {
 		String[] parameters = va.toArray(new String[0]);
 		return m_api.bulkMonitorValue(apiRequest, fields, parameters);
 	}
-	/**
-	 * DEPRECATED.
-	 * Compare the date when the current instance last updated the objects in the
-	 * current system with the last update date retrieved from the API. If necessary,
-	 * the updated objects are saved in place of the older ones. If this happens,
-	 * a return value of true is returned.
-	 * 
-	 * @return		true if the objects have been updated, false otherwise
-	 */
-	public boolean testChanges() {
-		String now = m_dataChanged.getSystemUpdateDate(m_systemID);
-		GsonSystem gsonSystem = getObjectFromAPI("system/" + m_systemID, GsonSystem.class, now);
-		boolean isChanged = (gsonSystem == null ? false : true);
-		if (isChanged) {
-			m_dataChanged.setLastSystem(gsonSystem);
-		}
-		boolean toUpdate = isChanged;
-		Iterator<Integer> it = getNodeList().iterator();
-		while (it.hasNext()) {
-			Integer nodeid = it.next();
-			now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeid);
-			GsonNode gsonNode = getObjectFromAPI("system/" + m_systemID + "/node/" + nodeid, GsonNode.class, now);
-			isChanged = (gsonNode == null ? false : true);
-			if (isChanged) {
-				m_dataChanged.setLastNode(gsonNode);
-			}
-			toUpdate = toUpdate || isChanged;
-		}
-		return toUpdate;
-	}
 	
 	/**
 	 * Compare the date when the current instance last updated the objects in the
@@ -669,20 +639,19 @@ public class mondata {
 	 * @return		true if the objects have been updated, false otherwise
 	 */
 	public boolean getProvisionedNodes() {
-		String now;
 		Iterator<Integer> nodeIt = getNodeList().iterator();
 		boolean isChanged = true;
 		while (nodeIt.hasNext()) {
 			Integer nodeID = nodeIt.next();
-			now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeID);
+			String now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeID);
 			GsonProvisionedNode gsonProvisionedNode = getObjectFromAPI("provisionednode", GsonProvisionedNode.class, now);
 			isChanged = (gsonProvisionedNode == null || gsonProvisionedNode.getProvisionedNodes() == null ? false : true);
 			if (isChanged == true) {
+				m_dataChanged.clearAllNodes(m_systemID);
 				Iterator<GsonProvisionedNode.ProvisionedNodes> it = gsonProvisionedNode.getProvisionedNodes().iterator();
 				while (it.hasNext()) {
 					GsonProvisionedNode.ProvisionedNodes provisionedNode = it.next();
-					String ser = GsonManager.toJson(provisionedNode);
-					ser = "{ \"node\": " + ser + "}";
+					String ser = "{ \"node\": " + GsonManager.toJson(provisionedNode) + "}";
 					GsonNode gsonNode = GsonManager.fromJson(ser, GsonNode.class);
 					m_dataChanged.setLastNode(gsonNode);
 				}

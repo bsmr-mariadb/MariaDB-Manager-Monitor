@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Mon Oct 7 2013 Massimo Siani <massimo.siani@skysql.com>
+- When a node is deleted, also remove its cached data
+
 * Fri Oct 4 2013 Massimo Siani <massimo.siani@skysql.com>
 - Fix a bug when retrieve node credentials
 - Fix a bug when caching node data

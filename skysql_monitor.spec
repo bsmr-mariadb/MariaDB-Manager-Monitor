@@ -14,8 +14,8 @@ Release: 		%{release}
 Source: 		%{name}-%{version}-%{release}.tar.gz
 Prefix: 		/
 Group: 			Development/Tools
-Requires:		java-1.7.0, rsyslog
-#BuildRequires:		java-1.6.0-openjdk
+Requires:		java-1.7.0-openjdk, rsyslog
+#BuildRequires:		java-1.7.0-openjdk
 
 %description
 SkySQL monitor
@@ -34,9 +34,14 @@ mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.sh $RPM_BUILD_ROOT%{install_path}
 cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
-#./skysql-monitor.sh
+cp skysql-monitor.sh $RPM_BUILD_ROOT%{install_path}
+chmod +x $RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
+#mkdir -p /etc/rsyslog.d
+touch /etc/rsyslog.conf
+$RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
 
 %clean
+rm -f $RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
 
 %files
 %defattr(-,root,root)
@@ -44,6 +49,7 @@ cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
 %{install_path}ClusterMonitor.jar
 %{install_path}ClusterMonitor.sh
 %{install_path}MonitorShutdown.sh
+%{install_path}skysql-monitor.sh
 
 %changelog
 

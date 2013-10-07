@@ -211,4 +211,18 @@ public class GsonLatestObservations {
 			//
 		}
 	}
+	
+	/**
+	 * Remove all the cached data about a system.
+	 * 
+	 * @param systemID	the system ID
+	 */
+	public void clearAllNodes(int systemID) {
+		try {
+			m_node.get(systemID).clear();
+		} catch (Exception e) {
+			//
+		}
+	}
+	
 }
