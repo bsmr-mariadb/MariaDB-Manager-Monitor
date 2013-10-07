@@ -37,11 +37,11 @@ cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
 cp skysql-monitor.sh $RPM_BUILD_ROOT%{install_path}
 chmod +x $RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
 #mkdir -p /etc/rsyslog.d
-touch /etc/rsyslog.conf
-$RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
+#touch /etc/rsyslog.conf
+#$RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
 
 %clean
-rm -f $RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
+#rm -f $RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
 
 %files
 %defattr(-,root,root)
