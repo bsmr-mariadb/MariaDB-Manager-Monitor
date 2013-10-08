@@ -210,7 +210,7 @@ public class GaleraStatusMonitor extends monitor {
 			systemState = "limited_availability";
 		}
 		else if (statesSet.size() == 1) {
-			systemState = "joined";
+			systemState = "running";
 		}
 		else systemState = "available";
 		m_confdb.setSystemState(systemState);
