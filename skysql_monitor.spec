@@ -6,6 +6,7 @@
 %define install_path	/usr/local/skysql/monitor/
 
 BuildRoot:		%{buildroot}
+BuildArch:              noarch
 Summary: 		SkySQL monitor
 License: 		GPL
 Name: 			%{name}
