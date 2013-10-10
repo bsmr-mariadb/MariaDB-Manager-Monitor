@@ -33,7 +33,8 @@ SkySQL monitor
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
 cp skysql-monitor.sh $RPM_BUILD_ROOT%{install_path}
-install mariadb-enterprise-monitor /etc/init.d/
+mkdir -p $RPM_BUILD_ROOT%/etc/init.d/
+cp mariadb-enterprise-monitor $RPM_BUILD_ROOT%/etc/init.d/
 
 %clean
 
@@ -41,7 +42,6 @@ install mariadb-enterprise-monitor /etc/init.d/
 %defattr(-,root,root)
 %{install_path}
 %{install_path}ClusterMonitor.jar
-/etc/init.d/mariadb-enterprise-monitor
 %{install_path}skysql-monitor.sh
 
 %changelog
