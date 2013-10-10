@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Thu Oct 10 2013 Massimo Siani <massimo.siani@skysql.com>
+- Add init script
+
 * Mon Oct 7 2013 Massimo Siani <massimo.siani@skysql.com>
 - When a node is deleted, also remove its cached data
 

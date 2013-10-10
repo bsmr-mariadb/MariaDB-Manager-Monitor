@@ -31,26 +31,22 @@ SkySQL monitor
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
-cp ClusterMonitor.sh $RPM_BUILD_ROOT%{install_path}
-cp MonitorShutdown.sh $RPM_BUILD_ROOT%{install_path}
 cp skysql-monitor.sh $RPM_BUILD_ROOT%{install_path}
-chmod +x $RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
-#touch /etc/rsyslog.conf
-#$RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
-#/etc/init.d/rsyslog restart
+install mariadb-enterprise-monitor /etc/init.d/
 
 %clean
-#rm -f $RPM_BUILD_ROOT%{install_path}skysql-monitor.sh
 
 %files
 %defattr(-,root,root)
 %{install_path}
 %{install_path}ClusterMonitor.jar
-%{install_path}ClusterMonitor.sh
-%{install_path}MonitorShutdown.sh
+/etc/init.d/mariadb-enterprise-monitor
 %{install_path}skysql-monitor.sh
 
 %changelog
+
+* Thu Oct 10 2013 Massimo Siani <massimo.siani@skysql.com>
+- Add init script
 
 * Mon Oct 7 2013 Massimo Siani <massimo.siani@skysql.com>
 - When a node is deleted, also remove its cached data
