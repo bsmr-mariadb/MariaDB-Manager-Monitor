@@ -47,7 +47,7 @@ public class pingMonitor extends monitor {
 	}
 
 	/**
-	 * Execute a probe. Not that this monitor does not update the state after
+	 * Execute a probe. Note that this monitor does not update the state after
 	 * a single failure, 2 or more successive failures are required.
 	 * 
 	 * @param verbose The log level
@@ -66,8 +66,12 @@ public class pingMonitor extends monitor {
 		}
 		if (m_failcnt > 1)
 		{
-			int state = m_confdb.getNodeStateId("stopped");
-			m_confdb.setNodeState(m_node.getID(), state);	// Stopped - update this to something better
+			try {
+				int state = m_confdb.getNodeStateId("stopped");
+				m_confdb.setNodeState(m_node.getID(), state);
+			} catch (Exception e) {
+				//
+			}
 		}
 	
 		/*
