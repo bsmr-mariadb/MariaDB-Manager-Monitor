@@ -372,7 +372,7 @@ public class monAPI {
 				}
 			}
 			timeZone.close();
-			this.m_timeZone = (tz == null ? "Europe/London" : tz);
+			this.m_timeZone = (tz == null ? "Atlantic/Reykjavik" : tz);
 		}
 		sdf.setTimeZone(TimeZone.getTimeZone(this.m_timeZone));
 		return sdf.format(new Date());

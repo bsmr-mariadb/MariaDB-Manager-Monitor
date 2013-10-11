@@ -139,7 +139,13 @@ public class GaleraStatusMonitor extends monitor {
 			node n = nodeIt.next();
 			List<node> nodeList = new ArrayList<node>();
 			try {
-				Integer nodeStateID = Integer.parseInt(n.execute(m_sql));
+				String nodeStateString = n.execute(m_sql);
+				Integer nodeStateID;
+				if (nodeStateString != null) {
+					nodeStateID = Integer.parseInt(nodeStateString);
+				} else {
+					nodeStateID = 100;
+				} 
 				String monitorState = m_confdb.getNodeStateFromId(nodeStateID);
 				if (! monitorState.equalsIgnoreCase("joined")) {
 					m_confdb.setNodeState(n.getID(), nodeStateID);
