@@ -25,6 +25,8 @@
 # Note        : Script location must be: /etc/init.d  - with execute permission
 # Returns     : 0 = OK - 1 = Warning
 # 
+# chkconfig: 2345 80 20
+# description: Starts the MariaDB-Enterprise Monitor
 
 vMonitorDir=/usr/local/skysql/monitor
 
@@ -77,11 +79,11 @@ case "$1" in
             echo "`date` - Stop: MariaDB Manager Monitor is stopping "
                         
             ### Stop the Monitor ######################################################################################
-	    kill -9 $vMonitorPid
+			kill -9 $vMonitorPid
             ###########################################################################################################
 
             ### Check if the process is already running ###############################################################
-            sleep 1
+			sleep 1
             fGetMonitorPid
             if [ "${vMonitorPid}" != "" ]; then
             
