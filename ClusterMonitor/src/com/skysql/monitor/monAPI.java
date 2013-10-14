@@ -359,7 +359,7 @@ public class monAPI {
 	 * @throws IOException
 	 */
 	private String setDate() throws IOException {
-		SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 		if (this.m_timeZone == null) {
 			BufferedReader timeZone = new BufferedReader(new FileReader("/etc/php.ini"));
 			String tz;
