@@ -1,4 +1,3 @@
-
 %define _topdir	 	%(echo $PWD)/
 %define name		skysql_monitor
 %define release		##RELEASE_TAG##
@@ -32,11 +31,12 @@ SkySQL monitor
 chkconfig --add mariadb-enterprise-monitor
 touch $RPM_BUILD_ROOT/etc/rsyslog.conf
 sed -i -e 's/#$ModLoad imudp/$ModLoad imudp/' -e 's/#$UDPServerRun 514/$UDPServerRun 514/' $RPM_BUILD_ROOT/etc/rsyslog.conf
+/etc/init.d/rsyslog restart
+/etc/init.d/mariadb-enterprise-monitor restart
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
-cp skysql-monitor.sh $RPM_BUILD_ROOT%{install_path}
 mkdir -p $RPM_BUILD_ROOT/etc/init.d/
 cp mariadb-enterprise-monitor $RPM_BUILD_ROOT/etc/init.d/
 
@@ -46,7 +46,6 @@ cp mariadb-enterprise-monitor $RPM_BUILD_ROOT/etc/init.d/
 %defattr(-,root,root)
 %{install_path}
 %{install_path}ClusterMonitor.jar
-%{install_path}skysql-monitor.sh
 /etc/init.d/mariadb-enterprise-monitor
 
 %changelog
