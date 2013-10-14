@@ -48,7 +48,6 @@ cp mariadb-enterprise-monitor $RPM_BUILD_ROOT/etc/init.d/
 %{install_path}ClusterMonitor.jar
 %{install_path}skysql-monitor.sh
 /etc/init.d/mariadb-enterprise-monitor
-/etc/rsyslog.conf
 
 %changelog
 
