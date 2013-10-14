@@ -29,6 +29,9 @@ SkySQL monitor
 %build
 
 %post
+chkconfig --add mariadb-enterprise-monitor
+touch $RPM_BUILD_ROOT/etc/rsyslog.conf
+sed -i -e 's/#$ModLoad imudp/$ModLoad imudp/' -e 's/#$UDPServerRun 514/$UDPServerRun 514/' $RPM_BUILD_ROOT/etc/rsyslog.conf
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
@@ -36,9 +39,6 @@ cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
 cp skysql-monitor.sh $RPM_BUILD_ROOT%{install_path}
 mkdir -p $RPM_BUILD_ROOT/etc/init.d/
 cp mariadb-enterprise-monitor $RPM_BUILD_ROOT/etc/init.d/
-#chkconfig --add $RPM_BUILD_ROOT/etc/init.d/mariadb-enterprise-monitor
-#touch $RPM_BUILD_ROOT/etc/rsyslog.conf
-#sed -i -e 's/#$ModLoad imudp/$ModLoad imudp/' -e 's/#$UDPServerRun 514/$UDPServerRun 514/' $RPM_BUILD_ROOT/etc/rsyslog.conf
 
 %clean
 
@@ -48,6 +48,7 @@ cp mariadb-enterprise-monitor $RPM_BUILD_ROOT/etc/init.d/
 %{install_path}ClusterMonitor.jar
 %{install_path}skysql-monitor.sh
 /etc/init.d/mariadb-enterprise-monitor
+/etc/rsyslog.conf
 
 %changelog
 
