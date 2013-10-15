@@ -646,7 +646,7 @@ public class mondata {
 			String now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeID);
 			GsonProvisionedNode gsonProvisionedNode = getObjectFromAPI("provisionednode", GsonProvisionedNode.class, now);
 			isChanged = (gsonProvisionedNode == null || gsonProvisionedNode.getProvisionedNodes() == null ? false : true);
-			if (isChanged == true) {
+			if (isChanged) {
 				m_dataChanged.clearAllNodes(m_systemID);
 				Iterator<GsonProvisionedNode.ProvisionedNodes> it = gsonProvisionedNode.getProvisionedNodes().iterator();
 				while (it.hasNext()) {
@@ -657,6 +657,22 @@ public class mondata {
 				}
 				break;
 			}
+		}
+		return isChanged;
+	}
+	
+	/**
+	 * Find if the list of monitors has changed since the last time it has been retrieved.
+	 * 
+	 * @return		true if the list of monitors has changed, false otherwise
+	 */
+	public boolean isMonitorChanges() {
+		String apiRequest = "monitorclass/" + m_systemType + "/key";
+		String now = m_dataChanged.getMonitorUpdateDate();
+		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class, now);
+		boolean isChanged = (gsonMonitorClasses == null || gsonMonitorClasses.getMonitorClass(0) == null ? false : true);
+		if (isChanged) {
+			m_dataChanged.setLastMonitor();
 		}
 		return isChanged;
 	}

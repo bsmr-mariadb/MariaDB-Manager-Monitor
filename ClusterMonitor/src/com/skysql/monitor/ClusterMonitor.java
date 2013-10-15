@@ -212,8 +212,9 @@ public class ClusterMonitor extends Thread {
 	 */
 	private boolean refreshconfig()
 	{
-		if (m_verbose)
+		if (m_verbose) {
 			Logging.info("Reading configuration data");
+		}
 		List<Integer> nodeIDList = m_confdb.getNodeListCached();
 		int countNodeFail = 0;
 		while (nodeIDList == null || nodeIDList.isEmpty())
@@ -232,88 +233,14 @@ public class ClusterMonitor extends Thread {
 			}
 			nodeIDList = m_confdb.getNodeList();
 		}
-		if (m_verbose)
+		if (m_verbose) {
 			Logging.info(nodeIDList.size() + " node(s) to monitor");
-		if (m_nodeList != null)
-		{
-			Iterator<node> node_it = m_nodeList.iterator();
-			while (node_it.hasNext())
-			{
-				node n = node_it.next();
-				n.close();
-			}
 		}
-		m_nodeList = new ArrayList<node>();
-		Iterator<Integer> it = nodeIDList.iterator();
-		while (it.hasNext())
-		{
-			Integer i = it.next();
-			m_nodeList.add(new node(m_confdb, m_systemID, i.intValue()));
+		if (m_nodeList != null)	{
+			closeNodes();
 		}
-		List<Integer> monitorIDList = m_confdb.getMonitorIdList();
-		if (monitorIDList == null)
-		{
-			Logging.warn("No monitors configured to run.");
-			System.exit(1);
-		}
-		if (m_verbose)
-			Logging.info(monitorIDList.size() + " distinct monitors");
-//		m_interval = m_confdb.getSystemMonitorInterval();
-		m_interval = 30;
-		m_monitorList = new ArrayList<List<monitor>>();
-		it = monitorIDList.iterator();
-		while (it.hasNext())
-		{
-			Integer i = (Integer)it.next();
-			List<monitor> mlist = new ArrayList<monitor>();
-			m_monitorList.add(mlist);
-			Iterator<node> node_it = m_nodeList.iterator();
-			while (node_it.hasNext())
-			{
-				node n = node_it.next();
-				int monid = i.intValue();
-				String type = m_confdb.getMonitorType(monid);
-				if (type == null || type.equals("SQL"))
-				{
-					if (m_confdb.isMonitorDelta(monid))
-						mlist.add(new deltaMonitor(m_confdb, monid, n));
-					else
-						mlist.add(new monitor(m_confdb, monid, n));
-				}
-				else if (type.equals("CRM"))
-				{
-					mlist.add(new crmMonitor(m_confdb, monid, n));
-				}
-				else if (type.equals("PING"))
-				{
-					mlist.add(new pingMonitor(m_confdb, monid, n));
-				}
-				else if (type.equals("COMMAND"))
-				{
-					mlist.add(new commandMonitor(m_confdb, monid, n));
-				}
-				else if (type.equals("SQL_NODE_STATE"))
-				{
-					mlist.add(new nodeStateMonitor(m_confdb, monid, n));
-				}
-				else if (type.equals("GLOBAL"))
-				{
-					mlist.add(new globalMonitor(m_confdb, monid, n, m_confdb.isMonitorDelta(monid)));
-				} else if (type.equals("JS")) {
-					mlist.add(new RhinoMonitor(m_confdb, monid, n));
-				} else if (type.equals("GALERA_STATUS")) {
-					mlist.add(new GaleraStatusMonitor(m_confdb, monid, n));
-				}
-				else
-				{
-					Logging.warn("Unsupported monitor type: " + type);
-				}
-				if (! mlist.isEmpty())
-					m_gcdMonitorInterval = BigInteger.valueOf(m_gcdMonitorInterval)
-					.gcd(BigInteger.valueOf(mlist.get(mlist.size() -1).m_interval)).intValue();
-				m_gcdMonitorInterval = m_interval;   // disable polling functionality
-			}
-		}
+		refreshNodeList(nodeIDList);
+		refreshMonitorList();
 		return true;
 	}
 
@@ -333,6 +260,9 @@ public class ClusterMonitor extends Thread {
 				if (m_confdb.getProvisionedNodes()) {
 					if ((! refreshconfig()) || Thread.interrupted())
 						throw new InterruptedException();
+				}
+				if (m_confdb.isMonitorChanges()) {
+					refreshMonitorList();
 				}
 				if (m_verbose)
 					Logging.info("Probe");
@@ -446,4 +376,105 @@ public class ClusterMonitor extends Thread {
 		m_observedValues.clear();
 		return m_confdb.bulkMonitorData(monitorIDs, systemIDs, nodeIDs, values);
 	}
+	
+	/**
+	 * Close any active connection to every node in the system.
+	 */
+	private void closeNodes() {
+		Iterator<node> node_it = m_nodeList.iterator();
+		while (node_it.hasNext())
+		{
+			node n = node_it.next();
+			n.close();
+		}
+	}
+	
+	/**
+	 * Refresh the list of nodes. Changes the field m_nodeList according
+	 * to the ID in the list passed as parameter.
+	 * 
+	 * @param nodeIDList	a list of the ID of the available nodes
+	 */
+	private void refreshNodeList(List<Integer> nodeIDList) {
+		m_nodeList = new ArrayList<node>();
+		Iterator<Integer> it = nodeIDList.iterator();
+		while (it.hasNext())
+		{
+			Integer i = it.next();
+			m_nodeList.add(new node(m_confdb, m_systemID, i.intValue()));
+		}
+	}
+	
+	/**
+	 * Refreshes the list of monitors available for the system.
+	 * Changes the field m_monitorList.
+	 */
+	private void refreshMonitorList() {
+		List<Integer> monitorIDList = m_confdb.getMonitorIdList();
+		if (monitorIDList == null) {
+			Logging.warn("No monitors configured to run.");
+			return;
+		}
+		if (m_verbose)
+			Logging.info(monitorIDList.size() + " distinct monitors");
+//		m_interval = m_confdb.getSystemMonitorInterval();
+		m_interval = 30;
+		m_monitorList = new ArrayList<List<monitor>>();
+		Iterator<Integer> it = monitorIDList.iterator();
+		while (it.hasNext())
+		{
+			Integer i = (Integer)it.next();
+			List<monitor> mlist = new ArrayList<monitor>();
+			m_monitorList.add(mlist);
+			Iterator<node> node_it = m_nodeList.iterator();
+			while (node_it.hasNext())
+			{
+				node n = node_it.next();
+				int monid = i.intValue();
+				String type = m_confdb.getMonitorType(monid);
+				if (type == null || type.equals("SQL"))
+				{
+					if (m_confdb.isMonitorDelta(monid)) {
+						mlist.add(new deltaMonitor(m_confdb, monid, n));
+					} else {
+						mlist.add(new monitor(m_confdb, monid, n));
+					}
+				}
+				else if (type.equals("CRM"))
+				{
+					mlist.add(new crmMonitor(m_confdb, monid, n));
+				}
+				else if (type.equals("PING"))
+				{
+					mlist.add(new pingMonitor(m_confdb, monid, n));
+				}
+				else if (type.equals("COMMAND"))
+				{
+					mlist.add(new commandMonitor(m_confdb, monid, n));
+				}
+				else if (type.equals("SQL_NODE_STATE"))
+				{
+					mlist.add(new nodeStateMonitor(m_confdb, monid, n));
+				}
+				else if (type.equals("GLOBAL"))
+				{
+					mlist.add(new globalMonitor(m_confdb, monid, n, m_confdb.isMonitorDelta(monid)));
+				} else if (type.equals("JS")) {
+					mlist.add(new RhinoMonitor(m_confdb, monid, n));
+				} else if (type.equals("GALERA_STATUS")) {
+					mlist.add(new GaleraStatusMonitor(m_confdb, monid, n));
+				}
+				else
+				{
+					Logging.warn("Unsupported monitor type: " + type);
+				}
+				if (! mlist.isEmpty()) {
+					m_gcdMonitorInterval = BigInteger.valueOf(m_gcdMonitorInterval)
+					.gcd(BigInteger.valueOf(mlist.get(mlist.size() -1).m_interval)).intValue();
+				}
+				m_gcdMonitorInterval = m_interval;   // disable polling functionality
+			}
+		}
+	}
+
 }

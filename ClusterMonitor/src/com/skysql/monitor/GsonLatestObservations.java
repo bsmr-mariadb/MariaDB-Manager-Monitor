@@ -57,6 +57,10 @@ public class GsonLatestObservations {
 	 * The (system ID, node ID, last node update date) table.
 	 */
 	private LinkedHashMap<Integer, LinkedHashMap<Integer, String>>				m_nodeDates;
+	/**
+	 * The last monitor list update date in rfc 2822 format.
+	 */
+	private String																m_monitorDates;
 
 
 	/**
@@ -160,6 +164,22 @@ public class GsonLatestObservations {
 			return m_standardDate;
 		}
 	}
+	
+	/**
+	 * Get the last time that the monitor list has been updated by this instance.
+	 * If the ID does not exist or has not been
+	 * saved yet, a date in the past is returned.
+	 * 
+	 * @return				the date when the system has been updated
+	 */
+	public String getMonitorUpdateDate () {
+		try {
+			if (m_monitorDates.isEmpty()) throw new RuntimeException();
+			return m_monitorDates;
+		} catch (Exception e) {
+			return m_standardDate;
+		}
+	}
 
 	/**
 	 * Save a system object. If the object contains a list of systems,
@@ -222,6 +242,18 @@ public class GsonLatestObservations {
 	public void clearAllNodes(int systemID) {
 		try {
 			m_node.get(systemID).clear();
+		} catch (Exception e) {
+			//
+		}
+	}
+	
+	/**
+	 * Set the current time as the last monitor list update time.
+	 */
+	public void setLastMonitor () {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+			m_monitorDates = sdf.format(new Date());
 		} catch (Exception e) {
 			//
 		}
