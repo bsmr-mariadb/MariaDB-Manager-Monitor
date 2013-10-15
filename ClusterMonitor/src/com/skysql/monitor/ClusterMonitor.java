@@ -90,7 +90,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		Logging.info("Starting ClusterMonitor v1.7-90");
+		Logging.info("Starting ClusterMonitor v1.7-92");
 		Logging.info("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -213,7 +213,7 @@ public class ClusterMonitor extends Thread {
 	private boolean refreshconfig()
 	{
 		if (m_verbose) {
-			Logging.info("Reading configuration data");
+			Logging.info("Reading configuration data for system " + m_systemID);
 		}
 		List<Integer> nodeIDList = m_confdb.getNodeListCached();
 		int countNodeFail = 0;
@@ -382,8 +382,7 @@ public class ClusterMonitor extends Thread {
 	 */
 	private void closeNodes() {
 		Iterator<node> node_it = m_nodeList.iterator();
-		while (node_it.hasNext())
-		{
+		while (node_it.hasNext()) {
 			node n = node_it.next();
 			n.close();
 		}
@@ -398,8 +397,7 @@ public class ClusterMonitor extends Thread {
 	private void refreshNodeList(List<Integer> nodeIDList) {
 		m_nodeList = new ArrayList<node>();
 		Iterator<Integer> it = nodeIDList.iterator();
-		while (it.hasNext())
-		{
+		while (it.hasNext()) {
 			Integer i = it.next();
 			m_nodeList.add(new node(m_confdb, m_systemID, i.intValue()));
 		}
@@ -416,7 +414,7 @@ public class ClusterMonitor extends Thread {
 			return;
 		}
 		if (m_verbose)
-			Logging.info(monitorIDList.size() + " distinct monitors");
+			Logging.info(monitorIDList.size() + " distinct monitor(s)");
 //		m_interval = m_confdb.getSystemMonitorInterval();
 		m_interval = 30;
 		m_monitorList = new ArrayList<List<monitor>>();
