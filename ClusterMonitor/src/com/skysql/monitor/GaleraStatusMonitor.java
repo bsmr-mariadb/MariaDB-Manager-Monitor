@@ -189,7 +189,7 @@ public class GaleraStatusMonitor extends monitor {
 		}
 		setSystemState();
 		updateTime();
-		Logging.info("	Probe " + getID() + " for system " + m_systemID + " done.");
+		Logging.info("    Probe " + getID() + " for system " + m_systemID + " done.");
 		return;
 	}
 	

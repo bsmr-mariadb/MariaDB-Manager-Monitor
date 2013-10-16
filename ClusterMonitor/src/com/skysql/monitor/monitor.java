@@ -74,9 +74,9 @@ public class monitor {
 		m_monitor_id = id;
 		m_monitor_key = m_confdb.getMonitorKey(m_monitor_id);
 		m_node = mon_node;
-		m_sql = db.getMonitorSQL(id);
+		m_sql = m_confdb.getMonitorSQL(id);
 		m_lastValue = null;
-		m_systemAverage = db.isMonitorSystemAverage(id);
+		m_systemAverage = m_confdb.isMonitorSystemAverage(id);
 		m_interval = m_confdb.getMonitorClassInterval(m_monitor_key);
 		if (m_interval == null)	m_interval = 30;
 	}

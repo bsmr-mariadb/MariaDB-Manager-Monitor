@@ -90,7 +90,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		Logging.info("Starting ClusterMonitor v1.7-92");
+		Logging.info("Starting ClusterMonitor v1.7-93");
 		Logging.info("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -213,7 +213,7 @@ public class ClusterMonitor extends Thread {
 	private boolean refreshconfig()
 	{
 		if (m_verbose) {
-			Logging.info("Reading configuration data for system " + m_systemID);
+			Logging.info("Reading configuration data for system " + m_systemID + ".");
 		}
 		List<Integer> nodeIDList = m_confdb.getNodeListCached();
 		int countNodeFail = 0;
@@ -258,10 +258,10 @@ public class ClusterMonitor extends Thread {
 		{
 			try {
 				if (m_confdb.getProvisionedNodes()) {
-					if ((! refreshconfig()) || Thread.interrupted())
+					if ((! refreshconfig()) || Thread.interrupted()) {
 						throw new InterruptedException();
-				}
-				if (m_confdb.isMonitorChanges()) {
+					}
+				} else if (m_confdb.saveMonitorChanges()) {
 					refreshMonitorList();
 				}
 				if (m_verbose)
@@ -330,22 +330,13 @@ public class ClusterMonitor extends Thread {
 							Logging.info("    Probe system value " + system_value);
 					}
 				}
-				// Update the observations: system
-				if (updateObservations())
-					Logging.info("System " + m_systemID + " monitor data updated.");
-				// Update the observations: nodes in this system
-				node_it = m_nodeList.iterator();
-				while (node_it.hasNext())
-				{
-					node n = node_it.next();
-					if(n.updateObservations())
-						Logging.info("Node " + m_confdb.getNodeName(n.getID()) + " of system " + n.getSystemID() + " monitor data updated.");
-				}
+				updateFullObservations();
 				
 			} catch (InterruptedException e) {
 				return;
 			} catch (Exception ex) {
 				Logging.error("Probe exception: " + ex.getMessage());
+				updateFullObservations();
 			} finally {
 				try {
 					Thread.sleep(m_gcdMonitorInterval * 1000);
@@ -375,6 +366,23 @@ public class ClusterMonitor extends Thread {
 		}
 		m_observedValues.clear();
 		return m_confdb.bulkMonitorData(monitorIDs, systemIDs, nodeIDs, values);
+	}
+	
+	/**
+	 * Update the API information about the system and all its nodes. 
+	 */
+	private void updateFullObservations() {
+		// Update the observations: system
+		if (updateObservations())
+			Logging.info("System " + m_systemID + " monitor data updated.");
+		// Update the observations: nodes in this system
+		Iterator<node> node_it = m_nodeList.iterator();
+		while (node_it.hasNext())
+		{
+			node n = node_it.next();
+			if(n.updateObservations())
+				Logging.info("Node " + m_confdb.getNodeName(n.getID()) + " of system " + n.getSystemID() + " monitor data updated.");
+		}
 	}
 	
 	/**
@@ -415,24 +423,23 @@ public class ClusterMonitor extends Thread {
 		}
 		if (m_verbose)
 			Logging.info(monitorIDList.size() + " distinct monitor(s)");
-//		m_interval = m_confdb.getSystemMonitorInterval();
 		m_interval = 30;
 		m_monitorList = new ArrayList<List<monitor>>();
 		Iterator<Integer> it = monitorIDList.iterator();
 		while (it.hasNext())
 		{
-			Integer i = (Integer)it.next();
+			int monid = it.next().intValue();
+			String type = m_confdb.getMonitorType(monid);
+			Boolean monIsDelta = m_confdb.isMonitorDelta(monid);
 			List<monitor> mlist = new ArrayList<monitor>();
 			m_monitorList.add(mlist);
 			Iterator<node> node_it = m_nodeList.iterator();
 			while (node_it.hasNext())
 			{
 				node n = node_it.next();
-				int monid = i.intValue();
-				String type = m_confdb.getMonitorType(monid);
 				if (type == null || type.equals("SQL"))
 				{
-					if (m_confdb.isMonitorDelta(monid)) {
+					if (monIsDelta) {
 						mlist.add(new deltaMonitor(m_confdb, monid, n));
 					} else {
 						mlist.add(new monitor(m_confdb, monid, n));
@@ -456,7 +463,7 @@ public class ClusterMonitor extends Thread {
 				}
 				else if (type.equals("GLOBAL"))
 				{
-					mlist.add(new globalMonitor(m_confdb, monid, n, m_confdb.isMonitorDelta(monid)));
+					mlist.add(new globalMonitor(m_confdb, monid, n, monIsDelta));
 				} else if (type.equals("JS")) {
 					mlist.add(new RhinoMonitor(m_confdb, monid, n));
 				} else if (type.equals("GALERA_STATUS")) {

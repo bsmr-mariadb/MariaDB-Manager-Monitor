@@ -50,6 +50,10 @@ public class GsonLatestObservations {
 	 */
 	private LinkedHashMap<Integer, LinkedHashMap<Integer, GsonNode.Nodes>>		m_node;
 	/**
+	 * The (monitor ID, monitor classes) table.
+	 */
+	private LinkedHashMap<Integer, GsonMonitorClasses.MonitorClasses>			m_monitor;
+	/**
 	 * The (system ID, last system update date) table.
 	 */
 	private LinkedHashMap<Integer, String>										m_systemDates;
@@ -60,17 +64,19 @@ public class GsonLatestObservations {
 	/**
 	 * The last monitor list update date in rfc 2822 format.
 	 */
-	private String																m_monitorDates;
+	private LinkedHashMap<Integer, String>										m_monitorDates;
 
 
 	/**
 	 * Constructor for the class.
 	 */
 	public GsonLatestObservations() {
-		m_system = new LinkedHashMap<Integer, GsonSystem.Systems>(1);
-		m_node = new LinkedHashMap<Integer, LinkedHashMap<Integer, GsonNode.Nodes>>(1);
-		m_systemDates = new LinkedHashMap<Integer, String>(1);
-		m_nodeDates = new LinkedHashMap<Integer, LinkedHashMap<Integer,String>>(1);
+		m_system = new LinkedHashMap<Integer, GsonSystem.Systems>(3);
+		m_node = new LinkedHashMap<Integer, LinkedHashMap<Integer, GsonNode.Nodes>>(3);
+		m_monitor = new LinkedHashMap<Integer, GsonMonitorClasses.MonitorClasses>(3);
+		m_systemDates = new LinkedHashMap<Integer, String>(3);
+		m_nodeDates = new LinkedHashMap<Integer, LinkedHashMap<Integer,String>>(3);
+		m_monitorDates = new LinkedHashMap<Integer, String>(3);
 		m_standardDate = "Thu, 01 Jan 1970 01:00:00 +0100";
 	}
 
@@ -129,6 +135,40 @@ public class GsonLatestObservations {
 	}
 	
 	/**
+	 * Get the object that corresponds to the monitor class with given
+	 * monitor ID, if has been cached.
+	 * 
+	 * @param monitorID		the monitor ID
+	 * @return				the object of the monitor, null if not found
+	 */
+	public GsonMonitorClasses getMonitorClasses (int monitorID) {
+		try {
+			GsonMonitorClasses gsonMonitorClasses = new GsonMonitorClasses(m_monitor.get(monitorID));
+			return gsonMonitorClasses;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Return the object that corresponds to a list of all known monitor classes
+	 * 
+	 * @return				the object of the monitor classes, or null
+	 */
+	public GsonMonitorClasses getAllMonitorClasses () {
+		try {
+			List<GsonMonitorClasses.MonitorClasses> monitorList = new ArrayList<GsonMonitorClasses.MonitorClasses>();
+			for (Integer monitorID : m_monitor.keySet()) {
+				monitorList.add(m_monitor.get(monitorID));
+			}
+			GsonMonitorClasses gsonMonitorClasses = new GsonMonitorClasses(monitorList);
+			return gsonMonitorClasses;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	/**
 	 * Get the last time that a system has been updated by this instance.
 	 * The system is identified by its ID. If the ID does not exist or has not been
 	 * saved yet, a date in the past is returned.
@@ -170,15 +210,20 @@ public class GsonLatestObservations {
 	 * If the ID does not exist or has not been
 	 * saved yet, a date in the past is returned.
 	 * 
+	 * @param monitorID		the monitor ID
 	 * @return				the date when the system has been updated
 	 */
-	public String getMonitorUpdateDate () {
+	public String getMonitorUpdateDate (Integer monitorID) {
+		String result;
 		try {
-			if (m_monitorDates.isEmpty()) throw new RuntimeException();
-			return m_monitorDates;
+			result = m_monitorDates.get(monitorID);
+			if (m_monitorDates.isEmpty() || result == null) {
+				result = m_standardDate;
+			}
 		} catch (Exception e) {
-			return m_standardDate;
+			result = m_standardDate;
 		}
+		return result;
 	}
 
 	/**
@@ -246,14 +291,24 @@ public class GsonLatestObservations {
 			//
 		}
 	}
-	
+
 	/**
-	 * Set the current time as the last monitor list update time.
+	 * Save all the monitors in the object and
+	 * set the current time as the last monitor list update time.
+	 * 
+	 * @param		the monitor class object
 	 */
-	public void setLastMonitor () {
+	public void setLastMonitor (GsonMonitorClasses monitorObj) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
-			m_monitorDates = sdf.format(new Date());
+			String now = sdf.format(new Date());
+			Iterator<GsonMonitorClasses.MonitorClasses> it = monitorObj.getMonitorClasses().iterator();
+			while (it.hasNext()) {
+				GsonMonitorClasses.MonitorClasses monitorTmp = it.next();
+				Integer monitorID = monitorTmp.getMonitorId();
+				m_monitor.put(monitorID, monitorTmp);
+				m_monitorDates.put(monitorID, now);
+			}
 		} catch (Exception e) {
 			//
 		}

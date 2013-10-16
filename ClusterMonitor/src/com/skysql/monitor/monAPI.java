@@ -212,16 +212,18 @@ public class monAPI {
 		try {
 			// set up authorization
 			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
-			if (value != "")
+			if (value != "") {
 				reqString += "?" + value;
+			}
 			String rfcdate = setDate();
 		    String sb = this.setAuth(restRequest, rfcdate);
 	        
 			// set up connection
 		    URL postURL = new URL(reqString);
 			HttpURLConnection apiConn = (HttpURLConnection) postURL.openConnection();
-			if (lastUpdate != null && lastUpdate != "")
+			if (lastUpdate != null && lastUpdate != "") {
 				apiConn.setRequestProperty("If-Modified-Since", lastUpdate);
+			}
 			setUpConn(apiConn, sb, rfcdate, value, "GET");
 			
 			// get output
@@ -419,7 +421,7 @@ public class monAPI {
 		apiConn.setRequestProperty("X-SkySQL-API-Version", "1");
 		apiConn.setDoOutput(true);
 		apiConn.setUseCaches(false);
-		if (value.length() > 1) {
+		if (method != "GET" && value.length() > 1) {
 			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
 			out.write(value);
 			out.flush();

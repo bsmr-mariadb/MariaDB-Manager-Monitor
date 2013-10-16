@@ -33,6 +33,23 @@ public class GsonMonitorClasses extends GsonErrors {
 	private List<MonitorClasses> monitorclasses;
 
 	/**
+	 * Constructor.
+	 * 
+	 * @param monitorClass
+	 */
+	public GsonMonitorClasses (MonitorClasses monitorClass) {
+		this.monitorclass = monitorClass;
+	}
+	/**
+	 * Constructor.
+	 * 
+	 * @param monitorClass
+	 */
+	public GsonMonitorClasses (List<MonitorClasses> monitorClasses) {
+		this.monitorclasses = monitorClasses;
+	}
+	
+	/**
 	 * Return a single MonitorClass object at a given position.
 	 * The first element is at position 0.
 	 * 
