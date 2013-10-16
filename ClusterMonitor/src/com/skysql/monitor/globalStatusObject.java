@@ -139,8 +139,13 @@ public class globalStatusObject {
 	public String getStatusOrVariable(String name) {
 		String rval;
 		fetchData();
-		if ((rval = m_globalStatus.get(name)) == null)
-			rval = m_globalVariables.get(name);
+		try {
+			if ((rval = m_globalStatus.get(name)) == null) {
+				rval = m_globalVariables.get(name);
+			}
+		} catch (Exception e) {
+			rval = null;
+		}
 		return rval;
 	}
 	

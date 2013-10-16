@@ -64,7 +64,7 @@ public class GsonLatestObservations {
 	/**
 	 * The last monitor list update date in rfc 2822 format.
 	 */
-	private LinkedHashMap<Integer, String>										m_monitorDates;
+	private String																m_monitorDates;
 
 
 	/**
@@ -76,7 +76,7 @@ public class GsonLatestObservations {
 		m_monitor = new LinkedHashMap<Integer, GsonMonitorClasses.MonitorClasses>(3);
 		m_systemDates = new LinkedHashMap<Integer, String>(3);
 		m_nodeDates = new LinkedHashMap<Integer, LinkedHashMap<Integer,String>>(3);
-		m_monitorDates = new LinkedHashMap<Integer, String>(3);
+		m_monitorDates = "";
 		m_standardDate = "Thu, 01 Jan 1970 01:00:00 +0100";
 	}
 
@@ -213,10 +213,10 @@ public class GsonLatestObservations {
 	 * @param monitorID		the monitor ID
 	 * @return				the date when the system has been updated
 	 */
-	public String getMonitorUpdateDate (Integer monitorID) {
+	public String getMonitorUpdateDate () {
 		String result;
 		try {
-			result = m_monitorDates.get(monitorID);
+			result = m_monitorDates;
 			if (m_monitorDates.isEmpty() || result == null) {
 				result = m_standardDate;
 			}
@@ -307,7 +307,7 @@ public class GsonLatestObservations {
 				GsonMonitorClasses.MonitorClasses monitorTmp = it.next();
 				Integer monitorID = monitorTmp.getMonitorId();
 				m_monitor.put(monitorID, monitorTmp);
-				m_monitorDates.put(monitorID, now);
+				m_monitorDates = now;
 			}
 		} catch (Exception e) {
 			//

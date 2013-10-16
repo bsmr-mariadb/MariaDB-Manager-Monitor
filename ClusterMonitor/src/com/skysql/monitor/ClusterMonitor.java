@@ -90,7 +90,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		Logging.info("Starting ClusterMonitor v1.7-93");
+		Logging.info("Starting ClusterMonitor v1.7-94");
 		Logging.info("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -240,6 +240,7 @@ public class ClusterMonitor extends Thread {
 			closeNodes();
 		}
 		refreshNodeList(nodeIDList);
+		m_confdb.saveMonitorChanges();
 		refreshMonitorList();
 		return true;
 	}
@@ -304,8 +305,9 @@ public class ClusterMonitor extends Thread {
 								Logging.error("Exception converting probe value '" + value + "' for monitor ID " + id);
 							}
 							if (m_verbose)
-								Logging.info("    Probe " + id + " on node " + m.m_node.getID() + " of system " +
-										m.m_node.getSystemID() + " returns value " + m.getValue());
+								Logging.info("    Probe " + id + " " + m_confdb.getMonitorKey(id)
+										+ " on node " + m.m_node.getID() + " of system " + m.m_node.getSystemID()
+										+ " returns value " + m.getValue());
 						}
 					}
 

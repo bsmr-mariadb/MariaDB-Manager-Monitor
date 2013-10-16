@@ -189,7 +189,8 @@ public class GaleraStatusMonitor extends monitor {
 		}
 		setSystemState();
 		updateTime();
-		Logging.info("    Probe " + getID() + " for system " + m_systemID + " done.");
+		Logging.info("    Probe " + getID() + " " + m_confdb.getMonitorKey(getID())
+				+ " for system " + m_systemID + " done.");
 		return;
 	}
 	
@@ -213,7 +214,7 @@ public class GaleraStatusMonitor extends monitor {
 			systemState =  "down";
 		}
 		else if (states.size() < 3 || numOfJoined < 3) {
-			systemState = "limited_availability";
+			systemState = "limited-availability";
 		}
 		else if (statesSet.size() == 1) {
 			systemState = "running";

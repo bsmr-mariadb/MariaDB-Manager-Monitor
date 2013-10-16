@@ -94,9 +94,11 @@ public class globalMonitor extends monitor {
 				m_lastValue = deltaStr;
 				m_lastAbsValue = absValue;
 			}
-			else
+			else if (value != null)
 			{
 				m_lastAbsValue = new Long(value);
+			} else {
+				m_lastAbsValue = null;
 			}
 		}
 		else

@@ -371,8 +371,6 @@ public class mondata {
 	 */
 	public List<Integer> getMonitorIdList()
 	{
-//		String apiRequest = "monitorclass/" + m_systemType + "/key";
-//		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
 		GsonMonitorClasses gsonMonitorClasses = getMonitorClassesCached();
 		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorIdList();
 	}
@@ -387,8 +385,6 @@ public class mondata {
 	 */
 	public String getMonitorSQL(int monitor_id)
 	{
-//		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
-//		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
 		GsonMonitorClasses gsonMonitorClasses = getMonitorClassesCached(monitor_id);
 		if (gsonMonitorClasses == null || gsonMonitorClasses.getMonitorClass(0) == null) return null;
 		return gsonMonitorClasses.getMonitorClass(0).getSql();
@@ -400,8 +396,6 @@ public class mondata {
 	 */
 	public int getMonitorClassInterval(String monitorKey)
 	{
-//		String apiRequest = "monitorclass/" + m_systemType + "/key/" + monitorKey;
-//		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
 		int monitor_id = getMonitorId(monitorKey);
 		GsonMonitorClasses gsonMonitorClasses = getMonitorClassesCached(monitor_id);
 		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass(0).getInterval();
@@ -426,8 +420,6 @@ public class mondata {
 	 */
 	public String getMonitorType(int monitor_id)
 	{
-//		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
-//		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
 		GsonMonitorClasses gsonMonitorClasses = getMonitorClassesCached(monitor_id);
 		if (gsonMonitorClasses == null || gsonMonitorClasses.getMonitorClass(0) == null) return null;
 		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass(0).getMonitorType();
@@ -440,8 +432,6 @@ public class mondata {
 	 */
 	public boolean isMonitorSystemAverage(int monitor_id)
 	{
-//		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
-//		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
 		GsonMonitorClasses gsonMonitorClasses = getMonitorClassesCached(monitor_id);
 		Integer result = (gsonMonitorClasses == null ? 0 : gsonMonitorClasses.getMonitorClass(0).getSystemAverage());
 		if (result == 1) return true;
@@ -457,8 +447,6 @@ public class mondata {
 	 */
 	public Boolean isMonitorDelta(int monitor_id)
 	{
-//		String apiRequest = "monitorclass/" + m_systemType + "/key/" + getMonitorKey(monitor_id);
-//		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class);
 		GsonMonitorClasses gsonMonitorClasses = getMonitorClassesCached(monitor_id);
 		Integer result = (gsonMonitorClasses == null ? 0 : gsonMonitorClasses.getMonitorClass(0).getDelta());
 		if (result == 0) {
@@ -473,12 +461,6 @@ public class mondata {
 	 * @return
 	 */
 	public String getMonitorKey(int monitor_id) {
-//		String apiRequest = "monitorclass/" + m_systemType + "/key";
-//		for (GsonMonitorClasses.MonitorClasses monitorClass : getObjectFromAPI(apiRequest, GsonMonitorClasses.class).getMonitorClasses()) {
-//			if (monitorClass.getMonitorId() == monitor_id)
-//				return monitorClass.getMonitor();
-//		}
-//		return null;
 		GsonMonitorClasses gsonMonitorClasses = getMonitorClassesCached(monitor_id);
 		if (gsonMonitorClasses == null || gsonMonitorClasses.getMonitorClass(0) == null) return null;
 		return gsonMonitorClasses.getMonitorClass(0).getMonitor();
@@ -717,7 +699,7 @@ public class mondata {
 	 */
 	public boolean saveMonitorChanges() {
 		String apiRequest = "monitorclass/" + m_systemType + "/key";
-		String now = m_dataChanged.getMonitorUpdateDate(m_systemID);
+		String now = m_dataChanged.getMonitorUpdateDate();
 		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class, now);
 		boolean isChanged = (gsonMonitorClasses == null || gsonMonitorClasses.getMonitorClass(0) == null ? false : true);
 		if (isChanged) {
