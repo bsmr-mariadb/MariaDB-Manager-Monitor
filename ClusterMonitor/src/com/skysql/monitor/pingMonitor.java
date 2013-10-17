@@ -70,7 +70,7 @@ public class pingMonitor extends monitor {
 				int state = m_confdb.getNodeStateId("stopped");
 				m_confdb.setNodeState(m_node.getID(), state);
 			} catch (Exception e) {
-				//
+				// IGNORE
 			}
 		}
 	

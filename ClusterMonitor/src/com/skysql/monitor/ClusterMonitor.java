@@ -90,7 +90,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		Logging.info("Starting ClusterMonitor v1.7-94");
+		Logging.info("Starting ClusterMonitor v1.7-95");
 		Logging.info("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -220,6 +220,7 @@ public class ClusterMonitor extends Thread {
 		while (nodeIDList == null || nodeIDList.isEmpty())
 		{
 			Logging.warn("No nodes configured in system " + m_systemID + ".");
+			m_confdb.setSystemState("created");
 			try {
 				if (++countNodeFail > 3) {
 					int index = m_systems_old.indexOf(m_systemID);
@@ -306,7 +307,7 @@ public class ClusterMonitor extends Thread {
 							}
 							if (m_verbose)
 								Logging.info("    Probe " + id + " " + m_confdb.getMonitorKey(id)
-										+ " on node " + m.m_node.getID() + " of system " + m.m_node.getSystemID()
+										+ " on node " + m_confdb.getNodeName(m.m_node.getID()) + " of system " + m.m_node.getSystemID()
 										+ " returns value " + m.getValue());
 						}
 					}

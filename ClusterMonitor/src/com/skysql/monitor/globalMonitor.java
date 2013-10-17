@@ -28,7 +28,7 @@ import java.text.DecimalFormat;
  * the MySQL database. The data is collected once per probe cycle from each database
  * in the cluster and reused by multiple instances of the globalMonitor class.
  * 
- * @author Mark Riddoch
+ * @author Mark Riddoch, Massimo Siani
  *
  */
 public class globalMonitor extends monitor {
@@ -38,17 +38,7 @@ public class globalMonitor extends monitor {
 	 * collection and storage of global variables and global status
 	 * data from the database server being monitored.
 	 */
-	private	globalStatusObject	m_global;
-	/**
-	 * The monitor should record differences between the consecutive
-	 * probe cycles.
-	 */
-	private boolean				m_delta;
-	/**
-	 * The last value probed if this is a delta monitor
-	 */
-	private	Long				m_lastAbsValue = null;
-	
+	private	globalStatusObject	m_global;	
 	
 	/**
 	 * Constructor for the global monitor
@@ -62,7 +52,6 @@ public class globalMonitor extends monitor {
 	{
 		super(db, id, mon_node);
 		m_global = globalStatusObject.getInstance(mon_node);
-		m_delta = delta;
 	}
 	
 	/**
@@ -79,24 +68,24 @@ public class globalMonitor extends monitor {
 			Logging.debug("globalMonitor: " + m_sql + " set value " + value);
 		if (m_delta)
 		{
-			if (m_lastAbsValue != null)
+			if (m_lastAbsValue != null && value != null)
 			{
-				Long	absValue = new Long(value);
-				Long delta = absValue - m_lastAbsValue;
+				Long absValue = new Long(value);
+				Float delta = absValue - m_lastAbsValue;
 				if (delta < 0)
 				{
 					Logging.debug("Negative delta value for probe, absolute value is " + absValue + " last absolute value " + m_lastAbsValue);
-					delta = new Long(0);
+					delta = new Float(0);
 				}
 				DecimalFormat format = new DecimalFormat("###############0");
 				String deltaStr = format.format(delta.longValue());
 				saveObservation(deltaStr);
 				m_lastValue = deltaStr;
-				m_lastAbsValue = absValue;
+				m_lastAbsValue = absValue.floatValue();
 			}
 			else if (value != null)
 			{
-				m_lastAbsValue = new Long(value);
+				m_lastAbsValue = new Float(value);
 			} else {
 				m_lastAbsValue = null;
 			}
@@ -104,8 +93,8 @@ public class globalMonitor extends monitor {
 		else
 		{
 			saveObservation(value);
+			m_lastValue = value;
 		}
-		m_lastValue = value;
 	}
 
 }

@@ -244,7 +244,7 @@ public class GsonLatestObservations {
 				m_systemDates.put(systemID, now);
 			}
 		} catch (Exception e) {
-			//
+			// IGNORE
 		}
 	}
 
@@ -275,7 +275,7 @@ public class GsonLatestObservations {
 				m_nodeDates.put(systemID, lhmDate);
 			}
 		} catch (Exception e) {
-			//
+			// IGNORE
 		}
 	}
 	
@@ -288,7 +288,7 @@ public class GsonLatestObservations {
 		try {
 			m_node.get(systemID).clear();
 		} catch (Exception e) {
-			//
+			// IGNORE
 		}
 	}
 
@@ -310,7 +310,7 @@ public class GsonLatestObservations {
 				m_monitorDates = now;
 			}
 		} catch (Exception e) {
-			//
+			// IGNORE
 		}
 	}
 	

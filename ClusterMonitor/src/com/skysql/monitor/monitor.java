@@ -60,6 +60,15 @@ public class monitor {
 	 * The monitor interval
 	 */
 	protected Integer		m_interval;
+	/**
+	 * The monitor should record differences between the consecutive
+	 * probe cycles.
+	 */
+	protected boolean		m_delta;
+	/**
+	 * The last value probed if this is a delta monitor
+	 */
+	protected Float			m_lastAbsValue = null;
 	
 	/**
 	 * The monitor constructor
@@ -79,6 +88,7 @@ public class monitor {
 		m_systemAverage = m_confdb.isMonitorSystemAverage(id);
 		m_interval = m_confdb.getMonitorClassInterval(m_monitor_key);
 		if (m_interval == null)	m_interval = 30;
+		m_delta = m_confdb.isMonitorDelta(m_monitor_id);
 	}
 	
 	/**
@@ -112,7 +122,6 @@ public class monitor {
 	 */
 	protected boolean saveObservation(String observation)
 	{
-//		return m_confdb.monitorData(m_node.getSystemID(), m_node.getID(), m_monitor_id, observation);
 		return m_node.saveObservation(m_monitor_id, observation);
 	}
 	

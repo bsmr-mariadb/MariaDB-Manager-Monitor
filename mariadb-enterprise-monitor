@@ -29,6 +29,8 @@
 # description: Starts the MariaDB-Enterprise Monitor
 
 vMonitorDir=/usr/local/skysql/monitor
+# set to -v for verbosity, empty otherwise
+verbose="-v"
 
 fGetMonitorPid() {
     vMonitorPid=`ps -efwwww | grep ClusterMonitor.jar | grep -v grep | awk '{print $2}'`                    
@@ -51,7 +53,7 @@ case "$1" in
     
             PATH=${PATH}:/usr/sbin
     
-            java -classpath $vMonitorDir/ClusterMonitor.jar com.skysql.monitor.ClusterMonitor -v all &
+            java -classpath $vMonitorDir/ClusterMonitor.jar com.skysql.monitor.ClusterMonitor $verbose all &
 
             ### Check if the process is started ###############################################################
             sleep 1

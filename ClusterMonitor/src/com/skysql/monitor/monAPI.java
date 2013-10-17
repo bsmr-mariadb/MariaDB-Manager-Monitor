@@ -176,7 +176,7 @@ public class monAPI {
 	 * @param restRequest		the API URI
 	 * @param pName				an array with the names of the parameters, can be null
 	 * @param pValue			an array with the values of the parameters, can be null
-	 * @param lastUpdate		the date for the If-Modified-Since header in RFC 2822 format 
+	 * @param lastUpdate		the date for the If-Modified-Since header in RFC 2822 format, may be null or empty
 	 * @return					the output Json, empty string if code 304 is returned
 	 */
 	public String getReturnedJson(String restRequest, String[] pName, String[] pValue, String lastUpdate) {

@@ -18,6 +18,7 @@
 
 package com.skysql.monitor;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import javax.script.Bindings;
@@ -65,15 +66,36 @@ public class RhinoMonitor extends monitor {
 	 * @param verbose	The logging level
 	 */
 	public void probe (boolean verbose) {
-		if (m_sql.isEmpty())
+		if (m_sql.isEmpty()) {
+			Logging.warn("    Empty SQL field, monitor will not execute.");
 			return;
+		}
 		String value = runJavaScriptString();
-		if (value == null)
-		{
+		if (value == null) {
 			value = "0";
 		}
-		saveObservation(value);
-		m_lastValue = value;
+		if (m_delta) {
+			if (m_lastAbsValue != null && value != null) {
+				Float absValue = new Float(value);
+				Float delta = absValue - m_lastAbsValue;
+				if (delta < 0) {
+					Logging.debug("Negative delta value for probe, absolute value is " + absValue + " last absolute value " + m_lastAbsValue);
+					delta = new Float(0);
+				}
+				DecimalFormat format = new DecimalFormat("###############.##");
+				String deltaStr = format.format(delta);
+				saveObservation(deltaStr);
+				m_lastValue = deltaStr;
+				m_lastAbsValue = absValue;
+			} else if (value != null) {
+				m_lastAbsValue = new Float(value);
+			} else {
+				m_lastAbsValue = null;
+			}
+		} else {
+			saveObservation(value);
+			m_lastValue = value;
+		}
 	}
 	
 	/**
@@ -95,7 +117,9 @@ public class RhinoMonitor extends monitor {
 				Compilable compEngine = (Compilable)engine;
 				CompiledScript cs = compEngine.compile(m_sql);
 				return ( (Double) cs.eval(bindings) ).toString();
-			} else return ( (Double) engine.eval(m_sql, bindings) ).toString();
+			} else {
+				return ( (Double) engine.eval(m_sql, bindings) ).toString();
+			}
 		} catch (Exception e) {
 			Logging.error("Error in JavaScript: " + e.getMessage());
 			return null;

@@ -31,7 +31,7 @@ public class deltaMonitor extends monitor {
 	/**
 	 * The last value that the monitor monitored
 	 */
-	private		Long		lastAbsValue = null;
+//	private		Long		lastAbsValue = null;
 	
 	/**
 	 * Monitor constructor - all the work is done in the super class
@@ -60,36 +60,26 @@ public class deltaMonitor extends monitor {
 		}
 		if (value != null)
 		{
-			if (lastAbsValue != null)
+			if (m_lastAbsValue != null)
 			{
-				Long	absValue = new Long(value);
-				Long delta = absValue - lastAbsValue;
+				Float absValue = new Float(value);
+				Long delta = (long) (absValue - m_lastAbsValue);
 				if (delta < 0)
 				{
-					Logging.debug("Negative delta value for probe, absolute value is " + absValue + " last absolute value " + lastAbsValue);
+					Logging.debug("Negative delta value for probe, absolute value is " + absValue + " last absolute value " + m_lastAbsValue);
 					delta = new Long(0);
 				}
 				DecimalFormat format = new DecimalFormat("###############0");
 				String deltaStr = format.format(delta.longValue());
 				saveObservation(deltaStr);
 				m_lastValue = deltaStr;
-				lastAbsValue = absValue;
+				m_lastAbsValue = absValue;
 			}
 			else
 			{
-				lastAbsValue = new Long(value);
+				m_lastAbsValue = new Float(value);
 			}
 		}
 	}
-	
-	/**
-	 * Save an observed value for the monitor
-	 * 
-	 * @param observation	The observed value
-	 * @return	True if updated
-	 */
-//	protected boolean saveObservation(String observation)
-//	{
-//		return m_confdb.monitorData(m_node.getSystemID(), m_node.getID(), m_monitor_id, observation);
-//	}
+
 }

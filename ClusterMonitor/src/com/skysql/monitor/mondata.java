@@ -76,7 +76,7 @@ public class mondata {
 	 * 
 	 * @param apiRequest		the API URI
 	 * @param objectClass		the class of the Java object, e.g. MyClass.class
-	 * @param lastUpdate		the date to set in the If-Modified-Since header
+	 * @param lastUpdate		the date to set in the If-Modified-Since header, may be null or empty
 	 * @return					the Java object
 	 */
 	private <T> T getObjectFromAPI(String apiRequest, Class<T> objectClass, String lastUpdate) {
@@ -164,7 +164,37 @@ public class mondata {
 	}
 	/********************************************************
 	 * Node
-	 ********************************************************/	
+	 ********************************************************/
+	/**
+	 * Compare the date when the current instance last updated the objects in the
+	 * current system with the last update date retrieved from the API. If necessary,
+	 * the updated objects are saved in place of the older ones. If this happens,
+	 * a return value of true is returned.
+	 * 
+	 * @return		true if the objects have been updated, false otherwise
+	 */
+	public boolean getProvisionedNodes() {
+		Iterator<Integer> nodeIt = getNodeList().iterator();
+		boolean isChanged = true;
+		while (nodeIt.hasNext()) {
+			Integer nodeID = nodeIt.next();
+			String now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeID);
+			GsonProvisionedNode gsonProvisionedNode = getObjectFromAPI("provisionednode", GsonProvisionedNode.class, now);
+			isChanged = (gsonProvisionedNode == null || gsonProvisionedNode.getProvisionedNodes() == null ? false : true);
+			if (isChanged) {
+				m_dataChanged.clearAllNodes(m_systemID);
+				Iterator<GsonProvisionedNode.ProvisionedNodes> it = gsonProvisionedNode.getProvisionedNodes().iterator();
+				while (it.hasNext()) {
+					GsonProvisionedNode.ProvisionedNodes provisionedNode = it.next();
+					String ser = "{ \"node\": " + GsonManager.toJson(provisionedNode) + "}";
+					GsonNode gsonNode = GsonManager.fromJson(ser, GsonNode.class);
+					m_dataChanged.setLastNode(gsonNode);
+				}
+				break;
+			}
+		}
+		return isChanged;
+	}
 	/**
 	 * Return the list of node id's to monitor.
 	 * 
@@ -273,18 +303,23 @@ public class mondata {
 	}
 	/**
 	 * Get the host name of the node. If the host name has not been set, returns
-	 * the ID of the node.
+	 * the IP of the node.
 	 * 
 	 * @param NodeNo	the node number
-	 * @return			the hostname or the ID of the node
+	 * @return			the hostname or the IP of the node
 	 */
 	public String getNodeHostName(int NodeNo) {
 		GsonNode gsonNode = getNodeCached(NodeNo);
+		String result = null;
 		if (gsonNode != null) {
-			if (gsonNode.getNode(0).getHostname() != null) return gsonNode.getNode(0).getHostname();
-			else return Integer.toString(gsonNode.getNode(0).getNodeId());
+			if (( result =  gsonNode.getNode(0).getHostname()) != null && ! result.isEmpty()) {
+			} else if (( result = gsonNode.getNode(0).getPrivateIP() ) != null && ! result.isEmpty()) {
+			} else if (( result = gsonNode.getNode(0).getPublicIP() ) != null && ! result.isEmpty()) {
+			} else {
+				result = null;
+			}
 		}
-		return null;
+		return result;
 	}
 	/********************************************************
 	 * Node States
@@ -328,6 +363,22 @@ public class mondata {
 	/********************************************************
 	 * Monitor
 	 ********************************************************/
+	/**
+	 * Find if the list of monitors has changed since the last time it has been retrieved.
+	 * If yes, the new list is saved in an appropriate instance.
+	 * 
+	 * @return		true if the list of monitors has changed, false otherwise
+	 */
+	public boolean saveMonitorChanges() {
+		String apiRequest = "monitorclass/" + m_systemType + "/key";
+		String now = m_dataChanged.getMonitorUpdateDate();
+		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class, now);
+		boolean isChanged = (gsonMonitorClasses == null || gsonMonitorClasses.getMonitorClass(0) == null ? false : true);
+		if (isChanged) {
+			m_dataChanged.setLastMonitor(gsonMonitorClasses);
+		}
+		return isChanged;
+	}
 	/**
 	 * Get the object with the list of all cached monitor classes.
 	 * 
@@ -559,17 +610,13 @@ public class mondata {
 	 * @return	True if the IP address was updated
 	 */
 	public boolean setNodePublicIP(int nodeID, String publicIP) {
-		String apiRequest = "system/" + m_systemID + "/node";
-		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
-		for (GsonNode.Nodes nodes : gsonNode.getNodes()) {
-			if (nodes.getNodeId() == nodeID) {
-				if (nodes.getPublicIP() != null && nodes.getPublicIP().equalsIgnoreCase(publicIP))
-					return false;
-				apiRequest = "system/" + m_systemID + "/node/" + nodeID;
-				return m_api.UpdateValue(apiRequest, "publicip", publicIP);
-			}
+		GsonNode gsonNode = getNodeCached(nodeID);
+		if (gsonNode != null && gsonNode.getNode(0).getPublicIP() != null
+				&& gsonNode.getNode(0).getPublicIP().equalsIgnoreCase(publicIP)) {
+			return false;
 		}
-		return false;
+		String apiRequest = "system/" + m_systemID + "/node/" + nodeID;
+		return m_api.UpdateValue(apiRequest, "publicip", publicIP);
 	}
 	/**
 	 * setPrivateIP - Update the private IP of an instance. Only update the database
@@ -580,17 +627,16 @@ public class mondata {
 	 * @return	boolean 	True if the IP address changed
 	 */
 	public boolean setNodePrivateIP(int nodeID, String privateIP) {
-		String apiRequest = "system/" + m_systemID + "/node";
-		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
-		for (GsonNode.Nodes nodes : gsonNode.getNodes()) {
-			if (nodes.getNodeId() == nodeID) {
-				if (nodes.getPrivateIP() != null && nodes.getPrivateIP().equalsIgnoreCase(privateIP))
-					return false;
-				apiRequest = "system/" + m_systemID + "/node/" + nodeID;
+		try {
+			if (getNodeCached(nodeID).getNode(0).getPrivateIP().equalsIgnoreCase(privateIP)) {
+				return false;
+			} else {
+				String apiRequest = "system/" + m_systemID + "/node/" + nodeID;
 				return m_api.UpdateValue(apiRequest, "privateip", privateIP);
 			}
+		} catch (Exception e) {
+			return false;
 		}
-		return false;
 	}
 	/********************************************************
 	 * Node State
@@ -658,54 +704,6 @@ public class mondata {
 		String[] fields = fi.toArray(new String[0]);
 		String[] parameters = va.toArray(new String[0]);
 		return m_api.bulkMonitorValue(apiRequest, fields, parameters);
-	}
-	
-	/**
-	 * Compare the date when the current instance last updated the objects in the
-	 * current system with the last update date retrieved from the API. If necessary,
-	 * the updated objects are saved in place of the older ones. If this happens,
-	 * a return value of true is returned.
-	 * 
-	 * @return		true if the objects have been updated, false otherwise
-	 */
-	public boolean getProvisionedNodes() {
-		Iterator<Integer> nodeIt = getNodeList().iterator();
-		boolean isChanged = true;
-		while (nodeIt.hasNext()) {
-			Integer nodeID = nodeIt.next();
-			String now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeID);
-			GsonProvisionedNode gsonProvisionedNode = getObjectFromAPI("provisionednode", GsonProvisionedNode.class, now);
-			isChanged = (gsonProvisionedNode == null || gsonProvisionedNode.getProvisionedNodes() == null ? false : true);
-			if (isChanged) {
-				m_dataChanged.clearAllNodes(m_systemID);
-				Iterator<GsonProvisionedNode.ProvisionedNodes> it = gsonProvisionedNode.getProvisionedNodes().iterator();
-				while (it.hasNext()) {
-					GsonProvisionedNode.ProvisionedNodes provisionedNode = it.next();
-					String ser = "{ \"node\": " + GsonManager.toJson(provisionedNode) + "}";
-					GsonNode gsonNode = GsonManager.fromJson(ser, GsonNode.class);
-					m_dataChanged.setLastNode(gsonNode);
-				}
-				break;
-			}
-		}
-		return isChanged;
-	}
-	
-	/**
-	 * Find if the list of monitors has changed since the last time it has been retrieved.
-	 * If yes, the new list is saved in an appropriate instance.
-	 * 
-	 * @return		true if the list of monitors has changed, false otherwise
-	 */
-	public boolean saveMonitorChanges() {
-		String apiRequest = "monitorclass/" + m_systemType + "/key";
-		String now = m_dataChanged.getMonitorUpdateDate();
-		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class, now);
-		boolean isChanged = (gsonMonitorClasses == null || gsonMonitorClasses.getMonitorClass(0) == null ? false : true);
-		if (isChanged) {
-			m_dataChanged.setLastMonitor(gsonMonitorClasses);
-		}
-		return isChanged;
 	}
 
 }

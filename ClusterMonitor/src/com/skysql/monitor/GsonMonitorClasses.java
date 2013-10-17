@@ -180,10 +180,7 @@ public class GsonMonitorClasses extends GsonErrors {
 	 */
 	public List<Integer> getMonitorIdList() {
 		List<Integer> result = new ArrayList<Integer>();
-//		if (this.getMonitorClass() != null) {
-//			result.add(getMonitorClass().getMonitorId());
-//		} else
-			if (this.getMonitorClasses() != null) {
+		if (this.getMonitorClasses() != null) {
 			Iterator<GsonMonitorClasses.MonitorClasses> it = getMonitorClasses().iterator();
 			while (it.hasNext()) {
 				result.add(it.next().getMonitorId());
