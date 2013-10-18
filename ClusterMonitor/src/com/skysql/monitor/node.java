@@ -176,7 +176,7 @@ public class node implements Runnable {
 			  Credential cred = m_confdb.getNodeMonitorCredentials(m_nodeNo);
 			  m_mondb = DriverManager.getConnection(m_URL + "?socketTimeout=60000", cred.getUsername(), cred.getPassword());
 			  m_connected = true;
-			  Logging.info("Connected");
+			  Logging.info("Connected to database " + m_URL);
 		}
 		catch (SQLException sqlex)
 		{

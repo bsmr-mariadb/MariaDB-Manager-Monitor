@@ -18,6 +18,8 @@
 
 package com.skysql.monitor;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -236,9 +238,19 @@ public class GaleraStatusMonitor extends monitor {
 		Set<node> nodeSetb = new HashSet<node>(incomingAddress.keySet());
 		for (node n : nodeSet) {
 			String hostname = m_confdb.getNodeHostName(n.getID());
+			String IP = m_confdb.getNodePrivateIP(n.getID());
+			try {
+				hostname = InetAddress.getByName(IP).getHostName();
+				if (hostname == null || hostname.isEmpty()) {
+					throw new UnknownHostException();
+				}
+			} catch (UnknownHostException e) {
+				hostname = IP;
+			}
 			nodeSetb.remove(n);
 			for (node m : nodeSetb) {
-				isCluster = isCluster && incomingAddress.get(m).contains(hostname);
+				isCluster = isCluster
+						&& (incomingAddress.get(m).contains(hostname) || incomingAddress.get(m).contains(IP));
 				if (! isCluster) break;
 			}
 			if (! isCluster) break;

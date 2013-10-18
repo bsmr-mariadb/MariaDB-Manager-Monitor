@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Fri Oct 18 2013 Massimo Siani <massimo.siani@skysql.com>
+- Check for both hostname and IP in node cluster membership
+
 * Thu Oct 17 2013 Massimo Siani <massimo.siani@skysql.com>
 - Add support for delta values in JS monitors
 - Select the log verbosity by setting a variable in the init script
