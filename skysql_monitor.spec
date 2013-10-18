@@ -7,7 +7,7 @@
 
 BuildRoot:		%{buildroot}
 BuildArch:              noarch
-Summary: 		SkySQL monitor
+Summary: 		MariaDB Manager Monitor
 License: 		GPL
 Name: 			%{name}
 Version: 		%{version}
@@ -19,7 +19,11 @@ Requires:		java-1.7.0-openjdk, rsyslog
 #BuildRequires:		java-1.7.0-openjdk
 
 %description
-SkySQL monitor
+MariaDB Manager is a tool to manage and monitor a set of MariaDB
+servers using the Galera multi-master replication form Codership.
+This component is the monitor for the MariaDB Manager, it probes
+the databases within control of the system gathering performance
+and statistics data fromt he servers.
 
 %prep
 
