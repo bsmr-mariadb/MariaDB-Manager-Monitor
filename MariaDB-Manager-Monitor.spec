@@ -1,5 +1,5 @@
 %define _topdir	 	%(echo $PWD)/
-%define name		skysql_monitor
+%define name		MariaDB-Manager-Monitor
 %define release		##RELEASE_TAG##
 %define version 	##VERSION_TAG##
 %define buildroot 	%{_topdir}/%{name}-%{version}-%{release}-root
