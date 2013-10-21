@@ -48,6 +48,10 @@ public class node implements Runnable {
 	 */
 	private String		m_URL;
 	/**
+	 * The node address.
+	 */
+	private String		m_address;
+	/**
 	 * System ID of the node
 	 */
 	private int			m_systemID;
@@ -102,12 +106,15 @@ public class node implements Runnable {
 		m_confdb = confDB;
 		m_tempts = 1;
 		m_observedValues = new LinkedHashMap<Integer, String>();
-		String address = confDB.getNodePrivateIP(nodeNo);
-		if (address == null)
+		m_address = confDB.getNodePrivateIP(nodeNo);
+		if (m_address.isEmpty()) {
+			m_address = null;
+		}
+		if (m_address == null)
 		{
 			Logging.error("Unable to obtain address for node " + nodeNo);
 		}
-		m_URL = "jdbc:mysql://" + address + "/information_schema";
+		m_URL = "jdbc:mysql://" + m_address + "/information_schema";
 		connect();
 		Logging.info("Created node: " + this);
 	}
@@ -155,12 +162,11 @@ public class node implements Runnable {
 			this.close();
 		}
 		m_connecting = true;
-		String address = m_confdb.getNodePrivateIP(m_nodeNo);
-		if (address == null)
+		if (m_address == null)
 		{
 			Logging.error("Unable to obtain address for node " + m_nodeNo);
 		}
-		m_URL = "jdbc:mysql://" + address + "/information_schema";
+		m_URL = "jdbc:mysql://" + m_address + "/information_schema";
 		m_conthread = new Thread(this);
 		m_conthread.start();
 	}
@@ -171,12 +177,15 @@ public class node implements Runnable {
 	 */
 	public void run()
 	{
+		if (m_address == null) {
+			return;
+		}
 		try {
 			  Class.forName("org.mariadb.jdbc.Driver").newInstance();
 			  Credential cred = m_confdb.getNodeMonitorCredentials(m_nodeNo);
 			  m_mondb = DriverManager.getConnection(m_URL + "?socketTimeout=60000", cred.getUsername(), cred.getPassword());
 			  m_connected = true;
-			  Logging.info("Connected to database " + m_URL);
+			  Logging.info("Connected to database " + m_address);
 		}
 		catch (SQLException sqlex)
 		{

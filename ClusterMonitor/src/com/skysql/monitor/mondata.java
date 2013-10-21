@@ -180,7 +180,8 @@ public class mondata {
 			Integer nodeID = nodeIt.next();
 			String now = m_dataChanged.getNodeUpdateDate(m_systemID, nodeID);
 			GsonProvisionedNode gsonProvisionedNode = getObjectFromAPI("provisionednode", GsonProvisionedNode.class, now);
-			isChanged = (gsonProvisionedNode == null || gsonProvisionedNode.getProvisionedNodes() == null ? false : true);
+			isChanged = (gsonProvisionedNode == null || gsonProvisionedNode.getProvisionedNodes() == null
+					|| gsonProvisionedNode.getProvisionedNodes().isEmpty() ? false : true);
 			if (isChanged) {
 				m_dataChanged.clearAllNodes(m_systemID);
 				Iterator<GsonProvisionedNode.ProvisionedNodes> it = gsonProvisionedNode.getProvisionedNodes().iterator();
@@ -284,6 +285,21 @@ public class mondata {
 		for (int i=0; i<gsonNode.getNodes().size(); i++) {
 			result.add(gsonNode.getNodes().get(i).getState());
 		}
+		return result;
+	}
+	
+	/**
+	 * Fetch the node state.
+	 * 
+	 * @param nodeID		the node ID
+	 * @return				a string representing the state
+	 */
+	public String getNodeState(int nodeID) {
+		String apiRequest = "system/" + m_systemID + "/node/" + nodeID;
+		String result;
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		if (gsonNode == null) result = "down";
+		result = gsonNode.getNode(0).getState();
 		return result;
 	}
 	/**

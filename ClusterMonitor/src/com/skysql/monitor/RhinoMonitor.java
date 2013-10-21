@@ -121,7 +121,12 @@ public class RhinoMonitor extends monitor {
 				return ( (Double) engine.eval(m_sql, bindings) ).toString();
 			}
 		} catch (Exception e) {
-			Logging.error("Error in JavaScript: " + e.getMessage());
+			if (m_confdb.getNodeState(m_node.getID()).equalsIgnoreCase("down")) {
+				Logging.error("Cannot execute this monitor: node "
+						+ m_confdb.getNodeName(m_node.getID()) + " is down.");
+			} else {
+				Logging.error("Error in JavaScript: " + e.getMessage());
+			}
 			return null;
 		}
 	}

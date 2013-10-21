@@ -90,7 +90,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		Logging.info("Starting ClusterMonitor v1.7-96");
+		Logging.info("Starting ClusterMonitor v1.7-99");
 		Logging.info("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -177,6 +177,7 @@ public class ClusterMonitor extends Thread {
 		m_interval = 30;
 		m_gcdMonitorInterval = m_interval;
 		m_observedValues = new LinkedHashMap<Integer, String>();
+		m_nodeList = new ArrayList<node>();
 	}
 	
 	/**
@@ -406,7 +407,7 @@ public class ClusterMonitor extends Thread {
 	 * @param nodeIDList	a list of the ID of the available nodes
 	 */
 	private void refreshNodeList(List<Integer> nodeIDList) {
-		m_nodeList = new ArrayList<node>();
+		m_nodeList.clear();
 		Iterator<Integer> it = nodeIDList.iterator();
 		while (it.hasNext()) {
 			Integer i = it.next();
