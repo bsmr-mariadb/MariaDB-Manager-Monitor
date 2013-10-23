@@ -182,8 +182,13 @@ public class mondata {
 			GsonProvisionedNode gsonProvisionedNode = getObjectFromAPI("provisionednode", GsonProvisionedNode.class, now);
 			isChanged = (gsonProvisionedNode == null || gsonProvisionedNode.getProvisionedNodes() == null
 					|| gsonProvisionedNode.getProvisionedNodes().isEmpty() ? false : true);
+			if (gsonProvisionedNode != null && gsonProvisionedNode.getProvisionedNodes() != null &&
+					gsonProvisionedNode.getProvisionedNodes().isEmpty()) {
+				m_dataChanged.clearAllNodes(m_systemID);
+			}
 			if (isChanged) {
 				m_dataChanged.clearAllNodes(m_systemID);
+				GaleraStatusMonitor.removeSystem((Integer)m_systemID);
 				Iterator<GsonProvisionedNode.ProvisionedNodes> it = gsonProvisionedNode.getProvisionedNodes().iterator();
 				while (it.hasNext()) {
 					GsonProvisionedNode.ProvisionedNodes provisionedNode = it.next();

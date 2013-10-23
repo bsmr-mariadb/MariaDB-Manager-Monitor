@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Tue Oct 23 2013 Massimo Siani <massimo.siani@skysql.com>
+- Fix bug after node removal
+
 * Mon Oct 21 2013 Massimo Siani <massimo.siani@skysql.com>
 - Double check private IP of the node before connecting.
 - Throw a human readable message from JS monitor if the node is down.

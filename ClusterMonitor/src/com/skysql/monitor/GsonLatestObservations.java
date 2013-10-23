@@ -287,6 +287,7 @@ public class GsonLatestObservations {
 	public void clearAllNodes(int systemID) {
 		try {
 			m_node.get(systemID).clear();
+			m_node.remove(systemID);
 		} catch (Exception e) {
 			// IGNORE
 		}

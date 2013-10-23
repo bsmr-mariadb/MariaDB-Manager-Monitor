@@ -74,8 +74,9 @@ public class GaleraStatusMonitor extends monitor {
 			INSTANCES = new HashMap<Integer, List<node>>();
 			m_updatedSystems = new HashMap<Integer, Long>();
 		}
-		if (INSTANCES.get(m_systemID) == null)
+		if (INSTANCES.get(m_systemID) == null) {
 			m_updatedSystems.put(m_systemID, now() - UPDATE_THRESHOLD);   // next time the monitor will run
+		}
 		return INSTANCES;
 	}
 	
@@ -122,6 +123,12 @@ public class GaleraStatusMonitor extends monitor {
 			nodeList.add(mon_node);
 		}
 		getInstances().put(mon_node.getSystemID(), nodeList);
+	}
+	
+	public static void removeSystem (Integer systemID) {
+		if (INSTANCES != null) {
+			INSTANCES.remove(systemID);
+		}
 	}
 	
 	/**

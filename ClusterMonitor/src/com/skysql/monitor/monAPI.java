@@ -160,11 +160,6 @@ public class monAPI {
 	 */
 	public String getReturnedJson(String restRequest, String[] pName, String[] pValue) {
 		String outJson = getReturnedJson(restRequest, pName, pValue, null);
-		if (outJson == null) {
-			Logging.error("Failed: Output Json: " + outJson);
-			Logging.debug("        URI request: " + restRequest);
-			return null;
-		}
 		return outJson;
 	}
 	

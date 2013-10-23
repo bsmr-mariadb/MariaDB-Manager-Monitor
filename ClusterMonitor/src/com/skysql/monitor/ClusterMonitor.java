@@ -90,7 +90,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		Logging.info("Starting ClusterMonitor v1.7-99");
+		Logging.info("Starting ClusterMonitor v1.7-100");
 		Logging.info("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))
@@ -238,7 +238,7 @@ public class ClusterMonitor extends Thread {
 		if (m_verbose) {
 			Logging.info(nodeIDList.size() + " node(s) to monitor");
 		}
-		if (m_nodeList != null)	{
+		if (m_nodeList != null && ! m_nodeList.isEmpty())	{
 			closeNodes();
 		}
 		refreshNodeList(nodeIDList);
