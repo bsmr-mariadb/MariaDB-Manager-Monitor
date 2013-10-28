@@ -125,7 +125,13 @@ public class GaleraStatusMonitor extends monitor {
 		getInstances().put(mon_node.getSystemID(), nodeList);
 	}
 	
-	public static void removeSystem (Integer systemID) {
+	/**
+	 * Reset the list of nodes that have to be checked to compute
+	 * the nodes and system states.
+	 * 
+	 * @param systemID		the ID of the system to remove
+	 */
+	public static synchronized void removeSystem (Integer systemID) {
 		if (INSTANCES != null) {
 			INSTANCES.remove(systemID);
 		}

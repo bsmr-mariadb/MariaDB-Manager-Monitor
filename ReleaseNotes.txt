@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Mon Oct 28 2013 Massimo Siani <massimo.siani@skysql.com>
+- Limit the information request in the JSON
+
 * Tue Oct 23 2013 Massimo Siani <massimo.siani@skysql.com>
 - Fix bug after node removal
 

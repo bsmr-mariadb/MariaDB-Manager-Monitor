@@ -85,6 +85,12 @@ public class mondata {
 		return object;
 	}
 	
+	private <T> T getObjectFromAPI(String apiRequest, String[] pName, String[] pValue, Class<T> objectClass) {
+		String getJson = m_api.getReturnedJson(apiRequest, pName, pValue);
+		T object = GsonManager.fromJson(getJson, objectClass);
+		return object;
+	}
+	
 	/**
 	 * Return the node object that the current instance stored in the cache.
 	 * 
@@ -125,7 +131,9 @@ public class mondata {
 	 */
 	public List<Integer> getSystemList() {
 		String apiRequest = "system";
-		GsonSystem gsonSystem = getObjectFromAPI(apiRequest, GsonSystem.class);
+		String[] fields = new String[] {"fields"};
+		String[] values = new String[] {"systemid"};
+		GsonSystem gsonSystem = getObjectFromAPI(apiRequest, fields, values, GsonSystem.class);
 		return gsonSystem == null ? null : gsonSystem.getSystemIdList();
 	}
 	/**
@@ -209,7 +217,9 @@ public class mondata {
 	public List<Integer> getNodeList()
 	{
 		String apiRequest = "system/" + m_systemID + "/node";
-		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		String[] fields = {"fields"};
+		String[] values = {"nodeid"};
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, fields, values, GsonNode.class);
 		return gsonNode == null ? null : gsonNode.getNodeIdList();
 	}
 	/**
@@ -240,7 +250,6 @@ public class mondata {
 	 */
 	public Credential getNodeMonitorCredentials(int NodeNo)
 	{
-		String apiRequest = "system/" + m_systemID + "/node/" + NodeNo;
 		Credential cred;
 		try {
 			GsonNode gsonNode = getNodeCached(NodeNo);
@@ -249,17 +258,11 @@ public class mondata {
 				cred = new Credential(gsonNode.getNode(0).getDbUserName(),
 						gsonNode.getNode(0).getDbPassword());
 			} else {
-				apiRequest = "system/" + m_systemID;
-				GsonSystem gsonSystem = getObjectFromAPI(apiRequest, GsonSystem.class);
-				if (gsonSystem != null) {
-					cred = new Credential(gsonSystem.getSystem(0).getDbUserName(),
-							gsonSystem.getSystem(0).getDbPassword());
-				}
-				else cred = new Credential("repluser", "replpassword");
+				cred = new Credential("repluser", "replpassword");
 			}
 			return cred;
 		} catch (Exception ex) {
-			Logging.error("API Failed: " + apiRequest + ": " + ex.getMessage());
+			Logging.error("Failed to retrieve node credentials for node ID " + NodeNo);
 			return null;
 		}
 	}
@@ -285,7 +288,9 @@ public class mondata {
 	 */
 	public List<String> getNodeStates() {
 		String apiRequest = "system/" + m_systemID + "/node";
-		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
+		String[] fields = {"fields"};
+		String[] values = {"state"};
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, fields, values, GsonNode.class);
 		List<String> result = new ArrayList<String>();
 		for (int i=0; i<gsonNode.getNodes().size(); i++) {
 			result.add(gsonNode.getNodes().get(i).getState());
@@ -301,10 +306,15 @@ public class mondata {
 	 */
 	public String getNodeState(int nodeID) {
 		String apiRequest = "system/" + m_systemID + "/node/" + nodeID;
+		String[] fields = {"fields"};
+		String[] values = {"state"};
 		String result;
-		GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
-		if (gsonNode == null) result = "down";
-		result = gsonNode.getNode(0).getState();
+		GsonNode gsonNode = getObjectFromAPI(apiRequest, fields, values, GsonNode.class);
+		if (gsonNode == null) {
+			result = "down";
+		} else {
+			result = gsonNode.getNode(0).getState();
+		}
 		return result;
 	}
 	/**
