@@ -259,7 +259,7 @@ public class monAPI {
 			value = value.substring(1);
 		}
 		try {
-			// set up authorization for the redirected webpage (ie, $_POST variable)
+			// set up authorization
 			String reqString = "http://" + m_apiHost + "/restfulapi/" + restRequest;
 			String rfcdate = setDate();
 			String sb = this.setAuth(restRequest, rfcdate);
@@ -329,7 +329,7 @@ public class monAPI {
 			// buffer
 			runBuffer();
 
-			if (apiConn.getResponseCode() != 200) {
+			if (apiConn.getResponseCode() != HttpURLConnection.HTTP_OK) {
 				throw new RuntimeException("Failed : HTTP error : "
 						+ apiConn.getResponseMessage() + ": returned data: " + result);
 			}
@@ -358,18 +358,22 @@ public class monAPI {
 	private String setDate() throws IOException {
 		SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 		if (this.m_timeZone == null) {
-			BufferedReader timeZone = new BufferedReader(new FileReader("/etc/php.ini"));
-			String tz;
-			while ((tz = timeZone.readLine()) != null) {
-				Pattern p = Pattern.compile("date\\.timezone\\s*=\\s*(\\w+/\\w+)");
-				Matcher m = p.matcher(tz);
-				if (m.find()) {
-					tz = m.group(1);
-					break;
+			try {
+				BufferedReader timeZone = new BufferedReader(new FileReader("/etc/php.ini"));
+				String tz;
+				while ((tz = timeZone.readLine()) != null) {
+					Pattern p = Pattern.compile("date\\.timezone\\s*=\\s*(\\w+/\\w+)");
+					Matcher m = p.matcher(tz);
+					if (m.find()) {
+						tz = m.group(1);
+						break;
+					}
 				}
+				timeZone.close();
+				this.m_timeZone = (tz == null ? "Atlantic/Reykjavik" : tz);
+			} catch (Exception e) {
+				this.m_timeZone = "Europe/London";
 			}
-			timeZone.close();
-			this.m_timeZone = (tz == null ? "Atlantic/Reykjavik" : tz);
 		}
 		sdf.setTimeZone(TimeZone.getTimeZone(this.m_timeZone));
 		return sdf.format(new Date());
@@ -409,14 +413,18 @@ public class monAPI {
 		apiConn.setRequestMethod(method);
 		apiConn.setRequestProperty("Accept", "application/json");
 		apiConn.setRequestProperty("Authorization", "api-auth-" + m_apiKeyID + "-" + sb);
-		apiConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		if (! method.equalsIgnoreCase("PUT")) {
+			apiConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		} else {
+			apiConn.setRequestProperty("Content-Type", "text/plain");
+		}
 		apiConn.setRequestProperty("charset", "utf-8");
 		apiConn.setRequestProperty("Date", rfcdate);
 		apiConn.setRequestProperty("Content-Length", "" + Integer.toString(value.getBytes().length));
 		apiConn.setRequestProperty("X-SkySQL-API-Version", "1");
 		apiConn.setDoOutput(true);
 		apiConn.setUseCaches(false);
-		if (method != "GET" && value.length() > 1) {
+		if ( (!method.equalsIgnoreCase("GET")) && value.length() > 1) {
 			OutputStreamWriter out = new OutputStreamWriter(apiConn.getOutputStream());
 			out.write(value);
 			out.flush();

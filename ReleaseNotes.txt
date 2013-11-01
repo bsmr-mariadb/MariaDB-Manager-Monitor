@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Fri Nov 1 2013 Massimo Siani <massimo.siani@skysql.com>
+- Fix compatibility with API R185
+
 * Mon Oct 28 2013 Massimo Siani <massimo.siani@skysql.com>
 - Limit the information request in the JSON
 

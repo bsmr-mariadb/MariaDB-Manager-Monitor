@@ -604,7 +604,7 @@ public class mondata {
 			if (gsonUpdatedAPI.getErrors() != null) throw new RuntimeException(gsonUpdatedAPI.getErrors().get(0));
 			if (gsonUpdatedAPI.getWarnings() != null) throw new RuntimeException(gsonUpdatedAPI.getWarnings().get(0));
 		} catch (Exception e) {
-			Logging.error("API Failed: " + apiRequest + ": "+ e.getMessage());
+			Logging.error("API Failed: " + apiRequest + ": cannot update system state to " + state);
 		}
 	}
 	/********************************************************
@@ -630,7 +630,7 @@ public class mondata {
 			if (gsonUpdatedAPI.getErrors() != null) throw new RuntimeException(gsonUpdatedAPI.getErrors().get(0));
 			if (gsonUpdatedAPI.getWarnings() != null) throw new RuntimeException(gsonUpdatedAPI.getWarnings().get(0));
 		} catch (Exception e) {
-			Logging.error("API Failed: " + apiRequest + ": "+ e.getMessage());
+			Logging.error("API Failed: " + apiRequest + ": cannot set node state to " + stateid);
 		}
 	}
 	/**
