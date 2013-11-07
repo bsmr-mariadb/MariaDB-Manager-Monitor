@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.skysql.java.*;
+
 /**
  * Interface to the monitoring database, this is the database that holds
  * the definition of what to monitor and into which the monitored values

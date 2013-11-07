@@ -27,10 +27,17 @@
 # 
 # chkconfig: 2345 80 20
 # description: Starts the MariaDB-Enterprise Monitor
-
+set -x
+## the Monitor folder
 vMonitorDir=/usr/local/skysql/monitor
-# set to -v for verbosity, empty otherwise
-verbose="-v"
+vMonitorJar=ClusterMonitor.jar
+vShareDir=/usr/local/skysql/share
+vShareFile1=skysql-java-shared.jar
+vJavaClasspath="${vMonitorDir}/${vMonitorJar}:${vShareDir}/*"
+
+## set to -v for verbosity, empty or comment otherwise
+#verbose="-v"
+
 
 fGetMonitorPid() {
     vMonitorPid=`ps -efwwww | grep ClusterMonitor.jar | grep -v grep | awk '{print $2}'`                    
@@ -53,7 +60,7 @@ case "$1" in
     
             PATH=${PATH}:/usr/sbin
     
-            java -classpath $vMonitorDir/ClusterMonitor.jar com.skysql.monitor.ClusterMonitor $verbose all &
+            java -cp ${vJavaClasspath} com.skysql.monitor.ClusterMonitor $verbose all &
 
             ### Check if the process is started ###############################################################
             sleep 1

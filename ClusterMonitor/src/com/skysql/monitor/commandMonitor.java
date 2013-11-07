@@ -21,6 +21,8 @@ import java.io.BufferedReader;
 import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 
+import com.skysql.java.Logging;
+
 /**
  * The commandMonitor is an instance of a monitor class designed to execute
  * external programs as sources of monitoring data.

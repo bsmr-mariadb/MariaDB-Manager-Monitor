@@ -15,7 +15,7 @@ Release: 		%{release}
 Source: 		%{name}-%{version}-%{release}.tar.gz
 Prefix: 		/
 Group: 			Development/Tools
-Requires:		java-1.7.0-openjdk, rsyslog
+Requires:		libMariaDB-Manager
 #BuildRequires:		java-1.7.0-openjdk
 
 %description

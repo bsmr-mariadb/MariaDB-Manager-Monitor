@@ -18,6 +18,8 @@
 
 package com.skysql.monitor;
 
+import com.skysql.java.Logging;
+
 /**
  * The base monitor class, it is from this class that all monitors are derived. 
  * The monitor class provides an SQL monitor that executes a SQL statement on 

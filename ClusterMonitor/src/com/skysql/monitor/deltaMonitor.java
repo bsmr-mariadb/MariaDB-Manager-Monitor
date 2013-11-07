@@ -19,6 +19,8 @@
 package com.skysql.monitor;
 import java.text.DecimalFormat;
 
+import com.skysql.java.Logging;
+
 /**
  * The deltaMonitor is an monitor class that monitors SQL values, the recorded
  * value is the difference from the previous value monitored and the current

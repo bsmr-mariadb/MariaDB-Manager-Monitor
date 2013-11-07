@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.skysql.java.Logging;
+
 /**
  * The node interface in the monitor. Each instance of a node represents a database that 
  * is being monitored. This class provides a mechanism to connect to the monitored database,

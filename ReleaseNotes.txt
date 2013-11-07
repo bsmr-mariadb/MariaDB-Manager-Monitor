@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Thu Nov 7 2013 Massimo Siani <massimo.siani@skysql.com>
+- Split library
+
 * Fri Nov 1 2013 Massimo Siani <massimo.siani@skysql.com>
 - Fix compatibility with API R185
 

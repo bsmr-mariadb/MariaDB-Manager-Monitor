@@ -22,6 +22,8 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.*;
 
+import com.skysql.java.Logging;
+
 /**
  * The main class of the query router, this comprises the main function itself,
  * the handling of the configuration and creation of the monitor probes and
@@ -76,6 +78,7 @@ public class ClusterMonitor extends Thread {
 	
 	public static void main( String[] args )
 	{
+		Logging.setComponent("Monitor");
 		if (args.length != 1 && args.length != 2)
 		{
 			Logging.error("Usage: ClusterMonitor [-v]  <System ID>");
@@ -90,7 +93,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		Logging.info("Starting ClusterMonitor v1.7-102");
+		Logging.info("Starting ClusterMonitor v1.7-103");
 		Logging.info("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))

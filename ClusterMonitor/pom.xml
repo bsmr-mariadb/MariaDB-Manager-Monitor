@@ -4,7 +4,7 @@
 	<groupId>com.skysql.monitor</groupId>
 	<artifactId>ClusterMonitor</artifactId>
 	<version>1.7</version>
-	<name>SkySQL Monitor</name>
+	<name>MariaDB-Manager-Monitor</name>
 	<build>
 		<finalName>ClusterMonitor</finalName>
 		<sourceDirectory>src</sourceDirectory>
@@ -54,24 +54,21 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.2.4</version>
-		</dependency>
-		<dependency>
 			<groupId>org.jumpmind.symmetric.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
 			<version>1.1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.nesscomputing</groupId>
-			<artifactId>ness-syslog4j</artifactId>
-			<version>0.9.47-NESS-8</version>
-		</dependency>
-		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
 			<version>4.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.skysql.java</groupId>
+			<artifactId>skysql-java-shared</artifactId>
+			<version>0.1</version>
+			<scope>system</scope>
+			<systemPath>/usr/local/skysql/share/skysql-java-shared.jar</systemPath>
 		</dependency>
 	</dependencies>
 </project>

@@ -28,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.skysql.java.Logging;
+
 /**
  * Handle the membership of each node in a system, set the node
  * and the system states. Use the global variables retrieved

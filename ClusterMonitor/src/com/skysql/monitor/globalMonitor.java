@@ -20,6 +20,8 @@ package com.skysql.monitor;
 
 import java.text.DecimalFormat;
 
+import com.skysql.java.Logging;
+
 /**
  * The Global Monitor class.
  * 

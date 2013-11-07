@@ -28,6 +28,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.SimpleBindings;
 
+import com.skysql.java.Logging;
+
 /**
  * The Galera Probe Monitor class.
  * 
