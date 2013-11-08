@@ -51,10 +51,10 @@
   <dependencies>
     <dependency>
       <groupId>com.skysql.java</groupId>
-      <artifactId>skysql-java-shared</artifactId>
+      <artifactId>libMariaDB-Manager-java</artifactId>
       <version>0.1</version>
       <scope>system</scope>
-      <systemPath>/usr/local/skysql/share/skysql-java-shared.jar</systemPath>
+      <systemPath>/home/massimo/skysql/skysql-java-shared/libMariaDB-Manager-java.jar</systemPath>
     </dependency>
   </dependencies>
 </project>

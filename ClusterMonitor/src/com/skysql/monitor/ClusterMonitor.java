@@ -93,7 +93,7 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		Logging.info("Starting ClusterMonitor v1.7-103");
+		Logging.info("Starting ClusterMonitor v1.7-105");
 		Logging.info("==============================");
 		
 		if (args[off].equalsIgnoreCase("all"))

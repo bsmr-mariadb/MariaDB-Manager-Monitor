@@ -27,8 +27,8 @@
 # 
 # chkconfig: 2345 80 20
 # description: Starts the MariaDB-Enterprise Monitor
-set -x
-## the Monitor folder
+
+## variables
 vMonitorDir=/usr/local/skysql/monitor
 vMonitorJar=ClusterMonitor.jar
 vShareDir=/usr/local/skysql/share
