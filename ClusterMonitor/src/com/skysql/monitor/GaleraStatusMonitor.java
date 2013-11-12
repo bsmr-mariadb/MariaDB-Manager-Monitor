@@ -93,7 +93,6 @@ public class GaleraStatusMonitor extends monitor {
 		super(db, id, mon_node);
 		m_systemID = mon_node.getSystemID();
 		setInstance(mon_node);
-		m_sql = "select 100 + variable_value from global_status where variable_name = 'WSREP_LOCAL_STATE' union select 99 limit 1;";
 	}
 
 	/**
@@ -154,14 +153,20 @@ public class GaleraStatusMonitor extends monitor {
 		HashMap<node, String> hmIncAddress = new HashMap<node, String>();
 		while (nodeIt.hasNext()) {
 			node n = nodeIt.next();
+			m_globalStatus = globalStatusObject.getInstance(n);
 			List<node> nodeList = new ArrayList<node>();
 			try {
-				String nodeStateString = n.execute(m_sql);
+				String nodeStateString = m_globalStatus.getStatus("wsrep_local_state");
 				Integer nodeStateID;
 				if (nodeStateString != null) {
-					nodeStateID = Integer.parseInt(nodeStateString);
+					nodeStateID = Integer.parseInt(nodeStateString) + 100;
 				} else {
-					nodeStateID = 100;
+					String nodeClusterSize = m_globalStatus.getStatus("wsrep_cluster_size");
+					if (nodeClusterSize != null && nodeClusterSize.equalsIgnoreCase("0")) {
+						nodeStateID = 99;
+					} else {
+						nodeStateID = 100;
+					}
 				} 
 				String monitorState = m_confdb.getNodeStateFromId(nodeStateID);
 				if (! monitorState.equalsIgnoreCase("joined")) {
@@ -171,10 +176,9 @@ public class GaleraStatusMonitor extends monitor {
 			} catch (Exception e) {
 				continue;
 			}
-			m_globalStatus = globalStatusObject.getInstance(n);
-			String UUID = m_globalStatus.getStatus("WSREP_LOCAL_STATE_UUID");
+			String UUID = m_globalStatus.getStatus("wsrep_local_state_uuid");
 			String local;
-			String wsrepIncomingAddress = ( (local = m_globalStatus.getStatus("WSREP_INCOMING_ADDRESSES")) != null ?
+			String wsrepIncomingAddress = ( (local = m_globalStatus.getStatus("wsrep_incoming_addresses")) != null ?
 					local.replaceAll(":3306", "") : null );
 			if (!(hmUUID.get(UUID) == null)) nodeList.addAll(hmUUID.get(UUID));
 			nodeList.add(n);

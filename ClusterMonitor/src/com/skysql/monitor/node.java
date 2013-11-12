@@ -297,7 +297,7 @@ public class node implements Runnable {
 			ResultSet result = statement.executeQuery(sql);
 			while (result.next())
 			{
-				rval.put(result.getString(1), result.getString(2));
+				rval.put(result.getString(1).toLowerCase(), result.getString(2));
 			}
 			return rval;
 		}

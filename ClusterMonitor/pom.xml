@@ -66,9 +66,9 @@
 		<dependency>
 			<groupId>com.skysql.java</groupId>
 			<artifactId>libMariaDB-Manager-java</artifactId>
-			<version>0.1</version>
 			<scope>system</scope>
 			<systemPath>/home/massimo/skysql/skysql-java-shared/libMariaDB-Manager-java.jar</systemPath>
+			<version>0.1</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -113,7 +113,7 @@ public class globalStatusObject {
 	 */
 	public String getStatus(String name) {
 		fetchData();
-		return m_globalStatus.get(name);
+		return m_globalStatus.get(name.toLowerCase());
 	}
 	/**
 	 * Get a value for a global_variables value in the database. The value will be
@@ -125,7 +125,7 @@ public class globalStatusObject {
 	 */
 	public String getVariable(String name) {
 		fetchData();
-		return m_globalVariables.get(name);
+		return m_globalVariables.get(name.toLowerCase());
 	}
 	
 	/**
@@ -140,8 +140,8 @@ public class globalStatusObject {
 		String rval;
 		fetchData();
 		try {
-			if ((rval = m_globalStatus.get(name)) == null) {
-				rval = m_globalVariables.get(name);
+			if ((rval = getStatus(name)) == null) {
+				rval = getVariable(name);
 			}
 		} catch (Exception e) {
 			rval = null;
@@ -160,8 +160,16 @@ public class globalStatusObject {
 		{
 			return;
 		}
-		m_globalStatus = m_node.fetchTable("select * from global_status");
-		m_globalVariables = m_node.fetchTable("select * from global_variables");
+		m_globalStatus.clear();
+		m_globalVariables.clear();
+		HashMap<String, String> status = m_node.fetchTable("show global status");
+		if (status != null) {
+			m_globalStatus.putAll(status);
+		}
+		HashMap<String, String> variables = m_node.fetchTable("show global variables");
+		if (variables != null) {
+			m_globalVariables.putAll(variables);
+		}
 		m_fetchTime = now.getTime();
 	}
 }
