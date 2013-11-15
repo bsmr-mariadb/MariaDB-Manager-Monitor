@@ -18,8 +18,6 @@
 
 package com.skysql.monitor;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -50,6 +48,10 @@ public class GaleraStatusMonitor extends monitor {
 	 * The instances of the class. The key is the systemID.
 	 */
 	private static volatile HashMap<Integer, List<node>>	INSTANCES;
+	/**
+	 * The ID of the system passed to the constructor. Necessary to
+	 * add the system to the INSTANCES variable.
+	 */
 	private int							m_systemID;
 	/**
 	 * The globalStatusObject that contains the global status
@@ -66,6 +68,17 @@ public class GaleraStatusMonitor extends monitor {
 	 * A table of the updated systems. (systemID, time of the last update).
 	 */
 	private static HashMap<Integer, Long>		m_updatedSystems;
+	/**
+	 * The node state -> node state ID map.
+	 */
+	private static HashMap<NodeStates, Integer>			m_nodeStates = null;
+	/**
+	 * Node states that are not computed by a query.
+	 */
+	private enum NodeStates {
+		DOWN, MACHINEDOWN, ISOLATED, INCORRECTLYJOINED
+		, JOINED
+	}
 
 	/**
 	 * Get the table (system id's, list of nodes with that system id).
@@ -95,6 +108,7 @@ public class GaleraStatusMonitor extends monitor {
 		super(db, id, mon_node);
 		m_systemID = mon_node.getSystemID();
 		setInstance(mon_node);
+		setNodeStates();
 	}
 
 	/**
@@ -126,6 +140,20 @@ public class GaleraStatusMonitor extends monitor {
 			nodeList.add(mon_node);
 		}
 		getInstances().put(mon_node.getSystemID(), nodeList);
+	}
+	
+	/**
+	 * Generate a map to the node states that are not computed from a query.
+	 */
+	private void setNodeStates() {
+		if (m_nodeStates == null) {
+			m_nodeStates = new HashMap<NodeStates, Integer>();
+			m_nodeStates.put(NodeStates.DOWN, m_confdb.getNodeStateId("down"));
+			m_nodeStates.put(NodeStates.MACHINEDOWN, m_confdb.getNodeStateId("machine-down"));
+			m_nodeStates.put(NodeStates.ISOLATED, m_confdb.getNodeStateId("isolated"));
+			m_nodeStates.put(NodeStates.INCORRECTLYJOINED, m_confdb.getNodeStateId("incorrectly-joined"));
+			m_nodeStates.put(NodeStates.JOINED, m_confdb.getNodeStateId("joined"));
+		}
 	}
 	
 	/**
@@ -179,9 +207,9 @@ public class GaleraStatusMonitor extends monitor {
 				} else {
 					String nodeClusterSize = m_globalStatus.getStatus("wsrep_cluster_size");
 					if (nodeClusterSize != null && nodeClusterSize.equalsIgnoreCase("0")) {
-						nodeStateID = 99;
+						nodeStateID = m_nodeStates.get(NodeStates.ISOLATED);
 					} else {
-						nodeStateID = 100;
+						nodeStateID = m_nodeStates.get(NodeStates.DOWN);
 					}
 				} 
 				String monitorState = m_confdb.getNodeStateFromId(nodeStateID);
@@ -206,14 +234,14 @@ public class GaleraStatusMonitor extends monitor {
 			// only one UUID: next check is incoming address
 			if (checkIncomingAddress(hmIncAddress)) {
 				for (node n : hmIncAddress.keySet()) {
-					m_confdb.setNodeState(n.getID(), 104);
+					m_confdb.setNodeState(n.getID(), m_nodeStates.get(NodeStates.JOINED));
 				}
 				notFinished = false;
 			}
 		}
 		if (notFinished) {
 			for (node n : isMajority(hmUUID, hmIncAddress)) {
-				m_confdb.setNodeState(n.getID(), 104);
+				m_confdb.setNodeState(n.getID(), m_nodeStates.get(NodeStates.JOINED));
 				hmIncAddress.remove(n);
 			}
 		}
@@ -221,7 +249,7 @@ public class GaleraStatusMonitor extends monitor {
 			nodeIt = hmIncAddress.keySet().iterator();
 			while (nodeIt.hasNext()) {
 				node n = nodeIt.next();
-				m_confdb.setNodeState(n.getID(), 98);
+				m_confdb.setNodeState(n.getID(), m_nodeStates.get(NodeStates.INCORRECTLYJOINED));
 			}
 		}
 		setSystemState();

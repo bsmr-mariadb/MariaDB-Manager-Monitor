@@ -87,6 +87,16 @@ public class mondata {
 		return object;
 	}
 	
+	/**
+	 * Fetch the Java object that corresponds to an API URI with GET method.
+	 * Allows to specify some parameters to reduce network traffic.
+	 * 
+	 * @param apiRequest		the API URI
+	 * @param pName				an array of the names of the parameters
+	 * @param pValue			an array of the values of the parameters
+	 * @param objectClass		the class of the Java object, e.g. MyClass.class
+	 * @return					the Java object
+	 */
 	private <T> T getObjectFromAPI(String apiRequest, String[] pName, String[] pValue, Class<T> objectClass) {
 		String getJson = m_api.getReturnedJson(apiRequest, pName, pValue);
 		T object = GsonManager.fromJson(getJson, objectClass);
@@ -105,7 +115,7 @@ public class mondata {
 	
 	/**
 	 * Ask the API to update or create an object, and return an object which encodes
-	 * information on the modified object.
+	 * information on the modified object. Sends a PUT request.
 	 * 
 	 * @param apiRequest
 	 * @param objectClass
@@ -119,11 +129,16 @@ public class mondata {
 		return object;
 	}
 	
+	/**
+	 * Register the given version in the API.
+	 * 
+	 * @param version	the version number. Typical format is Major.minor-build
+	 */
 	public void registerAPI(String version) {
-		String apiRequest = "application/1/property/name";
-		m_api.updateValue(apiRequest, new String[]{"fields"}, new String[]{"Monitor"});
-		apiRequest = "application/1/property/version";
-		m_api.updateValue(apiRequest, new String[]{"fields"}, new String[]{version});
+		String apiRequest = "system/0/node/0/component/monitor/property/name";
+		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{"MariaDB-Manager-Monitor"});
+		apiRequest = "system/0/node/0/component/monitor/property/version";
+		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{version});
 	}
 	
 	

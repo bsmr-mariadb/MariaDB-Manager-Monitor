@@ -116,7 +116,7 @@ public class node implements Runnable {
 		{
 			Logging.error("Unable to obtain address for node " + nodeNo);
 		}
-		m_URL = "jdbc:mysql://" + m_address + "/information_schema";
+		m_URL = "jdbc:mysql://" + m_address + ":3306/";
 		connect();
 		Logging.info("Created node: " + this);
 	}
@@ -126,7 +126,7 @@ public class node implements Runnable {
 	 */
 	public synchronized void close()
 	{
-		Logging.info("Disconnect from monitored database " + m_URL);
+		Logging.info("Disconnect from monitored database " + m_address);
 		try {
 			if (m_connected)
 				m_mondb.close();
@@ -145,7 +145,7 @@ public class node implements Runnable {
 	 */
 	private synchronized void connect() 
 	{
-		Logging.info("Try to connect to monitored database " + m_URL);
+		Logging.info("Try to connect to monitored database " + m_address);
 		if (m_connecting)
 		{
 			m_tempts++;
@@ -168,7 +168,7 @@ public class node implements Runnable {
 		{
 			Logging.error("Unable to obtain address for node " + m_nodeNo);
 		}
-		m_URL = "jdbc:mysql://" + m_address + "/information_schema";
+		m_URL = "jdbc:mysql://" + m_address + ":3306/";
 		m_conthread = new Thread(this);
 		m_conthread.start();
 	}
@@ -192,12 +192,12 @@ public class node implements Runnable {
 		catch (SQLException sqlex)
 		{
 			  m_connected = false;
-			  Logging.error("Failed: " + sqlex.getMessage());
+			  Logging.error("Node SQL failed: " + sqlex.getMessage());
 		}
 		catch (Exception ex)
 		{
 			  m_connected = false;
-			  Logging.error("Failed: " + ex.getMessage());
+			  Logging.error("Node connection failed: " + ex.getMessage());
 		}
 		m_connecting = false;
 	}
