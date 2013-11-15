@@ -38,6 +38,8 @@ import com.skysql.java.Logging;
  *
  */
 public class ClusterMonitor extends Thread {
+	/** The Monitor version number. */
+	private final static String		m_version = "1.7-108";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
@@ -93,8 +95,9 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		Logging.info("Starting ClusterMonitor v1.7-107");
+		Logging.info("Starting ClusterMonitor v" + m_version);
 		Logging.info("==============================");
+		(new mondata()).registerAPI(m_version);
 		
 		if (args[off].equalsIgnoreCase("all"))
 		{
@@ -278,7 +281,7 @@ public class ClusterMonitor extends Thread {
 				while (node_it.hasNext())
 				{
 					node n = node_it.next();
-					n.execute("select 1");
+					n.execute("show status like 'wsrep_local_state'");
 				}
 				// Iterate on the monitors
 				Iterator<List<monitor>> mit = m_monitorList.iterator();

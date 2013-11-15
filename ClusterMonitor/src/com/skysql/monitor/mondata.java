@@ -119,6 +119,13 @@ public class mondata {
 		return object;
 	}
 	
+	public void registerAPI(String version) {
+		String apiRequest = "application/1/property/name";
+		m_api.updateValue(apiRequest, new String[]{"fields"}, new String[]{"Monitor"});
+		apiRequest = "application/1/property/version";
+		m_api.updateValue(apiRequest, new String[]{"fields"}, new String[]{version});
+	}
+	
 	
 	/********************************************************
 	 * GET

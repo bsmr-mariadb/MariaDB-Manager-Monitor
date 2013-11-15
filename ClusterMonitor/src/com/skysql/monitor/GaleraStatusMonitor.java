@@ -18,6 +18,8 @@
 
 package com.skysql.monitor;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -157,6 +159,20 @@ public class GaleraStatusMonitor extends monitor {
 			List<node> nodeList = new ArrayList<node>();
 			try {
 				String nodeStateString = m_globalStatus.getStatus("wsrep_local_state");
+//				Credential cred = m_confdb.getNodeMonitorCredentials(n.getID());
+//				String mysqlCmd = "mysql -u" + cred.getUsername() + " -p" + cred.getPassword()
+//						+ " -e \"show status like 'wsrep_local_state'\" | grep wsrep | cut -f2";
+//				String sshCmd = "ssh -i /var/www/.ssh/id_rsa skysqlagent@" + m_confdb.getNodePrivateIP(n.getID()) + " "
+//						+ mysqlCmd + "";
+//				Process p = Runtime.getRuntime().exec(sshCmd);
+//				p.waitFor();
+//				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//				String nodeStateString = null;
+//				String line;
+//				while ((line = reader.readLine()) != null) {
+//					nodeStateString = line;
+//				}
+//				reader.close();
 				Integer nodeStateID;
 				if (nodeStateString != null) {
 					nodeStateID = Integer.parseInt(nodeStateString) + 100;
