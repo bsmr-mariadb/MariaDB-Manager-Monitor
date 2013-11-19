@@ -25,6 +25,18 @@
 
 CHANGELOG
 
+* Thu Nov 19 2013 Massimo Siani <massimo.siani@skysql.com>
+- Register Monitor version every 30 seconds
+- Added machine-down state for Ping monitor
+- Fixed locale on non-English machines
+
+* Fri Nov 15 2013 Massimo Siani <massimo.siani@skysql.com>
+- Added version registration in the API
+- Include a modified mariadb java driver to avoid select commands on connect
+
+* Tue Nov 12 2013 Massimo Siani <massimo.siani@skysql.com>
+- Use show status instead of select
+
 * Thu Nov 7 2013 Massimo Siani <massimo.siani@skysql.com>
 - Split library
 
