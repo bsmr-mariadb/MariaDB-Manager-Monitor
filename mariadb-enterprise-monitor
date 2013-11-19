@@ -34,6 +34,7 @@ vMonitorJar=ClusterMonitor.jar
 vShareDir=/usr/local/skysql/share
 vShareFile1=skysql-java-shared.jar
 vJavaClasspath="${vMonitorDir}/${vMonitorJar}:${vShareDir}/*"
+vJavaSettings="-Duser.language=en -Duser.country=GB"
 
 ## set to -v for verbosity, empty or comment otherwise
 #verbose="-v"
@@ -60,7 +61,7 @@ case "$1" in
     
             PATH=${PATH}:/usr/sbin
     
-            java -cp ${vJavaClasspath} com.skysql.monitor.ClusterMonitor $verbose all &
+            java -cp ${vJavaClasspath} ${vJavaSettings} com.skysql.monitor.ClusterMonitor $verbose all &
 
             ### Check if the process is started ###############################################################
             sleep 1
