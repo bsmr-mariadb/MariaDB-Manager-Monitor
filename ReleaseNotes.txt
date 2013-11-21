@@ -1,4 +1,4 @@
-#  Part of SkySQL Manager API
+#  Part of MariaDB Enterprise package.
 #
 # This file is distributed as part of SkySQL Manager.  It is free
 # software: you can redistribute it and/or modify it under the terms of the
@@ -25,7 +25,10 @@
 
 CHANGELOG
 
-* Thu Nov 19 2013 Massimo Siani <massimo.siani@skysql.com>
+* Thu Nov 21 2013 Massimo Siani <massimo.siani@skysql.com>
+- Fix headers
+
+* Tue Nov 19 2013 Massimo Siani <massimo.siani@skysql.com>
 - Register Monitor version every 30 seconds
 - Added machine-down state for Ping monitor
 - Fixed locale on non-English machines

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Part of MariaDB Enterprise package
+# Part of MariaDB Enterprise package.
 #
 # This file is distributed as part of the SkySQL MariaDB Enterprise package.
 # It is free software: you can redistribute it and/or modify it under
@@ -18,9 +18,9 @@
 #
 # Copyright 2013 (c) SkySQL Ab
 #
-# Author      : Stefano Simonelli
-# Version     : 2.20
-# Date        : October 2013
+# Author      : Stefano Simonelli, Massimo Siani
+# Version     : 2.22
+# Date        : November 2013
 # Description : LSB script for MariaDB Manager Monitor
 # Note        : Script location must be: /etc/init.d  - with execute permission
 # Returns     : 0 = OK - 1 = Warning
