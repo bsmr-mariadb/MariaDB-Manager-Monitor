@@ -39,7 +39,7 @@ import com.skysql.java.Logging;
  */
 public class ClusterMonitor extends Thread {
 	/** The Monitor version number. */
-	private final static String		m_version = "1.7-113";
+	private final static String		m_version = "1.7-115";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
@@ -120,17 +120,18 @@ public class ClusterMonitor extends Thread {
 					m_threadMap.put(i, monitor);
 				}
 				monitorData.registerAPI(m_version);
-				try {
-					Thread.sleep(30000);
-				} catch (Exception ex) {
-					// Nothing to do
-				}
 				if (systems.isEmpty() && m_systems_old.isEmpty()) {
 					Logging.warn("No systems found to monitor, waiting for systems to be deployed.");
 					try {
 						Thread.sleep(10000);
 					} catch (Exception e) {
 						Logging.error("Sleep on current thread failed: " + e.getLocalizedMessage());
+					}
+				} else {
+					try {
+						Thread.sleep(30000);
+					} catch (Exception ex) {
+						// Nothing to do
 					}
 				}
 			}

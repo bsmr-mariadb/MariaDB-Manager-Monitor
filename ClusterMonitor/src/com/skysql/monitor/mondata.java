@@ -57,7 +57,7 @@ public class mondata {
 	 */
 	public mondata()
 	{
-		this(-1);
+		this(0);
 	}
 	
 	/**

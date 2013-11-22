@@ -27,6 +27,7 @@ CHANGELOG
 
 * Thu Nov 21 2013 Massimo Siani <massimo.siani@skysql.com>
 - Fix headers
+- Fix bug on Monitor version
 
 * Tue Nov 19 2013 Massimo Siani <massimo.siani@skysql.com>
 - Register Monitor version every 30 seconds
