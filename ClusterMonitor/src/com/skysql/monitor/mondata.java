@@ -425,7 +425,7 @@ public class mondata {
 	 * @return		true if the list of monitors has changed, false otherwise
 	 */
 	public boolean saveMonitorChanges() {
-		String apiRequest = "monitorclass/" + m_systemType + "/key";
+		String apiRequest = "monitorclass/" + m_systemType;
 		String now = m_dataChanged.getMonitorUpdateDate();
 		GsonMonitorClasses gsonMonitorClasses = getObjectFromAPI(apiRequest, GsonMonitorClasses.class, now);
 		boolean isChanged = (gsonMonitorClasses == null || gsonMonitorClasses.getMonitorClass(0) == null ? false : true);
