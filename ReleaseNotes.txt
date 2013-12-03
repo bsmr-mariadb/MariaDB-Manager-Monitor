@@ -14,7 +14,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# Copyright 2013 (c) SkySQL Ab
+# Copyright 2013-2014 (c) SkySQL Ab
 #
 # Author: Massimo Siani
 # Date: August 2013
@@ -24,6 +24,12 @@
 
 
 CHANGELOG
+
+* Fri Nov 29 2013 Massimo Siani <massimo.siani@skysql.com>
+- Fix headers date
+
+* Thu Nov 28 2013 Massimo Siani <massimo.siani@skysql.com>
+- Change API call monitorclass/galera/key to monitorclass/galera
 
 * Thu Nov 21 2013 Massimo Siani <massimo.siani@skysql.com>
 - Fix headers

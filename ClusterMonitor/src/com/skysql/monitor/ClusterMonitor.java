@@ -13,7 +13,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2012, 2013 SkySQL Ab
+ * Copyright 2012-2014 SkySQL Ab
  */
 
 package com.skysql.monitor;
@@ -39,7 +39,7 @@ import com.skysql.java.Logging;
  */
 public class ClusterMonitor extends Thread {
 	/** The Monitor version number. */
-	private final static String		m_version = "1.7-116";
+	private final static String		m_version = "1.7-117";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
