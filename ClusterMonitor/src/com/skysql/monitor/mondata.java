@@ -39,6 +39,7 @@ public class mondata {
 	private monAPI						m_api;
 	private String						m_systemType;
 	private GsonLatestObservations 		m_dataChanged;
+	private final int					m_monitorApiID = 3;
 	
 	/**
 	 * Constructor for the monitor data class.
@@ -48,7 +49,7 @@ public class mondata {
 	public mondata(int systemID)
 	{
 		m_systemID = systemID;
-		m_api = new monAPI();
+		m_api = new monAPI(m_monitorApiID);
 		m_systemType = "galera";
 		m_dataChanged = new GsonLatestObservations();
 	}

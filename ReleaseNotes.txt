@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Wed Dec 11 2013 Massimo Siani <massimo.siani@skysql.com>
+- Add key generation upon install
+
 * Fri Nov 29 2013 Massimo Siani <massimo.siani@skysql.com>
 - Fix headers date
 
