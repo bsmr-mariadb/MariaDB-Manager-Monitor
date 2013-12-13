@@ -1,6 +1,6 @@
-#  Part of MariaDB Enterprise package.
+#  Part of MariaDB Manager package.
 #
-# This file is distributed as part of SkySQL Manager.  It is free
+# This file is distributed as part of MariaDB Manager.  It is free
 # software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation,
 # version 2.
@@ -24,6 +24,9 @@
 
 
 CHANGELOG
+
+* Fri Dec 13 2013 Massimo Siani <massimo.siani@skysql.com>
+- Do not start the Monitor after installation
 
 * Wed Dec 11 2013 Massimo Siani <massimo.siani@skysql.com>
 - Add key generation upon install

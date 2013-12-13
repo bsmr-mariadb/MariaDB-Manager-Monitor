@@ -39,7 +39,7 @@ import com.skysql.java.Logging;
  */
 public class ClusterMonitor extends Thread {
 	/** The Monitor version number. */
-	private final static String		m_version = "1.7-118";
+	private final static String		MONITOR_VERSION = "1.7-119";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
@@ -95,10 +95,10 @@ public class ClusterMonitor extends Thread {
 			verbose = true;
 		}
 
-		Logging.info("Starting ClusterMonitor v" + m_version);
+		Logging.info("Starting ClusterMonitor v" + MONITOR_VERSION);
 		Logging.info("==============================");
 		mondata monitorData = new mondata();
-		monitorData.registerAPI(m_version);
+		monitorData.registerAPI(MONITOR_VERSION);
 		
 		if (args[off].equalsIgnoreCase("all"))
 		{
@@ -119,7 +119,7 @@ public class ClusterMonitor extends Thread {
 					monitor.start();
 					m_threadMap.put(i, monitor);
 				}
-				monitorData.registerAPI(m_version);
+				monitorData.registerAPI(MONITOR_VERSION);
 				if (systems.isEmpty() && m_systems_old.isEmpty()) {
 					Logging.warn("No systems found to monitor, waiting for systems to be deployed.");
 					try {
