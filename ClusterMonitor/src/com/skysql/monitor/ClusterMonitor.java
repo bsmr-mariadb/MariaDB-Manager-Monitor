@@ -39,7 +39,7 @@ import com.skysql.java.Logging;
  */
 public class ClusterMonitor extends Thread {
 	/** The Monitor version number. */
-	private final static String		MONITOR_VERSION = "1.7-119";
+	private final static String		MONITOR_VERSION = "1.7-120";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
@@ -368,17 +368,13 @@ public class ClusterMonitor extends Thread {
 	private boolean updateObservations() {
 		if (m_observedValues.isEmpty()) return false;
 		List<Integer> monitorIDs = new ArrayList<Integer>(m_observedValues.size());
-		List<Integer> systemIDs = new ArrayList<Integer>(m_observedValues.size());
-		List<Integer> nodeIDs = new ArrayList<Integer>(m_observedValues.size());
 		List<String> values = new ArrayList<String>(m_observedValues.size());
 		for (Integer key : m_observedValues.keySet()) {
 			monitorIDs.add(key);
-			systemIDs.add(m_systemID);
-			nodeIDs.add(0);
 			values.add(m_observedValues.get(key));
 		}
 		m_observedValues.clear();
-		return m_confdb.bulkMonitorData(monitorIDs, systemIDs, nodeIDs, values);
+		return m_confdb.bulkMonitorData(monitorIDs, m_systemID, 0, values);
 	}
 	
 	/**

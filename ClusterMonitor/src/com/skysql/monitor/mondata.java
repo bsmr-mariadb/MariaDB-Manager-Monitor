@@ -606,7 +606,7 @@ public class mondata {
 			}
 			// now update
 			apiRequest = "system/" + m_systemID;
-			m_api.UpdateValue(apiRequest, "state", systemState);
+			m_api.updateValue(apiRequest, "state", systemState);
 		} catch (Exception e) {
 			Logging.error("Update System State Failed: " + e.getMessage());
 		}
@@ -672,7 +672,7 @@ public class mondata {
 			return false;
 		}
 		String apiRequest = "system/" + m_systemID + "/node/" + nodeID;
-		return m_api.UpdateValue(apiRequest, "publicip", publicIP);
+		return m_api.updateValue(apiRequest, "publicip", publicIP);
 	}
 	/**
 	 * setPrivateIP - Update the private IP of an instance. Only update the database
@@ -688,7 +688,7 @@ public class mondata {
 				return false;
 			} else {
 				String apiRequest = "system/" + m_systemID + "/node/" + nodeID;
-				return m_api.UpdateValue(apiRequest, "privateip", privateIP);
+				return m_api.updateValue(apiRequest, "privateip", privateIP);
 			}
 		} catch (Exception e) {
 			return false;
@@ -737,11 +737,40 @@ public class mondata {
 	 * @param fields: the names of the variables to be passed to the API
 	 * @param values: the values to the passed to the API
 	 */
+	public boolean bulkMonitorData(List<Integer> monitorIDs, Integer systemID, Integer nodeID, List<String> values) {
+		String apiRequest = "monitordata";
+		if ( !(monitorIDs.size() == values.size()) ) {
+			Logging.error("Bulk data failed: arrays must be of the same size: got "
+					+ monitorIDs.size() + " monitor IDs, " + values.size() + " values.");
+			return false;
+		}
+		List<String> fi = new ArrayList<String>();
+		List<String> va = new ArrayList<String>();
+		fi.add("systemid");
+		va.add(Integer.toString(systemID));
+		fi.add("nodeid");
+		va.add(Integer.toString(nodeID));
+		for (int i=0; i<monitorIDs.size(); i++) {
+			fi.add("m[" + Integer.toString(i) + "]");
+			va.add(Integer.toString(monitorIDs.get(i)));
+			fi.add("v[" + Integer.toString(i) + "]");
+			va.add(values.get(i));
+		}
+		String[] fields = fi.toArray(new String[0]);
+		String[] parameters = va.toArray(new String[0]);
+		return m_api.bulkMonitorValue(apiRequest, fields, parameters);
+	}
+	/**
+	 * Batch request to the API.
+	 * 
+	 * @param fields: the names of the variables to be passed to the API
+	 * @param values: the values to the passed to the API
+	 */
 	public boolean bulkMonitorData(List<Integer> monitorIDs, List<Integer> systemIDs, List<Integer> nodeIDs, List<String> values) {
 		String apiRequest = "monitordata";
 		if ( !(monitorIDs.size() == systemIDs.size() && monitorIDs.size() == nodeIDs.size() && monitorIDs.size() == values.size()) ) {
 			Logging.error("Bulk data failed: arrays must be of the same size: got "
-					+ monitorIDs.size() + " monitors, " + systemIDs.size() + " systems, "
+					+ monitorIDs.size() + " monitor IDs, " + systemIDs.size() + " systems, "
 					+ nodeIDs.size() + " nodes and " + values.size() + " values.");
 			return false;
 		}

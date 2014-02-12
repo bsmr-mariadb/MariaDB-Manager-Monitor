@@ -338,16 +338,12 @@ public class node implements Runnable {
 	public boolean updateObservations() {
 		if (m_observedValues.isEmpty()) return false;
 		List<Integer> monitorIDs = new ArrayList<Integer>(m_observedValues.size());
-		List<Integer> systemIDs = new ArrayList<Integer>(m_observedValues.size());
-		List<Integer> nodeIDs = new ArrayList<Integer>(m_observedValues.size());
 		List<String> values = new ArrayList<String>(m_observedValues.size());
 		for (Integer key : m_observedValues.keySet()) {
 			monitorIDs.add(key);
-			systemIDs.add(m_systemID);
-			nodeIDs.add(m_nodeNo);
 			values.add(m_observedValues.get(key));
 		}
 		m_observedValues.clear();
-		return m_confdb.bulkMonitorData(monitorIDs, systemIDs, nodeIDs, values);
+		return m_confdb.bulkMonitorData(monitorIDs, m_systemID, m_nodeNo, values);
 	}
 }
