@@ -7,7 +7,7 @@
 	<name>MariaDB-Manager Monitor</name>
 	<build>
 		<finalName>ClusterMonitor</finalName>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>ClusterMonitor/src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
