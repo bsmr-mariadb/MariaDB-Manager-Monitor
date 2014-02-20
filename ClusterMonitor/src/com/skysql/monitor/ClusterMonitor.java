@@ -39,7 +39,7 @@ import com.skysql.java.Logging;
  */
 public class ClusterMonitor extends Thread {
 	/** The Monitor version number. */
-	private final static String		MONITOR_VERSION = "1.7-120";
+	private final static String		MONITOR_VERSION = "1.7-121";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
