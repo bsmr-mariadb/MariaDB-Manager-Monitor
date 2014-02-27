@@ -14,7 +14,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# Copyright 2013-2014 (c) SkySQL Ab
+# Copyright 2013-2014 (c) SkySQL Corporation Ab
 #
 # Author: Massimo Siani
 # Date: August 2013
@@ -24,6 +24,25 @@
 
 
 CHANGELOG
+
+* Thu Feb 27 2014 Massimo Siani <massimo.siani@skysql.com>
+- Merge develop and release-1.0.1
+
+* Fri Feb 21 2014 Massimo Siani	<massimo.siani@skysql.com>
+- Fix Copyright and files headers
+
+* Thu Feb 20 2014 Massimo Siani	<massimo.siani@skysql.com>
+- Bump to version 1.7-121
+
+* Tue Feb 18 2014 Massimo Siani	<massimo.siani@skysql.com>
+- Fix pom.xml
+- Merge Timofey's changes
+
+* Thu Feb 13 2014 Massimo Siani	<massimo.siani@skysql.com>
+- Deleted duplicate pom.xml
+
+* Wed Feb 12 2014 Massimo Siani <massimo.siani@skysql.com>
+- Fix API call for bulk data
 
 * Fri Dec 13 2013 Massimo Siani <massimo.siani@skysql.com>
 - Do not start the Monitor after installation
