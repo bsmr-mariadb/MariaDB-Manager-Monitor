@@ -78,4 +78,21 @@
 			<version>[0.1,)</version>
 		</dependency>
 	</dependencies>
+	<description>MariaDB-Manager-Monitor is the monitoring component of the MariaDB-Manager project. It provides a confirgurable monitoring service in Java that interacts with the MariaDB-Manager-API to provide monitoring data on a set of servers within a MariaDB Galera Cluster.
+
+The monitor requires another component of the MariaDB-Manager family in order to be built, libMariaDB-Manager-java. This project provides library functions that are shared between the Java components of MariaDB-Manager.</description>
+	<url>https://github.com/skysql/MariaDB-Manager-Monitor</url>
+	<organization>
+		<name>SkySQL Corporation Ab</name>
+		<url>www.mariadb.com</url>
+	</organization>
+	<scm>
+		<url>https://github.com/skysql/MariaDB-Manager-Monitor</url>
+		<connection>scm:git:git://github.com/skysql/MariaDB-Manager-Monitor</connection>
+		<developerConnection>scm:git:git@github.com:skysql/MariaDB-Manager-Monitor</developerConnection>
+	</scm>
+	<issueManagement>
+		<system>Bugzilla</system>
+		<url>http://bugs.skysql.com</url>
+	</issueManagement>
 </project>
