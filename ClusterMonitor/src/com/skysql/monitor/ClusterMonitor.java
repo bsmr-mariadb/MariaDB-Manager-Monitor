@@ -266,8 +266,12 @@ public class ClusterMonitor extends Thread {
 	 */
 	public void execute()
 	{
+		long cycleCount = -1L;
+		long monitorUpdated;
 		while (true)
 		{
+			cycleCount++;
+			monitorUpdated = 0L;
 			try {
 				if (m_confdb.getProvisionedNodes()) {
 					if ((! refreshconfig()) || Thread.interrupted()) {
@@ -276,8 +280,6 @@ public class ClusterMonitor extends Thread {
 				} else if (m_confdb.saveMonitorChanges()) {
 					refreshMonitorList();
 				}
-				if (m_verbose)
-					Logging.info("Probe");
 
 				// Ping all the nodes before we do a real probe
 				Iterator<node> node_it = m_nodeList.iterator();
@@ -302,7 +304,8 @@ public class ClusterMonitor extends Thread {
 					{
 						monitor m = it.next();
 						id = m.getID();
-//						if ((m_gcdMonitorInterval * cycleCount) % m.m_interval != 0) continue;
+						if ((m_gcdMonitorInterval * cycleCount) % m.m_interval != 0) continue;
+						monitorUpdated++;
 						m.probe(m_verbose);
 						systemAverage = m.isSystemAverage();
 						if (m.hasSystemValue())
@@ -340,10 +343,12 @@ public class ClusterMonitor extends Thread {
 						DecimalFormat fmt = new DecimalFormat(format);
 						m_observedValues.put(id, fmt.format(system_value));
 						if (m_verbose)
-							Logging.info("    Probe system value " + system_value);
+							Logging.info("        Probe system value " + system_value);
 					}
 				}
-				updateFullObservations();
+				if (monitorUpdated > 0) {
+					updateFullObservations();
+				}
 				
 			} catch (InterruptedException e) {
 				return;
@@ -486,7 +491,7 @@ public class ClusterMonitor extends Thread {
 					m_gcdMonitorInterval = BigInteger.valueOf(m_gcdMonitorInterval)
 					.gcd(BigInteger.valueOf(mlist.get(mlist.size() -1).m_interval)).intValue();
 				}
-				m_gcdMonitorInterval = m_interval;   // disable polling functionality
+				// m_gcdMonitorInterval = m_interval;   // disable polling functionality
 			}
 		}
 	}
