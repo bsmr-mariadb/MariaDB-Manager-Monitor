@@ -793,7 +793,7 @@ public class mondata {
 		fi.add("nodeid");
 		va.add(Integer.toString(nodeID));
 		fi.add("timestamp");
-		va.add(Long.toString((new Date()).getTime()));
+		va.add(Long.toString((new Date()).getTime() / 1000));
 		for (int i=0; i<monitorIDs.size(); i++) {
 			fi.add("m[" + Integer.toString(i) + "]");
 			va.add(Integer.toString(monitorIDs.get(i)));
