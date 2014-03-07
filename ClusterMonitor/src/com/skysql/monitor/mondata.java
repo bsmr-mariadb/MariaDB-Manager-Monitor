@@ -447,6 +447,9 @@ public class mondata {
 	}
 	/**
 	 * Get the object with the list of all cached monitor classes.
+	 * This method does not call the API, but looks in the current cache.
+	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
+	 * in the local cache.
 	 * 
 	 * @return		the monitor class object
 	 */
@@ -455,6 +458,9 @@ public class mondata {
 	}
 	/**
 	 * Get the object corresponding to the given monitor ID.
+	 * This method does not call the API, but looks in the current cache.
+	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
+	 * in the local cache.
 	 * 
 	 * @param monitorID		the monitor ID
 	 * @return				the monitor class object
@@ -464,6 +470,9 @@ public class mondata {
 	}
 	/**
 	 * Retrieve the id of a monitor from the key of the monitor itself.
+	 * This method does not call the API, but looks in the current cache.
+	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
+	 * in the local cache.
 	 * 
 	 * @param key		the monitor key
 	 * @return			the monitor id, or -1 if the key is not found
@@ -483,6 +492,9 @@ public class mondata {
 	}
 	/**
 	 * Return the list of all available monitor Id's for the given system type.
+	 * This method does not call the API, but looks in the current cache.
+	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
+	 * in the local cache.
 	 * 
 	 * @return The list of monitorID's defined in the database
 	 */
@@ -496,6 +508,9 @@ public class mondata {
 	 * 
 	 * Although originally a simple SQL string for a monitor to execute, other
 	 * monitor types have reused the string to contain monitor specific data.
+	 * This method does not call the API, but looks in the current cache.
+	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
+	 * in the local cache.
 	 * 
 	 * @param monitor_id The monitor ID to return the SQL data string for
 	 * @return The "SQL" field of the monitor
@@ -508,6 +523,9 @@ public class mondata {
 	}
 	/**
 	 * Fetch the monitor probe interval.
+	 * This method does not call the API, but looks in the current cache.
+	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
+	 * in the local cache.
 	 * 
 	 * @return The monitor interval in seconds
 	 */
@@ -531,6 +549,9 @@ public class mondata {
 	}
 	/**
 	 * Return the type, and hence monitor class, of a particular monitor.
+	 * This method does not call the API, but looks in the current cache.
+	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
+	 * in the local cache.
 	 * 
 	 * @param id	The monitor ID
 	 * @return The type field for the monitor, e.g. SQL, CMD, CRM etc.
@@ -543,6 +564,9 @@ public class mondata {
 	}
 	/**
 	 * Is the system monitor value cumulative or an average of all the nodes in the system?
+	 * This method does not call the API, but looks in the current cache.
+	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
+	 * in the local cache.
 	 * 
 	 * @param id	The Monitor ID
 	 * @return		True if the system value of a monitor is an average of all the nodes in the system
@@ -558,6 +582,9 @@ public class mondata {
 	 * Is the monitored value a cumulative number or a snapshot value. This allows monitors
 	 * to return values that are either the value in the database or the difference between
 	 * the current value and the previous value.
+	 * This method does not call the API, but looks in the current cache.
+	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
+	 * in the local cache.
 	 * 
 	 * @param monitor_id	The monitor ID to check
 	 * @return True of the monitor is a delta of observed values
@@ -573,6 +600,9 @@ public class mondata {
 	}
 	/**
 	 * Retrieve the Monitor key from the Monitor id.
+	 * This method does not call the API, but looks in the current cache.
+	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
+	 * in the local cache.
 	 * 
 	 * @param id
 	 * @return
