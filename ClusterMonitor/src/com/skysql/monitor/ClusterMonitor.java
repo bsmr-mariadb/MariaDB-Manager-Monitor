@@ -267,11 +267,9 @@ public class ClusterMonitor extends Thread {
 	public void execute()
 	{
 		long cycleCount = -1L;
-		long monitorUpdated;
 		while (true)
 		{
 			cycleCount++;
-			monitorUpdated = 0L;
 			try {
 				if (m_confdb.getProvisionedNodes()) {
 					if ((! refreshconfig()) || Thread.interrupted()) {
@@ -305,7 +303,6 @@ public class ClusterMonitor extends Thread {
 						monitor m = it.next();
 						id = m.getID();
 						if ((m_gcdMonitorInterval * cycleCount) % m.m_interval != 0) continue;
-						monitorUpdated++;
 						m.probe(m_verbose);
 						systemAverage = m.isSystemAverage();
 						if (m.hasSystemValue())
@@ -346,7 +343,7 @@ public class ClusterMonitor extends Thread {
 							Logging.info("        Probe system value " + system_value);
 					}
 				}
-				if (monitorUpdated > 0) {
+				if ((m_gcdMonitorInterval * cycleCount) % m_interval == 0) {
 					updateFullObservations();
 				}
 				
