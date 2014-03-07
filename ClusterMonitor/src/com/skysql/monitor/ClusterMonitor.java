@@ -343,9 +343,9 @@ public class ClusterMonitor extends Thread {
 							Logging.info("        Probe system value " + system_value);
 					}
 				}
-				if ((m_gcdMonitorInterval * cycleCount) % m_interval == 0) {
+//				if ((m_gcdMonitorInterval * cycleCount) % m_interval == 0) {
 					updateFullObservations();
-				}
+//				}
 				
 			} catch (InterruptedException e) {
 				return;
@@ -488,7 +488,7 @@ public class ClusterMonitor extends Thread {
 					m_gcdMonitorInterval = BigInteger.valueOf(m_gcdMonitorInterval)
 					.gcd(BigInteger.valueOf(mlist.get(mlist.size() -1).m_interval)).intValue();
 				}
-				// m_gcdMonitorInterval = m_interval;   // disable polling functionality
+				// m_gcdMonitorInterval = m_interval;   // uncomment this line to disable polling functionality
 			}
 		}
 	}
