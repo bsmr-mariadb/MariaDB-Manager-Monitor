@@ -19,6 +19,7 @@
 package com.skysql.monitor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -772,7 +773,8 @@ public class mondata {
 		return m_api.MonitorValue(systemID, getMonitorKey(monitorID), observation);
 	}
 	/**
-	 * Batch request to the API.
+	 * Batch request to the API. Adds the current timestamp to the data being sent, despite
+	 * it is an optional parameter for the API. 
 	 * 
 	 * @param fields: the names of the variables to be passed to the API
 	 * @param values: the values to the passed to the API
@@ -790,6 +792,8 @@ public class mondata {
 		va.add(Integer.toString(systemID));
 		fi.add("nodeid");
 		va.add(Integer.toString(nodeID));
+		fi.add("timestamp");
+		va.add(Long.toString((new Date()).getTime()));
 		for (int i=0; i<monitorIDs.size(); i++) {
 			fi.add("m[" + Integer.toString(i) + "]");
 			va.add(Integer.toString(monitorIDs.get(i)));

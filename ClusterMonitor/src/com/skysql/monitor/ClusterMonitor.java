@@ -346,7 +346,6 @@ public class ClusterMonitor extends Thread {
 //				if ((m_gcdMonitorInterval * cycleCount) % m_interval == 0) {
 					updateFullObservations();
 //				}
-				
 			} catch (InterruptedException e) {
 				return;
 			} catch (Exception ex) {
