@@ -1,2 +1,3 @@
 ClusterMonitor.jar usr/local/skysql/monitor/ClusterMonitor.jar
+generateAPIkey.sh usr/local/skysql/monitor/generateAPIkey.sh
 mariadb-enterprise-monitor etc/init.d/mariadb-enterprise-monitor
