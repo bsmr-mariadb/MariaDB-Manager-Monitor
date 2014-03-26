@@ -1,0 +1,5 @@
+chkconfig --add mariadb-enterprise-monitor
+touch /etc/rsyslog.conf
+sed -i -e 's/#$ModLoad imudp/$ModLoad imudp/' -e 's/#$UDPServerRun 514/$UDPServerRun 514/' /etc/rsyslog.conf
+/etc/init.d/rsyslog restart
+

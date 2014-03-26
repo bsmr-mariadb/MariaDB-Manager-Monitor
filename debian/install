@@ -1,0 +1,2 @@
+ClusterMonitor.jar usr/local/skysql/monitor/ClusterMonitor.jar
+mariadb-enterprise-monitor etc/init.d/mariadb-enterprise-monitor
