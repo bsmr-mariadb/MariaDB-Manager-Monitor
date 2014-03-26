@@ -146,11 +146,27 @@ public class mondata {
 	 * 
 	 * @param version	the version number. Typical format is Major.minor-build
 	 */
-	public void registerAPI(String version) {
+	public void registerAPI(String version, String release) {
 		String apiRequest = "system/0/node/0/component/monitor/property/name";
 		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{"MariaDB-Manager-Monitor"});
 		apiRequest = "system/0/node/0/component/monitor/property/version";
 		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{version});
+		apiRequest = "system/0/node/0/component/monitor/property/release";
+		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{release});
+	}
+	
+	/**
+	 * Register the given version of the component in the API.
+	 * 
+	 * @param version	the version number. Typical format is Major.minor-build
+	 */
+	public void registerAPI(String component, String version, String release) {
+		String apiRequest = "system/0/node/0/component/"+ component.toLowerCase() + "/property/name";
+		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{component});
+		apiRequest = "system/0/node/0/component/"+ component.toLowerCase() + "/property/version";
+		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{version});
+		apiRequest = "system/0/node/0/component/"+ component.toLowerCase() + "/property/release";
+		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{release});
 	}
 	
 	
