@@ -716,6 +716,29 @@ public class mondata {
 		}
 	}
 	/**
+	 * Sets the database properties.
+	 * 
+	 * @param nodeid		The node to set the state of
+	 * @param dbType		The database type
+	 * @param dbVersion		The database version
+	 */
+	public void setNodeDatabaseProperties(int nodeid, String dbType, String dbVersion) {
+		String apiRequest = "system/" + m_systemID + "/node/" + nodeid;
+		String[] pName = new String[] {"dbtype", "dbversion"};
+		String[] pValue = new String[] {dbType, dbVersion};
+		try {
+			GsonUpdatedAPI gsonUpdatedAPI = updateValue(apiRequest, GsonUpdatedAPI.class, pName, pValue);
+			if (gsonUpdatedAPI != null) {
+				if (gsonUpdatedAPI.getUpdateCount() == 0)
+					Logging.error("Failed to update node database properties on node " + nodeid + " of system " + m_systemID);
+			}
+			if (gsonUpdatedAPI.getErrors() != null) throw new RuntimeException(gsonUpdatedAPI.getErrors().get(0));
+			if (gsonUpdatedAPI.getWarnings() != null) throw new RuntimeException(gsonUpdatedAPI.getWarnings().get(0));
+		} catch (Exception e) {
+			Logging.error("API Failed: " + apiRequest + ": cannot update node database properties");
+		}
+	}
+	/**
 	 * Update the public IP address of a node if it has changed.
 	 * 
 	 * @param	nodeID The node ID

@@ -183,24 +183,15 @@ public class GaleraStatusMonitor extends monitor {
 		HashMap<node, String> hmIncAddress = new HashMap<node, String>();
 		while (nodeIt.hasNext()) {
 			node n = nodeIt.next();
+			String dbType = getDbType();
+			String dbVersion = getDbVersion();
+			if (dbType != null && dbVersion != null) {
+				m_confdb.setNodeDatabaseProperties(n.getID(), dbType, dbVersion);
+			}
 			m_globalStatus = globalStatusObject.getInstance(n);
 			List<node> nodeList = new ArrayList<node>();
 			try {
 				String nodeStateString = m_globalStatus.getStatus("wsrep_local_state");
-//				Credential cred = m_confdb.getNodeMonitorCredentials(n.getID());
-//				String mysqlCmd = "mysql -u" + cred.getUsername() + " -p" + cred.getPassword()
-//						+ " -e \"show status like 'wsrep_local_state'\" | grep wsrep | cut -f2";
-//				String sshCmd = "ssh -i /var/www/.ssh/id_rsa skysqlagent@" + m_confdb.getNodePrivateIP(n.getID()) + " "
-//						+ mysqlCmd + "";
-//				Process p = Runtime.getRuntime().exec(sshCmd);
-//				p.waitFor();
-//				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//				String nodeStateString = null;
-//				String line;
-//				while ((line = reader.readLine()) != null) {
-//					nodeStateString = line;
-//				}
-//				reader.close();
 				Integer nodeStateID;
 				if (nodeStateString != null) {
 					nodeStateID = Integer.parseInt(nodeStateString) + 100;
@@ -358,6 +349,24 @@ public class GaleraStatusMonitor extends monitor {
 			}
 		}
 		return new ArrayList<node>();
+	}
+	
+	/**
+	 * Retrieves the database type.
+	 * 
+	 * @return		the database type
+	 */
+	private String getDbType() {
+		return m_globalStatus.getVariable("version_comment");
+	}
+	
+	/**
+	 * Retrieves the database version.
+	 * 
+	 * @return		the database version
+	 */
+	private String getDbVersion() {
+		return m_globalStatus.getVariable("version");
 	}
 	
 	/**

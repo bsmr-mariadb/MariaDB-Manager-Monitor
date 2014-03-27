@@ -25,6 +25,10 @@
 
 CHANGELOG
 
+* Thu Mar 27 2014 Massimo Siani <massimo.siani@skysql.com>
+- Add database information with the system state
+- Update libMariaDB-Manager-java dependency
+
 * Wed Mar 26 2014 Massimo Siani <massimo.siani@skysql.com>
 - Register the release number in the API, register the Java Library
 

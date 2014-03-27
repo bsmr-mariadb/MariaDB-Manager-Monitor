@@ -15,7 +15,7 @@ Release: 		%{release}
 Source: 		%{name}-%{version}-%{release}.tar.gz
 Prefix: 		/
 Group: 			Development/Tools
-Requires:		libMariaDB-Manager-java >= 0.1-7
+Requires:		libMariaDB-Manager-java >= 0.1-10
 #BuildRequires:		java-1.7.0-openjdk
 
 %description
