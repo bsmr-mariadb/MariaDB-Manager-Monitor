@@ -176,19 +176,20 @@ public class GaleraStatusMonitor extends monitor {
 	 * @param verbose
 	 */
 	public synchronized void probe(boolean verbose) {
-		if (now() - m_updatedSystems.get(m_node.getSystemID()) <= UPDATE_THRESHOLD)
+		if (now() - m_updatedSystems.get(m_node.getSystemID()) <= UPDATE_THRESHOLD) {
 			return;
+		}
 		Iterator<node> nodeIt = getInstances().get(m_node.getSystemID()).iterator();
 		HashMap<String, List<node>> hmUUID = new HashMap<String, List<node>>();
 		HashMap<node, String> hmIncAddress = new HashMap<node, String>();
 		while (nodeIt.hasNext()) {
 			node n = nodeIt.next();
+			m_globalStatus = globalStatusObject.getInstance(n);
 			String dbType = getDbType();
 			String dbVersion = getDbVersion();
 			if (dbType != null && dbVersion != null) {
 				m_confdb.setNodeDatabaseProperties(n.getID(), dbType, dbVersion);
 			}
-			m_globalStatus = globalStatusObject.getInstance(n);
 			List<node> nodeList = new ArrayList<node>();
 			try {
 				String nodeStateString = m_globalStatus.getStatus("wsrep_local_state");

@@ -306,7 +306,7 @@ public class ClusterMonitor extends Thread {
 					{
 						monitor m = it.next();
 						id = m.getID();
-						if ((m_gcdMonitorInterval * cycleCount) % m.m_interval != 0) continue;
+						if ((m_gcdMonitorInterval * cycleCount) % m.getInterval() != 0) continue;
 						m.probe(m_verbose);
 						systemAverage = m.isSystemAverage();
 						if (m.hasSystemValue())
