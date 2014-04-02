@@ -1,3 +1,3 @@
-ClusterMonitor.jar usr/local/skysql/monitor/ClusterMonitor.jar
-generateAPIkey.sh usr/local/skysql/monitor/generateAPIkey.sh
-mariadb-enterprise-monitor etc/init.d/
+ClusterMonitor.jar usr/local/skysql/monitor
+generateAPIkey.sh usr/local/skysql/monitor
+mariadb-enterprise-monitor etc/init.d
