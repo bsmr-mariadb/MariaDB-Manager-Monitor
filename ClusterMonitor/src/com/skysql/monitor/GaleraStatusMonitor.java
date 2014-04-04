@@ -176,31 +176,23 @@ public class GaleraStatusMonitor extends monitor {
 	 * @param verbose
 	 */
 	public synchronized void probe(boolean verbose) {
-		if (now() - m_updatedSystems.get(m_node.getSystemID()) <= UPDATE_THRESHOLD)
+		if (now() - m_updatedSystems.get(m_node.getSystemID()) <= UPDATE_THRESHOLD) {
 			return;
+		}
 		Iterator<node> nodeIt = getInstances().get(m_node.getSystemID()).iterator();
 		HashMap<String, List<node>> hmUUID = new HashMap<String, List<node>>();
 		HashMap<node, String> hmIncAddress = new HashMap<node, String>();
 		while (nodeIt.hasNext()) {
 			node n = nodeIt.next();
 			m_globalStatus = globalStatusObject.getInstance(n);
+			String dbType = getDbType();
+			String dbVersion = getDbVersion();
+			if (dbType != null && dbVersion != null) {
+				m_confdb.setNodeDatabaseProperties(n.getID(), dbType, dbVersion);
+			}
 			List<node> nodeList = new ArrayList<node>();
 			try {
 				String nodeStateString = m_globalStatus.getStatus("wsrep_local_state");
-//				Credential cred = m_confdb.getNodeMonitorCredentials(n.getID());
-//				String mysqlCmd = "mysql -u" + cred.getUsername() + " -p" + cred.getPassword()
-//						+ " -e \"show status like 'wsrep_local_state'\" | grep wsrep | cut -f2";
-//				String sshCmd = "ssh -i /var/www/.ssh/id_rsa skysqlagent@" + m_confdb.getNodePrivateIP(n.getID()) + " "
-//						+ mysqlCmd + "";
-//				Process p = Runtime.getRuntime().exec(sshCmd);
-//				p.waitFor();
-//				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//				String nodeStateString = null;
-//				String line;
-//				while ((line = reader.readLine()) != null) {
-//					nodeStateString = line;
-//				}
-//				reader.close();
 				Integer nodeStateID;
 				if (nodeStateString != null) {
 					nodeStateID = Integer.parseInt(nodeStateString) + 100;
@@ -358,6 +350,24 @@ public class GaleraStatusMonitor extends monitor {
 			}
 		}
 		return new ArrayList<node>();
+	}
+	
+	/**
+	 * Retrieves the database type.
+	 * 
+	 * @return		the database type
+	 */
+	private String getDbType() {
+		return m_globalStatus.getVariable("version_comment");
+	}
+	
+	/**
+	 * Retrieves the database version.
+	 * 
+	 * @return		the database version
+	 */
+	private String getDbVersion() {
+		return m_globalStatus.getVariable("version");
 	}
 	
 	/**

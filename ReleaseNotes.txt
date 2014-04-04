@@ -1,6 +1,6 @@
 #  Part of MariaDB Manager package.
 #
-# This file is distributed as part of MariaDB Manager.  It is free
+# This file is distributed as part of MariaDB Manager. It is free
 # software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation,
 # version 2.
@@ -24,6 +24,16 @@
 
 
 CHANGELOG
+
+* Thu Mar 27 2014 Massimo Siani <massimo.siani@skysql.com>
+- Add database information with the system state
+- Update libMariaDB-Manager-java dependency
+
+* Wed Mar 26 2014 Massimo Siani <massimo.siani@skysql.com>
+- Register the release number in the API, register the Java Library
+
+* Wed Mar 12 2014 Massimo Siani	<massimo.siani@skysql.com>
+- Change MariaDB Enterprise to MariaDB Manager
 
 * Thu Feb 27 2014 Massimo Siani <massimo.siani@skysql.com>
 - Merge develop and release-1.0.1

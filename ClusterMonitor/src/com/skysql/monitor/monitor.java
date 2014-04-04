@@ -94,6 +94,15 @@ public class monitor {
 	}
 	
 	/**
+	 * Gets the monitor interval.
+	 * 
+	 * @return		the monitor interval
+	 */
+	public int getInterval() {
+		return m_interval;
+	}
+	
+	/**
 	 * The probe function, called once per probe cycle.
 	 * This is the method that get overridden by the custom monitor classes
 	 * 
