@@ -27,6 +27,7 @@ CHANGELOG
 
 * Tue Apr 08 2014 Massimo Siani <massimo.siani@skysql.com>
 - Rename mariadb-enterprise-monitor to mariadb-manager-monitor
+- There is no need to update the version every 30 seconds, set to 5 minutes
 
 * Thu Mar 27 2014 Massimo Siani <massimo.siani@skysql.com>
 - Add database information with the system state

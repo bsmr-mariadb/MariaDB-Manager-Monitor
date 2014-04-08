@@ -40,7 +40,7 @@ import com.skysql.java.Logging;
  */
 public class ClusterMonitor extends Thread {
 	/** The Monitor version number. */
-	private final static String		MONITOR_VERSION = "1.7-125";
+	private final static String		MONITOR_VERSION = "1.7-126";
 	private final static String		MONITOR_RELEASE = "1.0.2";
 	/**
 	 * The ID of the system we are monitoring. This is
@@ -106,6 +106,7 @@ public class ClusterMonitor extends Thread {
 		if (args[off].equalsIgnoreCase("all"))
 		{
 			List<Integer> systems;
+			int cycles = 0;
 			while (true)
 			{
 				systems = monitorData.getSystemList();
@@ -122,8 +123,12 @@ public class ClusterMonitor extends Thread {
 					monitor.start();
 					m_threadMap.put(i, monitor);
 				}
-				monitorData.registerAPI(MONITOR_VERSION, MONITOR_RELEASE);
-				monitorData.registerAPI("libMariaDB-Manager-java", AboutMe.VERSION, AboutMe.RELEASE);
+				cycles++;
+				if (cycles == 10) {
+					monitorData.registerAPI(MONITOR_VERSION, MONITOR_RELEASE);
+					monitorData.registerAPI("libMariaDB-Manager-java", AboutMe.VERSION, AboutMe.RELEASE);
+					cycles = 0;
+				}
 				if (systems.isEmpty() && m_systems_old.isEmpty()) {
 					Logging.warn("No systems found to monitor, waiting for systems to be deployed.");
 					try {
