@@ -32,7 +32,7 @@ and statistics data fromt he servers.
 %build
 
 %post
-chkconfig --add mariadb-enterprise-monitor
+chkconfig --add mariadb-manager-monitor
 touch $RPM_BUILD_ROOT/etc/rsyslog.conf
 sed -i -e 's/#$ModLoad imudp/$ModLoad imudp/' -e 's/#$UDPServerRun 514/$UDPServerRun 514/' $RPM_BUILD_ROOT/etc/rsyslog.conf
 /etc/init.d/rsyslog restart
@@ -41,7 +41,7 @@ sed -i -e 's/#$ModLoad imudp/$ModLoad imudp/' -e 's/#$UDPServerRun 514/$UDPServe
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
 mkdir -p $RPM_BUILD_ROOT/etc/init.d/
-cp mariadb-enterprise-monitor $RPM_BUILD_ROOT/etc/init.d/
+cp mariadb-manager-monitor $RPM_BUILD_ROOT/etc/init.d/
 
 %clean
 
@@ -49,6 +49,6 @@ cp mariadb-enterprise-monitor $RPM_BUILD_ROOT/etc/init.d/
 %defattr(-,root,root)
 %{install_path}
 %{install_path}ClusterMonitor.jar
-/etc/init.d/mariadb-enterprise-monitor
+/etc/init.d/mariadb-manager-monitor
 
 %changelog

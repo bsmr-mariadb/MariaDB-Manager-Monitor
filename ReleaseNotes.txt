@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Tue Apr 08 2014 Massimo Siani <massimo.siani@skysql.com>
+- Rename mariadb-enterprise-monitor to mariadb-manager-monitor
+
 * Thu Mar 27 2014 Massimo Siani <massimo.siani@skysql.com>
 - Add database information with the system state
 - Update libMariaDB-Manager-java dependency
