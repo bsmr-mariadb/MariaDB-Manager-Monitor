@@ -25,6 +25,11 @@
 
 CHANGELOG
 
+* Fri Apr 11 2014 Massimo Siani <massimo.siani@skysql.com>
+- Fixes for Debian
+- Manage Java 6
+- Merge debian branch into develop
+
 * Tue Apr 08 2014 Massimo Siani <massimo.siani@skysql.com>
 - Rename mariadb-enterprise-monitor to mariadb-manager-monitor
 - There is no need to update the version every 30 seconds, set to 5 minutes

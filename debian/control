@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 8)
 
 Package: mariadb-manager-monitor
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libmariadb-manager-java (>= 0.1-7)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmariadb-manager-java (>= 0.1-10)
 Description: MariaDB Manager Monitor
  MariaDB Manager is a tool to manage and monitor a set of MariaDB
  servers using the Galera multi-master replication form Codership.
