@@ -33,9 +33,6 @@ and statistics data fromt he servers.
 
 %post
 chkconfig --add mariadb-manager-monitor
-touch $RPM_BUILD_ROOT/etc/rsyslog.conf
-sed -i -e 's/#$ModLoad imudp/$ModLoad imudp/' -e 's/#$UDPServerRun 514/$UDPServerRun 514/' $RPM_BUILD_ROOT/etc/rsyslog.conf
-/etc/init.d/rsyslog restart
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
