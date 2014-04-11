@@ -1,0 +1,16 @@
+Source: mariadb-manager-monitor
+Maintainer: Massimo Siani
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 8)
+
+Package: mariadb-manager-monitor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmariadb-manager-java (>= 0.1-7)
+Description: MariaDB Manager Monitor
+ MariaDB Manager is a tool to manage and monitor a set of MariaDB
+ servers using the Galera multi-master replication form Codership.
+ This component is the monitor for the MariaDB Manager, it probes
+ the databases within control of the system gathering performance
+ and statistics data fromt he servers.
