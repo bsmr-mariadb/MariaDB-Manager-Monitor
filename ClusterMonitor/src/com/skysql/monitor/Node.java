@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.skysql.java.Credential;
 import com.skysql.java.Logging;
 
 /**

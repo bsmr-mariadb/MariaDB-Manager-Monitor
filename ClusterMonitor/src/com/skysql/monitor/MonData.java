@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.skysql.java.Credential;
 import com.skysql.java.GsonLatestObservations;
 import com.skysql.java.GsonManager;
 import com.skysql.java.GsonMonitorClasses;
