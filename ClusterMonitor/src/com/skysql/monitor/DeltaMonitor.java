@@ -20,6 +20,7 @@ package com.skysql.monitor;
 import java.text.DecimalFormat;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
  * The DeltaMonitor is an Monitor class that monitors SQL values, the recorded

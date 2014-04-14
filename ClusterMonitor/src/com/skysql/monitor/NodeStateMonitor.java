@@ -20,6 +20,7 @@
 package com.skysql.monitor;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
  * NodeStateMonitor - a Monitor class that implements a SQL based method to update the state of a Node within

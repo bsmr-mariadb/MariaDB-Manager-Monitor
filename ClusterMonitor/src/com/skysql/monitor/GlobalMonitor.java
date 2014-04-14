@@ -21,6 +21,7 @@ package com.skysql.monitor;
 import java.text.DecimalFormat;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
  * The Global Monitor class.

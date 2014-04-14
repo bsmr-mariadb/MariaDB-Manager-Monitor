@@ -24,6 +24,7 @@ import java.util.*;
 
 import com.skysql.java.AboutMe;
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
  * The main class of the query router, this comprises the main function itself,
@@ -44,7 +45,7 @@ public class ClusterMonitor extends Thread {
 	/**
 	 * The Monitor build number.
 	 */
-	private final static String		MONITOR_VERSION = "1.7-126";
+	private final static String		MONITOR_VERSION = "1.7-127";
 	/**
 	 * The Monitor release number as part of the MariaDB-Manager package.
 	 */
@@ -52,7 +53,7 @@ public class ClusterMonitor extends Thread {
 	/**
 	 * The Monitor last change date.
 	 */
-	private final static String		MONITOR_DATE = "Mon, 14 Apr 2014 10:34:11 +0000";
+	private final static String		MONITOR_DATE = "Mon, 14 Apr 2014 13:37:32 +0000";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
@@ -292,6 +293,7 @@ public class ClusterMonitor extends Thread {
 			cycleCount++;
 			try {
 				if (m_confdb.getProvisionedNodes()) {
+					GaleraStatusMonitor.removeSystem((Integer)m_systemID);
 					if ((! refreshconfig()) || Thread.interrupted()) {
 						throw new InterruptedException();
 					}

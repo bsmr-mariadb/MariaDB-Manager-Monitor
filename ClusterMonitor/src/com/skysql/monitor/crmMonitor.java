@@ -21,6 +21,7 @@ package com.skysql.monitor;
 import java.io.*;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 /**
  * Monitors the output of crm status bynode. This is a specialist Monitor
  * class designed for use with the SkySQL Data Suite environment with a master

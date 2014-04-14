@@ -22,6 +22,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
  * The commandMonitor is an instance of a Monitor class designed to execute

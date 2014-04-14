@@ -19,6 +19,7 @@
 package com.skysql.monitor;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
  * The base Monitor class, it is from this class that all monitors are derived. 

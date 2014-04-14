@@ -31,6 +31,7 @@ import java.util.List;
 
 import com.skysql.java.Credential;
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
  * The Node interface in the Monitor. Each instance of a Node represents a database that 

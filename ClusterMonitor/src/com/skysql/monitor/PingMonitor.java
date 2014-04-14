@@ -18,6 +18,8 @@
 
 package com.skysql.monitor;
 
+import com.skysql.java.MonData;
+
 /**
  * A basic Monitor class that implements ICMP pings as a Monitor mechanism
  *
