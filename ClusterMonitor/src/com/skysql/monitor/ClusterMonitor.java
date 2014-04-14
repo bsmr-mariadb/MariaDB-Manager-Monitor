@@ -27,21 +27,32 @@ import com.skysql.java.Logging;
 
 /**
  * The main class of the query router, this comprises the main function itself,
- * the handling of the configuration and creation of the monitor probes and
+ * the handling of the configuration and creation of the Monitor probes and
  * the monitoring main loop.
  * 
- * The cluster monitor class is designed to monitor one system, a system being a 
+ * The cluster Monitor class is designed to Monitor one system, a system being a 
  * collection of one or more nodes. When multiple systems must be monitored new
- * threads are created to monitor each system. These threads each have a unique
+ * threads are created to Monitor each system. These threads each have a unique
  * instance of the ClusterMonitor class.
  * 
  * @author Mark Riddoch, Massimo Siani
  *
  */
 public class ClusterMonitor extends Thread {
-	/** The Monitor version number. */
+	/** The Monitor component name */
+	private final static String		MONITOR_NAME = "MariaDB-Manager-Monitor";
+	/**
+	 * The Monitor build number.
+	 */
 	private final static String		MONITOR_VERSION = "1.7-126";
+	/**
+	 * The Monitor release number as part of the MariaDB-Manager package.
+	 */
 	private final static String		MONITOR_RELEASE = "1.0.2";
+	/**
+	 * The Monitor last change date.
+	 */
+	private final static String		MONITOR_DATE = "Mon, 14 Apr 2014 10:34:11 +0000";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
@@ -51,23 +62,23 @@ public class ClusterMonitor extends Thread {
 	 *  A handle on the configuration class that handles
 	 *  interaction with the database.
 	 */
-	private mondata 			m_confdb;	
-	/** The list of nodes in the system to monitor. */
-	private List<node> 			m_nodeList;	
+	private MonData 			m_confdb;	
+	/** The list of nodes in the system to Monitor. */
+	private List<Node> 			m_nodeList;	
 	/**
 	 * The list of the lists of monitors.
-	 * The outer list is characterized by the monitor id,
-	 * the inner list by the node id. Thus, this can be
-	 * seen as a table (monitor id, node id) where each
-	 * element is an instance of the monitor class (or its
-	 * extensions) that knows which node it's monitoring.
+	 * The outer list is characterized by the Monitor id,
+	 * the inner list by the Node id. Thus, this can be
+	 * seen as a table (Monitor id, Node id) where each
+	 * element is an instance of the Monitor class (or its
+	 * extensions) that knows which Node it's monitoring.
 	 */
-	private List<List<monitor>> m_monitorList;
+	private List<List<Monitor>> m_monitorList;
 	/** Verbose logging flag, read from the arguments list. */
 	private boolean				m_verbose;
 	/** The default polling interval to use. */
 	private int					m_interval;
-	/** The GCD amongst the monitor intervals. */
+	/** The GCD amongst the Monitor intervals. */
 	private int					m_gcdMonitorInterval;
 	/** The system observed values, for bulk updates. */
 	private LinkedHashMap<Integer, String>	m_observedValues;
@@ -99,9 +110,9 @@ public class ClusterMonitor extends Thread {
 
 		Logging.info("Starting ClusterMonitor v" + MONITOR_VERSION);
 		Logging.info("==============================");
-		mondata monitorData = new mondata();
-		monitorData.registerAPI(MONITOR_VERSION, MONITOR_RELEASE);
-		monitorData.registerAPI("libMariaDB-Manager-java", AboutMe.VERSION, AboutMe.RELEASE);
+		MonData monitorData = new MonData();
+		monitorData.registerAPI(MONITOR_NAME, MONITOR_VERSION, MONITOR_RELEASE, MONITOR_DATE);
+		monitorData.registerAPI(AboutMe.NAME, AboutMe.VERSION, AboutMe.RELEASE, AboutMe.DATE);
 		
 		if (args[off].equalsIgnoreCase("all"))
 		{
@@ -125,12 +136,12 @@ public class ClusterMonitor extends Thread {
 				}
 				cycles++;
 				if (cycles == 10) {
-					monitorData.registerAPI(MONITOR_VERSION, MONITOR_RELEASE);
-					monitorData.registerAPI("libMariaDB-Manager-java", AboutMe.VERSION, AboutMe.RELEASE);
+					monitorData.registerAPI(MONITOR_NAME, MONITOR_VERSION, MONITOR_RELEASE, MONITOR_DATE);
+					monitorData.registerAPI(AboutMe.NAME, AboutMe.VERSION, AboutMe.RELEASE, AboutMe.DATE);
 					cycles = 0;
 				}
 				if (systems.isEmpty() && m_systems_old.isEmpty()) {
-					Logging.warn("No systems found to monitor, waiting for systems to be deployed.");
+					Logging.warn("No systems found to Monitor, waiting for systems to be deployed.");
 					try {
 						Thread.sleep(10000);
 					} catch (Exception e) {
@@ -191,16 +202,16 @@ public class ClusterMonitor extends Thread {
 	{
 		m_verbose = verbose;
 		m_systemID = systemID;
-		m_confdb = new mondata(m_systemID);
+		m_confdb = new MonData(m_systemID);
 		m_interval = 30;
 		m_gcdMonitorInterval = m_interval;
 		m_observedValues = new LinkedHashMap<Integer, String>();
-		m_nodeList = new ArrayList<node>();
+		m_nodeList = new ArrayList<Node>();
 	}
 	
 	/**
 	 * Initialise the monitoring system, this means getting the list of nodes
-	 * from the database, configure and create the monitor classes and run the
+	 * from the database, configure and create the Monitor classes and run the
 	 * IP Address Monitor if it is required.
 	 */
 	public void initialise()
@@ -210,7 +221,7 @@ public class ClusterMonitor extends Thread {
 //			Class.forName("PublicIPMonitor");
 //			if (m_confdb.IPMonitor())
 //			{
-//				mondata confdb = new mondata(m_systemID, m_dbfile);
+//				MonData confdb = new MonData(m_systemID, m_dbfile);
 //				try {
 //					PublicIPMonitor ipmon = new PublicIPMonitor(confdb, m_verbose);
 //					ipmon.start();
@@ -226,7 +237,7 @@ public class ClusterMonitor extends Thread {
 	
 	/**
 	 * Read the configuration data from the SQLite database, this was moved out of the initialise
-	 * routine to allow the monitor to re-read the configuration periodically and hence take note
+	 * routine to allow the Monitor to re-read the configuration periodically and hence take note
 	 * of new monitors.
 	 */
 	private boolean refreshconfig()
@@ -254,7 +265,7 @@ public class ClusterMonitor extends Thread {
 			nodeIDList = m_confdb.getNodeList();
 		}
 		if (m_verbose) {
-			Logging.info(nodeIDList.size() + " node(s) to monitor");
+			Logging.info(nodeIDList.size() + " Node(s) to Monitor");
 		}
 		if (m_nodeList != null && ! m_nodeList.isEmpty())	{
 			closeNodes();
@@ -267,7 +278,7 @@ public class ClusterMonitor extends Thread {
 
 	/**
 	 * Run the actual monitors in a loop. This function never returns, it loops
-	 * running each monitor in turn, for each of the hosts, and sleeps once a complete
+	 * running each Monitor in turn, for each of the hosts, and sleeps once a complete
 	 * cycle has been completed.
 	 * 
 	 * In addition to recording values for each of the nodes, certain probes are also
@@ -289,18 +300,18 @@ public class ClusterMonitor extends Thread {
 				}
 
 				// Ping all the nodes before we do a real probe
-				Iterator<node> node_it = m_nodeList.iterator();
+				Iterator<Node> node_it = m_nodeList.iterator();
 				while (node_it.hasNext())
 				{
-					node n = node_it.next();
+					Node n = node_it.next();
 					n.execute("show status like 'wsrep_local_state'");
 				}
 				// Iterate on the monitors
-				Iterator<List<monitor>> mit = m_monitorList.iterator();
+				Iterator<List<Monitor>> mit = m_monitorList.iterator();
 				while (mit.hasNext())
 				{
-					List<monitor> mlist = mit.next();
-					Iterator<monitor> it = mlist.iterator();
+					List<Monitor> mlist = mit.next();
+					Iterator<Monitor> it = mlist.iterator();
 					double system_value = 0.0;
 					boolean validSystemProbe = false;
 					boolean systemAverage = false;
@@ -309,7 +320,7 @@ public class ClusterMonitor extends Thread {
 					// Iterate on the instances of the monitors, ie probe the machines
 					while (it.hasNext())
 					{
-						monitor m = it.next();
+						Monitor m = it.next();
 						id = m.getID();
 						if ((m_gcdMonitorInterval * cycleCount) % m.getInterval() != 0) continue;
 						m.probe(m_verbose);
@@ -322,16 +333,16 @@ public class ClusterMonitor extends Thread {
 								if (value != null)
 									system_value += (new Double(value)).doubleValue();
 							} catch (Exception ex) {
-								Logging.error("Exception converting probe value '" + value + "' for monitor ID " + id);
+								Logging.error("Exception converting probe value '" + value + "' for Monitor ID " + id);
 							}
 							if (m_verbose)
 								Logging.info("    Probe " + id + " " + m_confdb.getMonitorKey(id)
-										+ " on node " + m_confdb.getNodeName(m.m_node.getID()) + " of system " + m.m_node.getSystemID()
+										+ " on Node " + m_confdb.getNodeName(m.m_node.getID()) + " of system " + m.m_node.getSystemID()
 										+ " returns value " + m.getValue());
 						}
 					}
 
-					// This monitor is valid for the system as well
+					// This Monitor is valid for the system as well
 					if (validSystemProbe)
 					{
 						String format;
@@ -395,22 +406,22 @@ public class ClusterMonitor extends Thread {
 		if (updateObservations())
 			Logging.info("System " + m_systemID + " monitor data updated.");
 		// Update the observations: nodes in this system
-		Iterator<node> node_it = m_nodeList.iterator();
+		Iterator<Node> node_it = m_nodeList.iterator();
 		while (node_it.hasNext())
 		{
-			node n = node_it.next();
+			Node n = node_it.next();
 			if(n.updateObservations())
 				Logging.info("Node " + m_confdb.getNodeName(n.getID()) + " of system " + n.getSystemID() + " monitor data updated.");
 		}
 	}
 	
 	/**
-	 * Close any active connection to every node in the system.
+	 * Close any active connection to every Node in the system.
 	 */
 	private void closeNodes() {
-		Iterator<node> node_it = m_nodeList.iterator();
+		Iterator<Node> node_it = m_nodeList.iterator();
 		while (node_it.hasNext()) {
-			node n = node_it.next();
+			Node n = node_it.next();
 			n.close();
 		}
 	}
@@ -426,7 +437,7 @@ public class ClusterMonitor extends Thread {
 		Iterator<Integer> it = nodeIDList.iterator();
 		while (it.hasNext()) {
 			Integer i = it.next();
-			m_nodeList.add(new node(m_confdb, m_systemID, i.intValue()));
+			m_nodeList.add(new Node(m_confdb, m_systemID, i.intValue()));
 		}
 	}
 	
@@ -441,27 +452,27 @@ public class ClusterMonitor extends Thread {
 			return;
 		}
 		if (m_verbose)
-			Logging.info(monitorIDList.size() + " distinct monitor(s)");
+			Logging.info(monitorIDList.size() + " distinct Monitor(s)");
 		m_interval = 30;
-		m_monitorList = new ArrayList<List<monitor>>();
+		m_monitorList = new ArrayList<List<Monitor>>();
 		Iterator<Integer> it = monitorIDList.iterator();
 		while (it.hasNext())
 		{
 			int monid = it.next().intValue();
 			String type = m_confdb.getMonitorType(monid);
 			Boolean monIsDelta = m_confdb.isMonitorDelta(monid);
-			List<monitor> mlist = new ArrayList<monitor>();
+			List<Monitor> mlist = new ArrayList<Monitor>();
 			m_monitorList.add(mlist);
-			Iterator<node> node_it = m_nodeList.iterator();
+			Iterator<Node> node_it = m_nodeList.iterator();
 			while (node_it.hasNext())
 			{
-				node n = node_it.next();
+				Node n = node_it.next();
 				if (type == null || type.equals("SQL"))
 				{
 					if (monIsDelta) {
-						mlist.add(new deltaMonitor(m_confdb, monid, n));
+						mlist.add(new DeltaMonitor(m_confdb, monid, n));
 					} else {
-						mlist.add(new monitor(m_confdb, monid, n));
+						mlist.add(new Monitor(m_confdb, monid, n));
 					}
 				}
 				else if (type.equals("CRM"))
@@ -470,7 +481,7 @@ public class ClusterMonitor extends Thread {
 				}
 				else if (type.equals("PING"))
 				{
-					mlist.add(new pingMonitor(m_confdb, monid, n));
+					mlist.add(new PingMonitor(m_confdb, monid, n));
 				}
 				else if (type.equals("COMMAND"))
 				{
@@ -478,11 +489,11 @@ public class ClusterMonitor extends Thread {
 				}
 				else if (type.equals("SQL_NODE_STATE"))
 				{
-					mlist.add(new nodeStateMonitor(m_confdb, monid, n));
+					mlist.add(new NodeStateMonitor(m_confdb, monid, n));
 				}
 				else if (type.equals("GLOBAL"))
 				{
-					mlist.add(new globalMonitor(m_confdb, monid, n, monIsDelta));
+					mlist.add(new GlobalMonitor(m_confdb, monid, n, monIsDelta));
 				} else if (type.equals("JS")) {
 					mlist.add(new RhinoMonitor(m_confdb, monid, n));
 				} else if (type.equals("GALERA_STATUS")) {
@@ -490,7 +501,7 @@ public class ClusterMonitor extends Thread {
 				}
 				else
 				{
-					Logging.warn("Unsupported monitor type: " + type);
+					Logging.warn("Unsupported Monitor type: " + type);
 				}
 				if (! mlist.isEmpty()) {
 					m_gcdMonitorInterval = BigInteger.valueOf(m_gcdMonitorInterval)

@@ -34,40 +34,40 @@ import com.skysql.java.GsonProvisionedNode;
 import com.skysql.java.GsonSystem;
 import com.skysql.java.GsonUpdatedAPI;
 import com.skysql.java.Logging;
-import com.skysql.java.monAPI;
+import com.skysql.java.MonAPI;
 
 
 /**
  * Interface to the monitoring database, this is the database that holds
- * the definition of what to monitor and into which the monitored values
+ * the definition of what to Monitor and into which the monitored values
  * are written.
  * 
  * @author Mark Riddoch, Massimo Siani
  *
  */
-public class mondata {
+public class MonData {
 	private int							m_systemID;
-	private monAPI						m_api;
+	private MonAPI						m_api;
 	private String						m_systemType;
 	private GsonLatestObservations 		m_dataChanged;
 	private final int					m_monitorApiID = 3;
 	
 	/**
-	 * Constructor for the monitor data class.
+	 * Constructor for the Monitor data class.
 	 * 
 	 * @param systemID	The System ID being monitored
 	 */
-	public mondata(int systemID)
+	public MonData(int systemID)
 	{
 		m_systemID = systemID;
-		m_api = new monAPI(m_monitorApiID);
+		m_api = new MonAPI(m_monitorApiID);
 		m_systemType = "galera";
 		m_dataChanged = new GsonLatestObservations();
 	}
 	/**
 	 * Constructor used when the system id is not known.
 	 */
-	public mondata()
+	public MonData()
 	{
 		this(0);
 	}
@@ -116,10 +116,10 @@ public class mondata {
 	}
 	
 	/**
-	 * Return the node object that the current instance stored in the cache.
+	 * Return the Node object that the current instance stored in the cache.
 	 * 
-	 * @param nodeID	the node id
-	 * @return			the node object, may be null
+	 * @param nodeID	the Node id
+	 * @return			the Node object, may be null
 	 */
 	private GsonNode getNodeCached(int nodeID) {
 		return m_dataChanged.getNode(m_systemID, nodeID);
@@ -142,31 +142,34 @@ public class mondata {
 	}
 	
 	/**
-	 * Register the given version in the API.
+	 * Registers some information about a component in the API.
+	 * If a parameter is <code>null</code>, it is not registered nor updated, but it is
+	 * not deleted if already registered in the API.
 	 * 
+	 * @param component	the name of the component to register in the API
 	 * @param version	the version number. Typical format is Major.minor-build
+	 * @param release	the release number
+	 * @param date		the build date of the current version
 	 */
-	public void registerAPI(String version, String release) {
-		String apiRequest = "system/0/node/0/component/monitor/property/name";
-		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{"MariaDB-Manager-Monitor"});
-		apiRequest = "system/0/node/0/component/monitor/property/version";
-		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{version});
-		apiRequest = "system/0/node/0/component/monitor/property/release";
-		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{release});
-	}
-	
-	/**
-	 * Register the given version of the component in the API.
-	 * 
-	 * @param version	the version number. Typical format is Major.minor-build
-	 */
-	public void registerAPI(String component, String version, String release) {
-		String apiRequest = "system/0/node/0/component/"+ component.toLowerCase() + "/property/name";
-		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{component});
-		apiRequest = "system/0/node/0/component/"+ component.toLowerCase() + "/property/version";
-		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{version});
-		apiRequest = "system/0/node/0/component/"+ component.toLowerCase() + "/property/release";
-		m_api.updateValue(apiRequest, new String[]{"value"}, new String[]{release});
+	public void registerAPI(String component, String version, String release, String date) {
+		String apiRequest = "system/0/node/0/component/"+ component.toLowerCase() + "/property/";
+		String property = "";
+		if (component != null) {
+			property = "name";
+			m_api.updateValue(apiRequest + property, new String[]{"value"}, new String[]{component});
+		}
+		if (version != null) {
+			property = "version";
+			m_api.updateValue(apiRequest + property, new String[]{"value"}, new String[]{version});
+		}
+		if (release != null) {
+			property = "release";
+			m_api.updateValue(apiRequest + property, new String[]{"value"}, new String[]{release});
+		}
+		if (date != null) {
+			property = "date";
+			m_api.updateValue(apiRequest + property, new String[]{"value"}, new String[]{date});
+		}
 	}
 	
 	
@@ -177,7 +180,7 @@ public class mondata {
 	 * System
 	 ********************************************************/
 	/**
-	 * Fetch the list of System ID's to monitor.
+	 * Fetch the list of System ID's to Monitor.
 	 * 
 	 * @return The list of SystemIDs defined in the database
 	 */
@@ -189,9 +192,9 @@ public class mondata {
 		return gsonSystem == null ? null : gsonSystem.getSystemIdList();
 	}
 	/**
-	 * Fetch the monitor probe interval.
+	 * Fetch the Monitor probe interval.
 	 * 
-	 * @return The monitor interval in seconds
+	 * @return The Monitor interval in seconds
 	 */
 	public Integer getSystemMonitorInterval()
 	{
@@ -262,7 +265,7 @@ public class mondata {
 		return isChanged;
 	}
 	/**
-	 * Return the list of node id's to monitor.
+	 * Return the list of Node id's to Monitor.
 	 * 
 	 * @return The list of nodes in the database
 	 */
@@ -275,7 +278,7 @@ public class mondata {
 		return gsonNode == null ? null : gsonNode.getNodeIdList();
 	}
 	/**
-	 * Return the list of node id's to monitor as saved by the current instance.
+	 * Return the list of Node id's to Monitor as saved by the current instance.
 	 * 
 	 * @return The list of nodes in the instance cache
 	 */
@@ -284,9 +287,9 @@ public class mondata {
 		return gsonNode == null ? null : gsonNode.getNodeIdList();
 	}
 	/**
-	 * Get the private IP address of the specified node.
+	 * Get the private IP address of the specified Node.
 	 * 
-	 * @param NodeNo	The node number
+	 * @param NodeNo	The Node number
 	 * @return The private IP address as a string
 	 */
 	public String getNodePrivateIP(int NodeNo)
@@ -295,10 +298,10 @@ public class mondata {
 		return gsonNode == null ? null : gsonNode.getNode(0).getPrivateIP();
 	}
 	/**
-	 * Get the credentials for the specified node.
+	 * Get the credentials for the specified Node.
 	 * 
-	 * @param NodeNo The node number to return the credentials of
-	 * @return The Credentials for the node
+	 * @param NodeNo The Node number to return the credentials of
+	 * @return The Credentials for the Node
 	 */
 	public Credential getNodeMonitorCredentials(int NodeNo)
 	{
@@ -314,7 +317,7 @@ public class mondata {
 			}
 			return cred;
 		} catch (Exception ex) {
-			Logging.error("Failed to retrieve node credentials for node ID " + NodeNo);
+			Logging.error("Failed to retrieve node credentials for Node ID " + NodeNo);
 			return null;
 		}
 	}
@@ -351,9 +354,9 @@ public class mondata {
 	}
 	
 	/**
-	 * Fetch the node state.
+	 * Fetch the Node state.
 	 * 
-	 * @param nodeID		the node ID
+	 * @param nodeID		the Node ID
 	 * @return				a string representing the state
 	 */
 	public String getNodeState(int nodeID) {
@@ -370,11 +373,11 @@ public class mondata {
 		return result;
 	}
 	/**
-	 * Get the name of the node. If the name has not been set, returns
-	 * the ID of the node.
+	 * Get the name of the Node. If the name has not been set, returns
+	 * the ID of the Node.
 	 * 
-	 * @param NodeNo	the node number
-	 * @return			the name or the ID of the node
+	 * @param NodeNo	the Node number
+	 * @return			the name or the ID of the Node
 	 */
 	public String getNodeName(int NodeNo) {
 		GsonNode gsonNode = getNodeCached(NodeNo);
@@ -385,11 +388,11 @@ public class mondata {
 		return null;
 	}
 	/**
-	 * Get the host name of the node. If the host name has not been set, returns
-	 * the IP of the node.
+	 * Get the host name of the Node. If the host name has not been set, returns
+	 * the IP of the Node.
 	 * 
-	 * @param NodeNo	the node number
-	 * @return			the hostname or the IP of the node
+	 * @param NodeNo	the Node number
+	 * @return			the hostname or the IP of the Node
 	 */
 	public String getNodeHostName(int NodeNo) {
 		GsonNode gsonNode = getNodeCached(NodeNo);
@@ -408,9 +411,9 @@ public class mondata {
 	 * Node States
 	 ********************************************************/
 	/**
-	 * Return the list of valid node states.
+	 * Return the list of valid Node states.
 	 * 
-	 * @return The set of defined node states.
+	 * @return The set of defined Node states.
 	 */
 	public List<String> getNodeValidStates()
 	{
@@ -420,9 +423,9 @@ public class mondata {
 		return gsonNodeStates.getDescriptionList();
 	}
 	/**
-	 * Map a node state string to a state id.
+	 * Map a Node state string to a state id.
 	 * 
-	 * @param Name The name of the node state
+	 * @param Name The name of the Node state
 	 * @return The Node State
 	 */
 	public int getNodeStateId(String Name)
@@ -432,9 +435,9 @@ public class mondata {
 		return gsonNodeStates == null ? null : gsonNodeStates.getIdFromState(Name);
 	}
 	/**
-	 * Map a node state id to a state string.
+	 * Map a Node state id to a state string.
 	 * 
-	 * @param stateId The id of the node state
+	 * @param stateId The id of the Node state
 	 * @return The Node State
 	 */
 	public String getNodeStateFromId(int stateId)
@@ -463,36 +466,36 @@ public class mondata {
 		return isChanged;
 	}
 	/**
-	 * Get the object with the list of all cached monitor classes.
+	 * Get the object with the list of all cached Monitor classes.
 	 * This method does not call the API, but looks in the current cache.
 	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
 	 * in the local cache.
 	 * 
-	 * @return		the monitor class object
+	 * @return		the Monitor class object
 	 */
 	private GsonMonitorClasses getMonitorClassesCached() {
 		return m_dataChanged.getAllMonitorClasses();
 	}
 	/**
-	 * Get the object corresponding to the given monitor ID.
+	 * Get the object corresponding to the given Monitor ID.
 	 * This method does not call the API, but looks in the current cache.
 	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
 	 * in the local cache.
 	 * 
-	 * @param monitorID		the monitor ID
-	 * @return				the monitor class object
+	 * @param monitorID		the Monitor ID
+	 * @return				the Monitor class object
 	 */
 	private GsonMonitorClasses getMonitorClassesCached(Integer monitorID) {
 		return m_dataChanged.getMonitorClasses(monitorID);
 	}
 	/**
-	 * Retrieve the id of a monitor from the key of the monitor itself.
+	 * Retrieve the id of a Monitor from the key of the Monitor itself.
 	 * This method does not call the API, but looks in the current cache.
 	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
 	 * in the local cache.
 	 * 
-	 * @param key		the monitor key
-	 * @return			the monitor id, or -1 if the key is not found
+	 * @param key		the Monitor key
+	 * @return			the Monitor id, or -1 if the key is not found
 	 */
 	private int getMonitorId (String key) {
 		int result = -1;
@@ -508,7 +511,7 @@ public class mondata {
 		return result;
 	}
 	/**
-	 * Return the list of all available monitor Id's for the given system type.
+	 * Return the list of all available Monitor Id's for the given system type.
 	 * This method does not call the API, but looks in the current cache.
 	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
 	 * in the local cache.
@@ -521,16 +524,16 @@ public class mondata {
 		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorIdList();
 	}
 	/**
-	 * Get the SQL command (or command string) associated with a particular monitor.
+	 * Get the SQL command (or command string) associated with a particular Monitor.
 	 * 
-	 * Although originally a simple SQL string for a monitor to execute, other
-	 * monitor types have reused the string to contain monitor specific data.
+	 * Although originally a simple SQL string for a Monitor to execute, other
+	 * Monitor types have reused the string to contain Monitor specific data.
 	 * This method does not call the API, but looks in the current cache.
 	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
 	 * in the local cache.
 	 * 
-	 * @param monitor_id The monitor ID to return the SQL data string for
-	 * @return The "SQL" field of the monitor
+	 * @param monitor_id The Monitor ID to return the SQL data string for
+	 * @return The "SQL" field of the Monitor
 	 */
 	public String getMonitorSQL(int monitor_id)
 	{
@@ -539,12 +542,12 @@ public class mondata {
 		return gsonMonitorClasses.getMonitorClass(0).getSql();
 	}
 	/**
-	 * Fetch the monitor probe interval.
+	 * Fetch the Monitor probe interval.
 	 * This method does not call the API, but looks in the current cache.
 	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
 	 * in the local cache.
 	 * 
-	 * @return The monitor interval in seconds
+	 * @return The Monitor interval in seconds
 	 */
 	public int getMonitorClassInterval(String monitorKey)
 	{
@@ -553,10 +556,10 @@ public class mondata {
 		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass(0).getInterval();
 	}
 	/**
-	 * Fetch the id of a particular monitor.
+	 * Fetch the id of a particular Monitor.
 	 * 
-	 * @param monitorKey	The monitor name
-	 * @return The monitor_id of the named monitor or -1 if the monitor was not found
+	 * @param monitorKey	The Monitor name
+	 * @return The monitor_id of the named Monitor or -1 if the Monitor was not found
 	 */
 	public int getNamedMonitor(String monitorKey)
 	{
@@ -565,13 +568,13 @@ public class mondata {
 		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass(0).getMonitorId();
 	}
 	/**
-	 * Return the type, and hence monitor class, of a particular monitor.
+	 * Return the type, and hence Monitor class, of a particular Monitor.
 	 * This method does not call the API, but looks in the current cache.
 	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
 	 * in the local cache.
 	 * 
-	 * @param id	The monitor ID
-	 * @return The type field for the monitor, e.g. SQL, CMD, CRM etc.
+	 * @param id	The Monitor ID
+	 * @return The type field for the Monitor, e.g. SQL, CMD, CRM etc.
 	 */
 	public String getMonitorType(int monitor_id)
 	{
@@ -580,13 +583,13 @@ public class mondata {
 		return gsonMonitorClasses == null ? null : gsonMonitorClasses.getMonitorClass(0).getMonitorType();
 	}
 	/**
-	 * Is the system monitor value cumulative or an average of all the nodes in the system?
+	 * Is the system Monitor value cumulative or an average of all the nodes in the system?
 	 * This method does not call the API, but looks in the current cache.
 	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
 	 * in the local cache.
 	 * 
 	 * @param id	The Monitor ID
-	 * @return		True if the system value of a monitor is an average of all the nodes in the system
+	 * @return		True if the system value of a Monitor is an average of all the nodes in the system
 	 */
 	public boolean isMonitorSystemAverage(int monitor_id)
 	{
@@ -603,8 +606,8 @@ public class mondata {
 	 * @see <code>saveMonitorChanges</code> to store the Monitor metadata
 	 * in the local cache.
 	 * 
-	 * @param monitor_id	The monitor ID to check
-	 * @return True of the monitor is a delta of observed values
+	 * @param monitor_id	The Monitor ID to check
+	 * @return True of the Monitor is a delta of observed values
 	 */
 	public Boolean isMonitorDelta(int monitor_id)
 	{
@@ -645,7 +648,7 @@ public class mondata {
 	{
 		String apiRequest = "system/" + m_systemID + "/node";
 		try {
-			// get the state of the node
+			// get the state of the Node
 			GsonNode gsonNode = getObjectFromAPI(apiRequest, GsonNode.class);
 			Iterator<String> states = gsonNode.getNodeStateList().iterator();
 			String systemState = "stopped";	// Stopped
@@ -693,10 +696,10 @@ public class mondata {
 	 * Node
 	 ********************************************************/
 	/**
-	 * Set the state of a node.
+	 * Set the state of a Node.
 	 * 
-	 * @param nodeid	The node to set the state of
-	 * @param stateid	The state to set for the node
+	 * @param nodeid	The Node to set the state of
+	 * @param stateid	The state to set for the Node
 	 */
 	public void setNodeState(int nodeid, int stateid)
 	{
@@ -707,18 +710,18 @@ public class mondata {
 			GsonUpdatedAPI gsonUpdatedAPI = updateValue(apiRequest, GsonUpdatedAPI.class, pName, pValue);
 			if (gsonUpdatedAPI != null) {
 				if (gsonUpdatedAPI.getUpdateCount() == 0)
-					Logging.error("Failed to update node " + nodeid + " of system " + m_systemID + " to state " + stateid);
+					Logging.error("Failed to update Node " + nodeid + " of system " + m_systemID + " to state " + stateid);
 			}
 			if (gsonUpdatedAPI.getErrors() != null) throw new RuntimeException(gsonUpdatedAPI.getErrors().get(0));
 			if (gsonUpdatedAPI.getWarnings() != null) throw new RuntimeException(gsonUpdatedAPI.getWarnings().get(0));
 		} catch (Exception e) {
-			Logging.error("API Failed: " + apiRequest + ": cannot set node state to " + stateid);
+			Logging.error("API Failed: " + apiRequest + ": cannot set Node state to " + stateid);
 		}
 	}
 	/**
 	 * Sets the database properties.
 	 * 
-	 * @param nodeid		The node to set the state of
+	 * @param nodeid		The Node to set the state of
 	 * @param dbType		The database type
 	 * @param dbVersion		The database version
 	 */
@@ -730,18 +733,18 @@ public class mondata {
 			GsonUpdatedAPI gsonUpdatedAPI = updateValue(apiRequest, GsonUpdatedAPI.class, pName, pValue);
 			if (gsonUpdatedAPI != null) {
 				if (gsonUpdatedAPI.getUpdateCount() == 0)
-					Logging.error("Failed to update node database properties on node " + nodeid + " of system " + m_systemID);
+					Logging.error("Failed to update Node database properties on Node " + nodeid + " of system " + m_systemID);
 			}
 			if (gsonUpdatedAPI.getErrors() != null) throw new RuntimeException(gsonUpdatedAPI.getErrors().get(0));
 			if (gsonUpdatedAPI.getWarnings() != null) throw new RuntimeException(gsonUpdatedAPI.getWarnings().get(0));
 		} catch (Exception e) {
-			Logging.error("API Failed: " + apiRequest + ": cannot update node database properties");
+			Logging.error("API Failed: " + apiRequest + ": cannot update Node database properties");
 		}
 	}
 	/**
-	 * Update the public IP address of a node if it has changed.
+	 * Update the public IP address of a Node if it has changed.
 	 * 
-	 * @param	nodeID The node ID
+	 * @param	nodeID The Node ID
 	 * @param	publicIP 	The public IP address of the instance
 	 * @return	True if the IP address was updated
 	 */
@@ -758,7 +761,7 @@ public class mondata {
 	 * setPrivateIP - Update the private IP of an instance. Only update the database
 	 * if the new value differs from that already stored.
 	 * 
-	 * @param nodeID		The node ID as a string
+	 * @param nodeID		The Node ID as a string
 	 * @param privateIP		The current private IP address
 	 * @return	boolean 	True if the IP address changed
 	 */
@@ -786,10 +789,10 @@ public class mondata {
 	 * OTHER
 	 ********************************************************/
 	/**
-	 * Map a CRM state string to a valid node state.
+	 * Map a CRM state string to a valid Node state.
 	 * 
 	 * @param state	The CRM state
-	 * @return The node state
+	 * @return The Node state
 	 */
 	public String mapCRMStatus(String state)
 	{
@@ -805,7 +808,7 @@ public class mondata {
 	 * @param systemID		The SystemID to update
 	 * @param monitorID		The MonitorID the value is associated with
 	 * @param observation	The observed value
-	 * @return True if the monitor observation was written
+	 * @return True if the Monitor observation was written
 	 */
 	public boolean monitorData(int systemID, int monitorID, String observation)
 	{
@@ -822,7 +825,7 @@ public class mondata {
 		String apiRequest = "monitordata";
 		if ( !(monitorIDs.size() == values.size()) ) {
 			Logging.error("Bulk data failed: arrays must be of the same size: got "
-					+ monitorIDs.size() + " monitor IDs, " + values.size() + " values.");
+					+ monitorIDs.size() + " Monitor IDs, " + values.size() + " values.");
 			return false;
 		}
 		List<String> fi = new ArrayList<String>();
@@ -853,7 +856,7 @@ public class mondata {
 		String apiRequest = "monitordata";
 		if ( !(monitorIDs.size() == systemIDs.size() && monitorIDs.size() == nodeIDs.size() && monitorIDs.size() == values.size()) ) {
 			Logging.error("Bulk data failed: arrays must be of the same size: got "
-					+ monitorIDs.size() + " monitor IDs, " + systemIDs.size() + " systems, "
+					+ monitorIDs.size() + " Monitor IDs, " + systemIDs.size() + " systems, "
 					+ nodeIDs.size() + " nodes and " + values.size() + " values.");
 			return false;
 		}

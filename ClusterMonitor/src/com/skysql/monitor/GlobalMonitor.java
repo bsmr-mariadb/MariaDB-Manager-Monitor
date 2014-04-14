@@ -25,41 +25,41 @@ import com.skysql.java.Logging;
 /**
  * The Global Monitor class.
  * 
- * This is used to efficiently collect monitor data that is based on the global 
+ * This is used to efficiently collect Monitor data that is based on the global 
  * variables and global status data available within the information_schema of
  * the MySQL database. The data is collected once per probe cycle from each database
- * in the cluster and reused by multiple instances of the globalMonitor class.
+ * in the cluster and reused by multiple instances of the GlobalMonitor class.
  * 
  * @author Mark Riddoch, Massimo Siani
  *
  */
-public class globalMonitor extends monitor {
+public class GlobalMonitor extends Monitor {
 	
 	/**
-	 * The singleton class associated with this node that manages the
+	 * The singleton class associated with this Node that manages the
 	 * collection and storage of global variables and global status
 	 * data from the database server being monitored.
 	 */
-	private	globalStatusObject	m_global;	
+	private	GlobalStatusObject	m_global;	
 	
 	/**
-	 * Constructor for the global monitor
+	 * Constructor for the global Monitor
 	 * 
 	 * @param db		Handle for the monitoring database
-	 * @param id		The ID of the monitor
-	 * @param mon_node	The node being monitored
-	 * @param delta		The monitor is a delta monitor
+	 * @param id		The ID of the Monitor
+	 * @param mon_node	The Node being monitored
+	 * @param delta		The Monitor is a delta Monitor
 	 */
-	public globalMonitor(mondata db, int id, node mon_node, boolean delta)
+	public GlobalMonitor(MonData db, int id, Node mon_node, boolean delta)
 	{
 		super(db, id, mon_node);
-		m_global = globalStatusObject.getInstance(mon_node);
+		m_global = GlobalStatusObject.getInstance(mon_node);
 	}
 	
 	/**
 	 * Probe the global data. Uses this the instance of the global status and
-	 * variables manager within the monitor to access the latest collected
-	 * data and return the value for the monitor.
+	 * variables manager within the Monitor to access the latest collected
+	 * data and return the value for the Monitor.
 	 * 
 	 * @param	verbose	Control verbose logging of the collected data
 	 */
@@ -67,7 +67,7 @@ public class globalMonitor extends monitor {
 	{
 		String value = m_global.getStatusOrVariable(m_sql);
 		if (verbose)
-			Logging.debug("globalMonitor: " + m_sql + " set value " + value);
+			Logging.debug("GlobalMonitor: " + m_sql + " set value " + value);
 		if (m_delta)
 		{
 			if (m_lastAbsValue != null && value != null)

@@ -19,14 +19,14 @@
 package com.skysql.monitor;
 
 /**
- * A basic monitor class that implements ICMP pings as a monitor mechanism
+ * A basic Monitor class that implements ICMP pings as a Monitor mechanism
  *
- * The only action of this monitor is to set the state of the node to Stopped
+ * The only action of this Monitor is to set the state of the Node to Stopped
  * if it does not respond to 2 or more succesive pings
  * 
  * @author Mark Riddoch
  */
-public class pingMonitor extends monitor {
+public class PingMonitor extends Monitor {
 
 	/**
 	 * The number of ping failures
@@ -37,17 +37,17 @@ public class pingMonitor extends monitor {
 	 * Constructor for the class
 	 * 
 	 * @param db		The monitoring database handle
-	 * @param id		The ID of the monitor
-	 * @param mon_node	The node being monitored
+	 * @param id		The ID of the Monitor
+	 * @param mon_node	The Node being monitored
 	 */
-	public pingMonitor(mondata db, int id, node mon_node)
+	public PingMonitor(MonData db, int id, Node mon_node)
 	{
 		super(db, id, mon_node);
 		m_failcnt = 0;
 	}
 
 	/**
-	 * Execute a probe. Note that this monitor does not update the state after
+	 * Execute a probe. Note that this Monitor does not update the state after
 	 * a single failure, 2 or more successive failures are required.
 	 * 
 	 * @param verbose The log level

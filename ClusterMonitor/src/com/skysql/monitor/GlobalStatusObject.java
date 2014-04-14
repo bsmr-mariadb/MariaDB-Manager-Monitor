@@ -25,7 +25,7 @@ import java.util.HashMap;
  * A modified singleton pattern implementation of a class to fetch and distribute
  * global status and global variables.
  * 
- * An instance is created for each node that is being monitored, calls are made
+ * An instance is created for each Node that is being monitored, calls are made
  * to retrieve particular values, using the VARIABLE_NAME of the status or
  * variable required. The class will fetch all values from the global_status and
  * global_variables table and cache them for a predefined period of time. This allows
@@ -35,13 +35,13 @@ import java.util.HashMap;
  * @author Mark Riddoch
  *
  */
-public class globalStatusObject {
+public class GlobalStatusObject {
 	
 	/**
-	 * The hashtable of instances of the globalStatusObject. The table is indexed by the node
-	 * class of the node being monitored.
+	 * The hashtable of instances of the GlobalStatusObject. The table is indexed by the Node
+	 * class of the Node being monitored.
 	 */
-	private static final HashMap<node,globalStatusObject> instances = new HashMap<node,globalStatusObject>();
+	private static final HashMap<Node,GlobalStatusObject> instances = new HashMap<Node,GlobalStatusObject>();
 	
 	/**
 	 * The length of time to cache the global_status or global_variables data
@@ -68,16 +68,16 @@ public class globalStatusObject {
 	private long					m_fetchTime;
 	
 	/**
-	 * The node we are monitoring
+	 * The Node we are monitoring
 	 */
-	private node					m_node;
+	private Node					m_node;
 	
 	/**
-	 * Private constructor for globalStatusObject
+	 * Private constructor for GlobalStatusObject
 	 * 
-	 * @param mon_node The node we are monitoring
+	 * @param mon_node The Node we are monitoring
 	 */
-	private globalStatusObject(node mon_node) {
+	private GlobalStatusObject(Node mon_node) {
 		m_globalStatus = new HashMap<String, String>();
 		m_globalVariables = new HashMap<String, String>();
 		m_fetchTime = 0;
@@ -86,19 +86,19 @@ public class globalStatusObject {
 	
 	/**
 	 * The get instance entry point will return the instance that is monitoring
-	 * the node passed in. If there is no instance for this node then an 
+	 * the Node passed in. If there is no instance for this Node then an 
 	 * instance will be created.
 	 * 
-	 * @param mon_node	The node to monitor
+	 * @param mon_node	The Node to Monitor
 	 * @return The globalStatus Object for this database instance
 	 */
-	public static globalStatusObject getInstance(node mon_node) {
-		globalStatusObject inst;
+	public static GlobalStatusObject getInstance(Node mon_node) {
+		GlobalStatusObject inst;
 		
 		if ((inst = instances.get(mon_node)) != null)
 			return inst;
 		
-		inst = new globalStatusObject(mon_node);
+		inst = new GlobalStatusObject(mon_node);
 		instances.put(mon_node, inst);
 		return inst;
 	}

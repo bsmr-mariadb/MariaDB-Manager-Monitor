@@ -25,6 +25,10 @@
 
 CHANGELOG
 
+* Mon Apr 14 2014 Massimo Siani <massimo.siani@skysql.com>
+- Add the version date, and register it in the API.
+- Naming now follows standard conventions.
+
 * Fri Apr 11 2014 Massimo Siani <massimo.siani@skysql.com>
 - Fixes for Debian
 - Manage Java 6
