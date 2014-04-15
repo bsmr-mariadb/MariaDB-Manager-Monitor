@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Tue Apr 15 2014 Massimo Siani <massimo.siani@skysql.com>
+- Start implementing support for manager.ini
+
 * Mon Apr 14 2014 Massimo Siani <massimo.siani@skysql.com>
 - Add the version date, and register it in the API.
 - Naming now follows standard conventions.

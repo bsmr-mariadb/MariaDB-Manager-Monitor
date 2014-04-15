@@ -43,7 +43,8 @@ import com.skysql.java.MonData;
  * Node connections are implemented as threads in order not to delay the execution of the
  * main Monitor. Connections are closed if the thread is stuck.
  * 
- * @author Mark Riddoch, Massimo Siani
+ * @author Mark Riddoch
+ * @author Massimo Siani
  *
  */
 public class Node implements Runnable {

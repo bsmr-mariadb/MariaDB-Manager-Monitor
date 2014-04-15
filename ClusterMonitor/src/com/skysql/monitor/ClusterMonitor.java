@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 import com.skysql.java.AboutMe;
+import com.skysql.java.Configuration;
 import com.skysql.java.Logging;
 import com.skysql.java.MonData;
 
@@ -36,7 +37,8 @@ import com.skysql.java.MonData;
  * threads are created to Monitor each system. These threads each have a unique
  * instance of the ClusterMonitor class.
  * 
- * @author Mark Riddoch, Massimo Siani
+ * @author Mark Riddoch
+ * @author Massimo Siani
  *
  */
 public class ClusterMonitor extends Thread {
@@ -45,7 +47,7 @@ public class ClusterMonitor extends Thread {
 	/**
 	 * The Monitor build number.
 	 */
-	private final static String		MONITOR_VERSION = "1.7-127";
+	private final static String		MONITOR_VERSION = "1.7-128";
 	/**
 	 * The Monitor release number as part of the MariaDB-Manager package.
 	 */
@@ -53,12 +55,12 @@ public class ClusterMonitor extends Thread {
 	/**
 	 * The Monitor last change date.
 	 */
-	private final static String		MONITOR_DATE = "Mon, 14 Apr 2014 13:37:32 +0000";
+	private final static String		MONITOR_DATE = "Tue, 15 Apr 2014 11:17:57 -0400";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
 	 */
-	private int					m_systemID; 
+	private int					m_systemID;
 	/**
 	 *  A handle on the configuration class that handles
 	 *  interaction with the database.
@@ -103,10 +105,12 @@ public class ClusterMonitor extends Thread {
 		int off = 0;
 		
 		boolean verbose = false;
-		if (args.length == 2 && args[0].equals("-v"))
-		{
-			off = 1;
-			verbose = true;
+		Configuration config = new Configuration();
+		config.reloadAll();
+		try {
+			verbose = Boolean.parseBoolean(config.getConfig(Configuration.DEFAULT_SECTIONS.MONITOR).get("verbose"));
+		} catch (Exception e) {
+			Logging.error(e.getMessage());
 		}
 
 		Logging.info("Starting ClusterMonitor v" + MONITOR_VERSION);

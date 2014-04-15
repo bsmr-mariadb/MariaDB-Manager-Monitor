@@ -38,7 +38,8 @@ import com.skysql.java.MonData;
  * variables. It decodes the value of a subset of session variables into a
  * single 
  * 
- * @author Massimo Siani, Mark Riddoch
+ * @author Massimo Siani
+ * @author Mark Riddoch
  *
  */
 public class RhinoMonitor extends Monitor {

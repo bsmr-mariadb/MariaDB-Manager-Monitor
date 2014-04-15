@@ -31,7 +31,8 @@ import com.skysql.java.MonData;
  * the MySQL database. The data is collected once per probe cycle from each database
  * in the cluster and reused by multiple instances of the GlobalMonitor class.
  * 
- * @author Mark Riddoch, Massimo Siani
+ * @author Mark Riddoch
+ * @author Massimo Siani
  *
  */
 public class GlobalMonitor extends Monitor {
