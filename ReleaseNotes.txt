@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Wed Apr 16 2014 Massimo Siani <massimo.siani@skysql.com>
+- Load all the current configuration options from /etc/mariadbmanager/manager.ini
+
 * Tue Apr 15 2014 Massimo Siani <massimo.siani@skysql.com>
 - Start implementing support for manager.ini
 

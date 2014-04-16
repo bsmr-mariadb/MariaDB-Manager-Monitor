@@ -20,12 +20,16 @@ package com.skysql.monitor;
 
 import java.math.BigInteger;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.skysql.java.AboutMe;
 import com.skysql.java.Configuration;
 import com.skysql.java.Logging;
 import com.skysql.java.MonData;
+import com.skysql.java.Configuration.DEFAULT_SECTION;
 
 /**
  * The main class of the query router, this comprises the main function itself,
@@ -55,7 +59,7 @@ public class ClusterMonitor extends Thread {
 	/**
 	 * The Monitor last change date.
 	 */
-	private final static String		MONITOR_DATE = "Tue, 15 Apr 2014 11:17:57 -0400";
+	private final static String		MONITOR_DATE = "Wed, 16 Apr 2014 06:10:38 -0400";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
@@ -97,24 +101,27 @@ public class ClusterMonitor extends Thread {
 	public static void main( String[] args )
 	{
 		Logging.setComponent("Monitor");
+		Configuration.setApplication(DEFAULT_SECTION.MONITOR);
 		if (args.length != 1 && args.length != 2)
 		{
 			Logging.error("Usage: ClusterMonitor [-v]  <System ID>");
 			System.exit(1);
 		}
 		int off = 0;
+		if (args[off].equalsIgnoreCase("-v")) {
+			off = 1;
+		}
 		
 		boolean verbose = false;
 		Configuration config = new Configuration();
-		config.reloadAll();
 		try {
-			verbose = Boolean.parseBoolean(config.getConfig(Configuration.DEFAULT_SECTIONS.MONITOR).get("verbose"));
+			verbose = Boolean.parseBoolean(config.getConfig(Configuration.DEFAULT_SECTION.MONITOR).get("verbose"));
 		} catch (Exception e) {
 			Logging.error(e.getMessage());
 		}
 
 		Logging.info("Starting ClusterMonitor v" + MONITOR_VERSION);
-		Logging.info("==============================");
+		Logging.info("================================");
 		MonData monitorData = new MonData();
 		monitorData.registerAPI(MONITOR_NAME, MONITOR_VERSION, MONITOR_RELEASE, MONITOR_DATE);
 		monitorData.registerAPI(AboutMe.NAME, AboutMe.VERSION, AboutMe.RELEASE, AboutMe.DATE);
