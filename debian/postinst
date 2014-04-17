@@ -1,1 +1,5 @@
 update-rc.d mariadb-manager-monitor defaults
+mkdir -p /etc/mariadbmanager/
+if ! grep -q '\[monitor\]' /etc/mariadbmanager/manager.ini ; then
+    cat manager_monitor.ini >> /etc/mariadbmanager/manager.ini
+fi

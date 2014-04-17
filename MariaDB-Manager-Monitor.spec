@@ -15,7 +15,7 @@ Release: 		%{release}
 Source: 		%{name}-%{version}-%{release}.tar.gz
 Prefix: 		/
 Group: 			Development/Tools
-Requires:		libMariaDB-Manager-java >= 0.1-11
+Requires:		libMariaDB-Manager-java >= 0.1-12
 #BuildRequires:		java-1.7.0-openjdk
 
 %description
@@ -33,12 +33,16 @@ and statistics data fromt he servers.
 
 %post
 chkconfig --add mariadb-manager-monitor
+if ! grep -q '\[monitor\]' $RPM_BUILD_ROOT/etc/mariadbmanager/manager.ini ; then
+    cat manager_monitor.ini >> $RPM_BUILD_ROOT/etc/mariadbmanager/manager.ini
+fi
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
 mkdir -p $RPM_BUILD_ROOT/etc/init.d/
 cp mariadb-manager-monitor $RPM_BUILD_ROOT/etc/init.d/
+mkdir -p $RPM_BUILD_ROOT/etc/mariadbmanager/
 
 %clean
 
@@ -47,5 +51,6 @@ cp mariadb-manager-monitor $RPM_BUILD_ROOT/etc/init.d/
 %{install_path}
 %{install_path}ClusterMonitor.jar
 /etc/init.d/mariadb-manager-monitor
+/etc/mariadbmanager/manager.ini
 
 %changelog
