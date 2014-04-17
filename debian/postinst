@@ -3,3 +3,5 @@ mkdir -p /etc/mariadbmanager/
 if ! grep -q '\[monitor\]' /etc/mariadbmanager/manager.ini ; then
     cat manager_monitor.ini >> /etc/mariadbmanager/manager.ini
 fi
+/usr/local/skysql/monitor/generateAPIkey.sh 3
+rm -f /usr/local/skysql/monitor/generateAPIkey.sh

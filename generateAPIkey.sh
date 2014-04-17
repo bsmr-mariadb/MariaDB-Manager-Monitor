@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Part of MariaDB Manager package
 #
@@ -19,31 +19,20 @@
 # Copyright 2013-2014 (c) SkySQL Corporation Ab
 #
 # Author      : Massimo Siani
-# Version     : 1.0
+# Version     : 1.1
 # Date        : December 2013
 # Description    : Generates a new API ID/key pair
 #
 # parameters    : $1 API ID
 
-warnUser () {
-    echo "API not on localhost, please update the file /etc/skysqlmgr/api.ini"
-}
 
 [[ $# -lt 1 ]] && exit 1
 
 componentID=$1
-componentFile=/usr/local/skysql/config/components.ini
+componentFile=/etc/mariadbmanager/manager.ini
 newKey=$(echo $RANDOM$(date)$RANDOM | md5sum | cut -f1 -d" ")
 keyString="${componentID} = \"${newKey}\""
 grep "^${componentID} = \"" ${componentFile} &>/dev/null
 if [ "$?" != "0" ] ; then
-        echo $keyString >> $componentFile
-fi
-grep "^${componentID} = \"" /etc/skysqlmgr/api.ini &>/dev/null
-if [ "$?" != "0" ] ; then
-        sed -i "/^\[apikeys\]$/a $keyString" /etc/skysqlmgr/api.ini
-fi
-isAPI=$?
-if [[ "$isAPI" != "0" ]] ; then
-    warnUser
+    sed -i "/\[apikeys\]/a $keyString" $componentFile
 fi
