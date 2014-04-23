@@ -36,10 +36,14 @@ chkconfig --add mariadb-manager-monitor
 if ! grep -q '\[monitor\]' $RPM_BUILD_ROOT/etc/mariadbmanager/manager.ini ; then
     cat manager_monitor.ini >> $RPM_BUILD_ROOT/etc/mariadbmanager/manager.ini
 fi
+export RPM_BUILD_ROOT
+$RPM_BUILD_ROOT%{install_path}generateAPIKey.sh 3
+rm -f $RPM_BUILD_ROOT%{install_path}generateAPIKey.sh
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
+cp generateAPIKey.sh $RPM_BUILD_ROOT%{install_path}
 mkdir -p $RPM_BUILD_ROOT/etc/init.d/
 cp mariadb-manager-monitor $RPM_BUILD_ROOT/etc/init.d/
 mkdir -p $RPM_BUILD_ROOT/etc/mariadbmanager/
@@ -50,7 +54,8 @@ mkdir -p $RPM_BUILD_ROOT/etc/mariadbmanager/
 %defattr(-,root,root)
 %{install_path}
 %{install_path}ClusterMonitor.jar
-/etc/init.d/mariadb-manager-monitor
-/etc/mariadbmanager/manager.ini
+%{install_path}generateAPIKey.sh
+$RPM_BUILD_ROOT/etc/init.d/mariadb-manager-monitor
+$RPM_BUILD_ROOT/etc/mariadbmanager/manager.ini
 
 %changelog

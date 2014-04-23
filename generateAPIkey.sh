@@ -29,7 +29,7 @@
 [[ $# -lt 1 ]] && exit 1
 
 componentID=$1
-componentFile=/etc/mariadbmanager/manager.ini
+componentFile=$RPM_BUILD_ROOT/etc/mariadbmanager/manager.ini
 newKey=$(echo $RANDOM$(date)$RANDOM | md5sum | cut -f1 -d" ")
 keyString="${componentID} = \"${newKey}\""
 grep "^${componentID} = \"" ${componentFile} &>/dev/null

@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Wed Apr 23 2014 Massimo Siani <massimo.siani@skysql.com>
+- Created release-1.0.2
+
 * Thu Apr 17 2014 Massimo Siani <massimo.siani@skysql.com>
 - Create section [monitor] in /etc/mariadbmanager/manager.ini if does not exist.
 - Update API key generation scripts.
