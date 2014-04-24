@@ -23,7 +23,7 @@ MariaDB Manager is a tool to manage and monitor a set of MariaDB
 servers using the Galera multi-master replication form Codership.
 This component is the monitor for the MariaDB Manager, it probes
 the databases within control of the system gathering performance
-and statistics data fromt he servers.
+and statistics data from the servers.
 
 %prep
 
@@ -33,17 +33,20 @@ and statistics data fromt he servers.
 
 %post
 chkconfig --add mariadb-manager-monitor
+touch /etc/mariadbmanager/manager.ini
 if ! grep -q '\[monitor\]' /etc/mariadbmanager/manager.ini ; then
-    cat manager_monitor.ini >> /etc/mariadbmanager/manager.ini
+    cat %{install_path}manager_monitor.ini >> /etc/mariadbmanager/manager.ini
 fi
 
-%{install_path}generateAPIKey.sh 3
-rm -f %{install_path}generateAPIKey.sh
+%{install_path}generateAPIkey.sh 3
+rm -f %{install_path}generateAPIkey.sh
+rm -f %{install_path}manager_monitor.ini
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
 cp ClusterMonitor.jar $RPM_BUILD_ROOT%{install_path}
-cp generateAPIKey.sh $RPM_BUILD_ROOT%{install_path}
+cp generateAPIkey.sh $RPM_BUILD_ROOT%{install_path}
+cp manager_monitor.ini $RPM_BUILD_ROOT%{install_path}
 mkdir -p $RPM_BUILD_ROOT/etc/init.d/
 cp mariadb-manager-monitor $RPM_BUILD_ROOT/etc/init.d/
 mkdir -p $RPM_BUILD_ROOT/etc/mariadbmanager/
@@ -54,7 +57,8 @@ mkdir -p $RPM_BUILD_ROOT/etc/mariadbmanager/
 %defattr(-,root,root)
 %{install_path}
 %{install_path}ClusterMonitor.jar
-%{install_path}generateAPIKey.sh
+%{install_path}generateAPIkey.sh
+%{install_path}manager_monitor.ini
 /etc/init.d/mariadb-manager-monitor
 /etc/mariadbmanager/manager.ini
 

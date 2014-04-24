@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Thu Apr 24 2014 Massimo Siani <massimo.siani@skysql.com>
+- Fix spelling.
+
 * Wed Apr 23 2014 Massimo Siani <massimo.siani@skysql.com>
 - Created release-1.0.2
 
