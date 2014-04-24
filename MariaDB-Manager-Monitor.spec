@@ -33,7 +33,7 @@ and statistics data from the servers.
 
 %post
 chkconfig --add mariadb-manager-monitor
-touch /etc/mariadbmanager/manager.ini
+: > /etc/mariadbmanager/manager.ini
 if ! grep -q '\[monitor\]' /etc/mariadbmanager/manager.ini ; then
     cat %{install_path}manager_monitor.ini >> /etc/mariadbmanager/manager.ini
 fi
@@ -50,7 +50,6 @@ cp manager_monitor.ini $RPM_BUILD_ROOT%{install_path}
 mkdir -p $RPM_BUILD_ROOT/etc/init.d/
 cp mariadb-manager-monitor $RPM_BUILD_ROOT/etc/init.d/
 mkdir -p $RPM_BUILD_ROOT/etc/mariadbmanager/
-: > /etc/mariadbmanager/manager.ini
 
 %clean
 
@@ -60,7 +59,6 @@ mkdir -p $RPM_BUILD_ROOT/etc/mariadbmanager/
 %{install_path}ClusterMonitor.jar
 %{install_path}generateAPIkey.sh
 %{install_path}manager_monitor.ini
-/etc/mariadbmanager/manager.ini
 /etc/init.d/mariadb-manager-monitor
 
 %changelog
