@@ -1,7 +1,9 @@
 update-rc.d mariadb-manager-monitor defaults
 mkdir -p /etc/mariadbmanager/
+touch /etc/mariadbmanager/manager.ini
 if ! grep -q '\[monitor\]' /etc/mariadbmanager/manager.ini ; then
-    cat manager_monitor.ini >> /etc/mariadbmanager/manager.ini
+    cat /usr/local/skysql/monitor/manager_monitor.ini >> /etc/mariadbmanager/manager.ini
 fi
 /usr/local/skysql/monitor/generateAPIkey.sh 3
 rm -f /usr/local/skysql/monitor/generateAPIkey.sh
+rm -f /usr/local/skysql/monitor/manager_monitor.ini
