@@ -55,7 +55,7 @@ mkdir -p $RPM_BUILD_ROOT/etc/mariadbmanager/
 %{install_path}
 %{install_path}ClusterMonitor.jar
 %{install_path}generateAPIKey.sh
-$RPM_BUILD_ROOT/etc/init.d/mariadb-manager-monitor
-$RPM_BUILD_ROOT/etc/mariadbmanager/manager.ini
+/etc/init.d/mariadb-manager-monitor
+/etc/mariadbmanager/manager.ini
 
 %changelog
