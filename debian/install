@@ -1,3 +1,4 @@
 ClusterMonitor.jar usr/local/skysql/monitor
 generateAPIkey.sh usr/local/skysql/monitor
+manager_monitor.ini usr/local/skysql/monitor
 mariadb-manager-monitor etc/init.d
