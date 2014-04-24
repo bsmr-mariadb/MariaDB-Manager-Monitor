@@ -33,12 +33,12 @@ and statistics data fromt he servers.
 
 %post
 chkconfig --add mariadb-manager-monitor
-if ! grep -q '\[monitor\]' $RPM_BUILD_ROOT/etc/mariadbmanager/manager.ini ; then
-    cat manager_monitor.ini >> $RPM_BUILD_ROOT/etc/mariadbmanager/manager.ini
+if ! grep -q '\[monitor\]' /etc/mariadbmanager/manager.ini ; then
+    cat manager_monitor.ini >> /etc/mariadbmanager/manager.ini
 fi
-export RPM_BUILD_ROOT
-$RPM_BUILD_ROOT%{install_path}generateAPIKey.sh 3
-rm -f $RPM_BUILD_ROOT%{install_path}generateAPIKey.sh
+
+%{install_path}generateAPIKey.sh 3
+rm -f %{install_path}generateAPIKey.sh
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{install_path}
