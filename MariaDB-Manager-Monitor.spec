@@ -60,6 +60,5 @@ mkdir -p $RPM_BUILD_ROOT/etc/mariadbmanager/
 %{install_path}generateAPIkey.sh
 %{install_path}manager_monitor.ini
 /etc/init.d/mariadb-manager-monitor
-/etc/mariadbmanager/manager.ini
 
 %changelog
