@@ -41,7 +41,7 @@ public class GlobalStatusObject {
 	 * The hashtable of instances of the GlobalStatusObject. The table is indexed by the Node
 	 * class of the Node being monitored.
 	 */
-	private static final HashMap<Node,GlobalStatusObject> instances = new HashMap<Node,GlobalStatusObject>();
+	private static final HashMap<Node,GlobalStatusObject> instances = new HashMap<Node, GlobalStatusObject>();
 	
 	/**
 	 * The length of time to cache the global_status or global_variables data
@@ -75,13 +75,13 @@ public class GlobalStatusObject {
 	/**
 	 * Private constructor for GlobalStatusObject
 	 * 
-	 * @param mon_node The Node we are monitoring
+	 * @param nodeObject The Node we are monitoring
 	 */
-	private GlobalStatusObject(Node mon_node) {
+	private GlobalStatusObject(Node nodeObject) {
 		m_globalStatus = new HashMap<String, String>();
 		m_globalVariables = new HashMap<String, String>();
 		m_fetchTime = 0;
-		m_node = mon_node;
+		m_node = nodeObject;
 	}
 	
 	/**
@@ -89,17 +89,25 @@ public class GlobalStatusObject {
 	 * the Node passed in. If there is no instance for this Node then an 
 	 * instance will be created.
 	 * 
-	 * @param mon_node	The Node to Monitor
+	 * @param nodeObject	The Node to Monitor
 	 * @return The globalStatus Object for this database instance
 	 */
-	public static GlobalStatusObject getInstance(Node mon_node) {
+	public static GlobalStatusObject getInstance(Node nodeObject) {
 		GlobalStatusObject inst;
 		
-		if ((inst = instances.get(mon_node)) != null)
+		if ((inst = instances.get(nodeObject)) != null)
 			return inst;
 		
-		inst = new GlobalStatusObject(mon_node);
-		instances.put(mon_node, inst);
+		int systemId = nodeObject.getSystemID();
+		int nodeId = nodeObject.getID();
+		for (Node node : instances.keySet()) {
+			if (systemId == node.getSystemID() && nodeId == node.getID()) {
+				instances.remove(node);
+				break;
+			}
+		}
+		inst = new GlobalStatusObject(nodeObject);
+		instances.put(nodeObject, inst);
 		return inst;
 	}
 	

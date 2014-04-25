@@ -24,12 +24,19 @@
 # Description    : Generates a new API ID/key pair
 #
 # parameters    : $1 API ID
+# The code below also checks whether a key with the same ID exists
+# and, if it does, does not overwrite it.
 
 
-[[ $# -lt 1 ]] && exit 1
+if [ $# -lt 1 ]; then
+	echo "Component ID not provided. Please provide the component ID. Key not created."
+	exit 1
+fi
 
 componentID=$1
 componentFile=/etc/mariadbmanager/manager.ini
+
+# Generating API key
 touch $componentFile
 grep "\[apikeys\]" ${componentFile} &>/dev/null
 if [ "$?" != "0" ] ; then
@@ -37,7 +44,9 @@ if [ "$?" != "0" ] ; then
 fi
 newKey=$(echo $RANDOM$(date)$RANDOM | md5sum | cut -f1 -d" ")
 keyString="${componentID} = \"${newKey}\""
+
+# Registering key
 grep "^${componentID} = \"" ${componentFile} &>/dev/null
 if [ "$?" != "0" ] ; then
-    sed -i "/\[apikeys\]/a $keyString" $componentFile
+    sed -i "/^\[apikeys\]/a $keyString" $componentFile
 fi

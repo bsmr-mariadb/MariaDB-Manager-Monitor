@@ -51,7 +51,7 @@ public class ClusterMonitor extends Thread {
 	/**
 	 * The Monitor build number.
 	 */
-	private final static String		MONITOR_VERSION = "1.7-128";
+	private final static String		MONITOR_VERSION = "1.7-129";
 	/**
 	 * The Monitor release number as part of the MariaDB-Manager package.
 	 */
@@ -59,7 +59,7 @@ public class ClusterMonitor extends Thread {
 	/**
 	 * The Monitor last change date.
 	 */
-	private final static String		MONITOR_DATE = "Wed, 16 Apr 2014 06:10:38 -0400";
+	private final static String		MONITOR_DATE = "Fri, 25 Apr 2014 04:40:33 -0400";
 	/**
 	 * The ID of the system we are monitoring. This is
 	 * read from the arguments list.
