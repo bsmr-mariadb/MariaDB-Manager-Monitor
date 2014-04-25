@@ -27,7 +27,8 @@ CHANGELOG
 
 * Fri Apr 25 2014 Massimo Siani <massimo.siani@skysql.com>
 - Small script fix.
-- Remove a node object from the Global Object when the API return it again.
+- Remove a node object from the Global Object when the API returns it again.
+- Debian: do not create the configuration file, nor its folder.
 
 * Thu Apr 24 2014 Massimo Siani <massimo.siani@skysql.com>
 - Fix spelling.
