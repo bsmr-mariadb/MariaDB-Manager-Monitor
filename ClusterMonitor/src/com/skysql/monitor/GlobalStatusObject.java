@@ -20,6 +20,8 @@ package com.skysql.monitor;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.skysql.java.Logging;
+
 
 /**
  * A modified singleton pattern implementation of a class to fetch and distribute
@@ -41,7 +43,7 @@ public class GlobalStatusObject {
 	 * The hashtable of instances of the GlobalStatusObject. The table is indexed by the Node
 	 * class of the Node being monitored.
 	 */
-	private static final HashMap<Node,GlobalStatusObject> instances = new HashMap<Node, GlobalStatusObject>();
+	private static final HashMap<Node, GlobalStatusObject> INSTANCES = new HashMap<Node, GlobalStatusObject>();
 	
 	/**
 	 * The length of time to cache the global_status or global_variables data
@@ -85,6 +87,24 @@ public class GlobalStatusObject {
 	}
 	
 	/**
+	 * Cleans all the cached information and referenced objects
+	 * corresponding to the nodes of the given system.
+	 * Call this method before getting the instances of all
+	 * the nodes in the given system, to avoid memory leaks.
+	 * @param systemId		the system ID of the nodes to be removed from the cache
+	 */
+	public static void cleanUp(int systemId) {
+		if (INSTANCES == null || INSTANCES.isEmpty()) {
+			return;
+		}
+		for (Node node : INSTANCES.keySet()) {
+			if (systemId == node.getSystemID()) {
+				INSTANCES.remove(node);
+			}
+		}
+	}
+	
+	/**
 	 * The get instance entry point will return the instance that is monitoring
 	 * the Node passed in. If there is no instance for this Node then an 
 	 * instance will be created.
@@ -95,19 +115,21 @@ public class GlobalStatusObject {
 	public static GlobalStatusObject getInstance(Node nodeObject) {
 		GlobalStatusObject inst;
 		
-		if ((inst = instances.get(nodeObject)) != null)
+		if ((inst = INSTANCES.get(nodeObject)) != null)
 			return inst;
 		
 		int systemId = nodeObject.getSystemID();
 		int nodeId = nodeObject.getID();
-		for (Node node : instances.keySet()) {
-			if (systemId == node.getSystemID() && nodeId == node.getID()) {
-				instances.remove(node);
-				break;
+		if (INSTANCES != null && ! INSTANCES.isEmpty()) {
+			for (Node node : INSTANCES.keySet()) {
+				if (systemId == node.getSystemID() && nodeId == node.getID()) {
+					INSTANCES.remove(node);
+					break;
+				}
 			}
 		}
 		inst = new GlobalStatusObject(nodeObject);
-		instances.put(nodeObject, inst);
+		INSTANCES.put(nodeObject, inst);
 		return inst;
 	}
 	
