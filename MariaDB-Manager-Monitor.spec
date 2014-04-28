@@ -33,10 +33,10 @@ and statistics data from the servers.
 
 %post
 chkconfig --add mariadb-manager-monitor
-: > /etc/mariadbmanager/manager.ini
-if ! grep -q '\[monitor\]' /etc/mariadbmanager/manager.ini ; then
-    cat %{install_path}manager_monitor.ini >> /etc/mariadbmanager/manager.ini
-fi
+# : > /etc/mariadbmanager/manager.ini
+#if ! grep -q '\[monitor\]' /etc/mariadbmanager/manager.ini ; then
+#    cat %{install_path}manager_monitor.ini >> /etc/mariadbmanager/manager.ini
+#fi
 
 %{install_path}generateAPIkey.sh 3
 rm -f %{install_path}generateAPIkey.sh

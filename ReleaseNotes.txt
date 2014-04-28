@@ -26,6 +26,9 @@
 CHANGELOG
 
 * Fri Apr 25 2014 Massimo Siani <massimo.siani@skysql.com>
+- Do not check for /etc/mariadbmanager/manager.ini
+
+* Fri Apr 25 2014 Massimo Siani <massimo.siani@skysql.com>
 - Small script fix.
 - Remove a node object from the Global Object when the API returns it again.
 - Debian: do not create the configuration file, nor its folder.
