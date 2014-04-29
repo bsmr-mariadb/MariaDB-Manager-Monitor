@@ -38,7 +38,7 @@ chkconfig --add mariadb-manager-monitor
 #    cat %{install_path}manager_monitor.ini >> /etc/mariadbmanager/manager.ini
 #fi
 
-%{install_path}generateAPIkey.sh 3
+#%{install_path}generateAPIkey.sh 3
 rm -f %{install_path}generateAPIkey.sh
 rm -f %{install_path}manager_monitor.ini
 
