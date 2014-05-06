@@ -13,7 +13,10 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2012-2014 SkySQL Corporation Ab
+ * Copyright 2013-2014 SkySQL Corporation Ab
+ * 
+ * Author: Massimo Siani
+ * Date: July 2013
  */
 
 package com.skysql.monitor;

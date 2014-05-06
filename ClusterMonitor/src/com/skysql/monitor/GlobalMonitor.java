@@ -14,6 +14,9 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * Copyright 2013-2014 SkySQL Corporation Ab
+ * 
+ * Author: Mark Riddoch, Massimo Siani
+ * Date: February 2013
  */
 
 package com.skysql.monitor;
