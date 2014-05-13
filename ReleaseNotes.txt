@@ -25,6 +25,9 @@
 
 CHANGELOG
 
+* Tue May 13 2014 Massimo Siani <massimo.siani@skysql.com>
+- LSBize mariadb-manager-monitor
+
 * Tue Apr 29 2014 Massimo Siani <massimo.siani@skysql.com>
 - Fix .spec
 
