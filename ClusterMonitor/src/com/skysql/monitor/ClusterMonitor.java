@@ -54,7 +54,7 @@ public class ClusterMonitor extends Thread {
 	/**
 	 * The Monitor build number.
 	 */
-	private final static String		MONITOR_VERSION = "1.7-129";
+	private final static String		MONITOR_VERSION = "1.7-130";
 	/**
 	 * The Monitor release number as part of the MariaDB-Manager package.
 	 */
