@@ -1,1 +1,2 @@
+#!/bin/bash
 update-rc.d mariadb-manager-monitor defaults
