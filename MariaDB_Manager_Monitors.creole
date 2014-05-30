@@ -1,8 +1,7 @@
-<<toc>>
 This page contains a complete list of the available Monitors.
 
 === nodestate
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | nodestate
 |= Type             | GALERA_STATUS
 |= "SQL" definition | |
