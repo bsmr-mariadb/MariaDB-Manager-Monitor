@@ -1,0 +1,3855 @@
+<<toc>>
+This page contains a complete list of the available Monitors.
+
+=== nodestate
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | nodestate
+|= Type             | GALERA_STATUS
+|= "SQL" definition | |
+|= Delta Monitor    | N
+|= System Average   | N
+|= Default Graph    | N
+|= Display Name     | Node State
+|= Description      | The State of the node
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== ping
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | ping
+|= Type             | PING
+|= "SQL" definition | |
+|= Delta Monitor    | N
+|= System Average   | N
+|= Default Graph    | N
+|= Display Name     | Ping
+|= Description      | The State of the Machine
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== clustersize
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | clustersize
+|= Type             | GLOBAL
+|= "SQL" definition | WSREP_CLUSTER_SIZE
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Cluster Size
+|= Description      | The numbr of nodes inthe cluster
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== reppaused
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | reppaused
+|= Type             | JS
+|= "SQL" definition | Number(globals.getStatus("WSREP_FLOW_CONTROL_PAUSED")) * 100
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | Replication Paused
+|= Description      | Percentage of time for which replication was paused
+|= Decimals         | 2
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | %
+<</style>>
+
+----
+
+=== parallelism
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | parallelism
+|= Type             | GLOBAL
+|= "SQL" definition | WSREP_CERT_DEPS_DISTANCE
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | Parallelism
+|= Description      | Average No. of parallel transactions
+|= Decimals         | 0
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== recvqueue
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | recvqueue
+|= Type             | GLOBAL
+|= "SQL" definition | WSREP_LOCAL_RECV_QUEUE_AVG
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | Avg. Receive Queue
+|= Description      | Average receive queue length
+|= Decimals         | 1
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== flowcontrol
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | flowcontrol
+|= Type             | GLOBAL
+|= "SQL" definition | WSREP_FLOW_CONTROL_SENT
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | Flow Controlled
+|= Description      | Flow control messages sent
+|= Decimals         | 0
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== sendqueue
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | sendqueue
+|= Type             | GLOBAL
+|= "SQL" definition | WSREP_LOCAL_SEND_QUEUE_AVG
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | Avg. Send Queue
+|= Description      | Average sen queue length
+|= Decimals         | 1
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== capacity
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | capacity
+|= Type             | JS
+|= "SQL" definition | (Number(globals.getStatus("THREADS_CONNECTED")) * 100) / Number(globals.getVariable("MAX_CONNECTIONS"))
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | Capacity
+|= Description      | Percentage threads in use
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== connections
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | connections
+|= Type             | GLOBAL
+|= "SQL" definition | THREADS_CONNECTED
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | Connections
+|= Description      | No. of user connections
+|= Decimals         | 0
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== traffic
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | traffic
+|= Type             | JS
+|= "SQL" definition | (Number(globals.getStatus("BYTES_RECEIVED")) + Number(globals.getStatus("BYTES_SENT"))) / 512
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | Network Traffic
+|= Description      | Network Traffic
+|= Decimals         | 0
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | Kb/min
+<</style>>
+
+----
+
+=== availability
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | availability
+|= Type             | SQL
+|= "SQL" definition | select 100
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | Availability
+|= Description      | Node Availability
+|= Decimals         | 0
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_admin
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_admin
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ADMIN_COMMANDS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Admin Commands
+|= Description      | No of admin command
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_assign_keycache
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_assign_keycache
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ASSIGN_TO_KEYCACHE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Assigns to keycache
+|= Description      | Assignments to the keycache
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_alter_db
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_alter_db
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ALTER_DB
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Alter Database
+|= Description      | No. of alter database commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_alter_db_upgrade
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_alter_db_upgrade
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ALTER_DB_UPGRADE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Alter Database Upgrade
+|= Description      | No. of alter database upgrade commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_alter_event
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_alter_event
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ALTER_EVENT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Alter Event
+|= Description      | No. of alter event commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_alter_function
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_alter_function
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ALTER_FUNCTION
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Alter Function
+|= Description      | No. of alter function commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_alter_procedure
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_alter_procedure
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ALTER_PROCEDURE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Alter Procedure
+|= Description      | No. of alter procedure commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_alter_server
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_alter_server
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ALTER_SERVER
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Alter Server
+|= Description      | No. of alter server commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_alter_table
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_alter_table
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ALTER_TABLE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Alter Table
+|= Description      | No. of alter table commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_alter_tablespace
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_alter_tablespace
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ALTER_TABLESPACE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Alter Tablespace
+|= Description      | No. of alter tablespace commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_analyze
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_analyze
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ANALYZE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Analyze
+|= Description      | No. of Analyze commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_begin
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_begin
+|= Type             | GLOBAL
+|= "SQL" definition | COM_BEGIN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Begin
+|= Description      | No. of explicit transactions started
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_binlog
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_binlog
+|= Type             | GLOBAL
+|= "SQL" definition | COM_BINLOG
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Binlog
+|= Description      | No. of binlog commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_call_procedure
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_call_procedure
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CALL_PROCEDURE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Call Procedure
+|= Description      | No. of stored procedure calls
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_change_db
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_change_db
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CHANGE_DB
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Change Database
+|= Description      | No. of change database commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_change_master
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_change_master
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CHANGE_MASTER
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Change Master
+|= Description      | No. of replication master changes
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_check
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_check
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CHECK
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Check commands
+|= Description      | No. of check commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_checksum
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_checksum
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CHECKSUM
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Checksum Commands
+|= Description      | No. of checksum commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_commit
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_commit
+|= Type             | GLOBAL
+|= "SQL" definition | COM_COMMIT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Commits
+|= Description      | No. of transaction commits
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_create_db
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_db
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CREATE_DB
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Database Creations
+|= Description      | No. of database creations
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_create_event
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_event
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CREATE_EVENT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Create Event
+|= Description      | No. of create event commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_create_function
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_function
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CREATE_FUNCTION
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Create Function
+|= Description      | No. of create function commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_create_index
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_index
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CREATE_INDEX
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Create Index
+|= Description      | No. of indexes created
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_create_procedure
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_procedure
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CREATE_PROCEDURE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Create Procedure
+|= Description      | No. of procedures created
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_create_server
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_server
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CREATE_SERVER
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Create Server
+|= Description      | No. of create server commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_create_table
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_table
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CREATE_TABLE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Create Table
+|= Description      | No. of tables created
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_create_triggerGLOBAL
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_triggerGLOBAL
+|= Type             | COM_CREATE_TRIGGER
+|= "SQL" definition | Y
+|= Delta Monitor    | Y
+|= System Average   |  N
+|= Default Graph    | Create Trigger
+|= Display Name     | No. of triggers created
+|= Description      | 0
+|= Decimals         | null
+|= ChartType        | 30
+|= Interval         | null
+|= Unit             | <</style>>
+
+----
+
+=== com_create_udf
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_udf
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CREATE_UDF
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Create UDF
+|= Description      | No. of user defined functions created
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_create_user
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_user
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CREATE_USER
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Create User
+|= Description      | No. of new users created
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_create_view
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_create_view
+|= Type             | GLOBAL
+|= "SQL" definition | COM_CREATE_VIEW
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Create View
+|= Description      | No. of veiws created
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_dealloc_sql
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_dealloc_sql
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DEALLOC_SQL
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Dealloc Sql
+|= Description      | No. of QL dealloc commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_delete
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_delete
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DELETE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Delete 
+|= Description      | No. of delete statements executed
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_delete_multi
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_delete_multi
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DELETE_MULTI
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Delete Multiple
+|= Description      | No. of multiple delete statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_do
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_do
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DO
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Do
+|= Description      | No. of do commands executed
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_drop_db
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_drop_db
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DROP_DB
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Drop Database
+|= Description      | No. of drop database commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_drop_event
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_drop_event
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DROP_EVENT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Drop Event
+|= Description      | No. of drop event commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_drop_function
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_drop_function
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DROP_FUNCTION
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Drop Function
+|= Description      | No. of functions dropped
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_drop_index
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_drop_index
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DROP_INDEX
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Drop Index
+|= Description      | No. of indexes dropped
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_drop_procedure
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_drop_procedure
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DROP_PROCEDURE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Drop Procedure
+|= Description      | No. of procedures dropped
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_drop_server
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_drop_server
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DROP_SERVER
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Drop Server
+|= Description      | No. of servers dropped
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_drop_table
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_drop_table
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DROP_TABLE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Drop Table
+|= Description      | No. of tables dropped
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_drop_trigger
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_drop_trigger
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DROP_TRIGGER
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Drop Trigger
+|= Description      | No. of triggers dropped
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_drop_user
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_drop_user
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DROP_USER
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Drop User
+|= Description      | No. of users dropped
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_drop_view
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_drop_view
+|= Type             | GLOBAL
+|= "SQL" definition | COM_DROP_VIEW
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Drop View
+|= Description      | No. of views dropped
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_empty_query
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_empty_query
+|= Type             | GLOBAL
+|= "SQL" definition | COM_EMPTY_QUERY
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Empty Queries
+|= Description      | No. of empty queries
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_execute_sql
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_execute_sql
+|= Type             | GLOBAL
+|= "SQL" definition | COM_EXECUTE_SQL
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Execute SQL
+|= Description      | No. of execute SQL statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_flush
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_flush
+|= Type             | GLOBAL
+|= "SQL" definition | COM_FLUSH
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Flush
+|= Description      | No. of flush commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_grant
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_grant
+|= Type             | GLOBAL
+|= "SQL" definition | COM_GRANT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Grants
+|= Description      | No. of grants executed
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_ha_close
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_ha_close
+|= Type             | GLOBAL
+|= "SQL" definition | COM_HA_CLOSE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | HA Close
+|= Description      | No. of HA close commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_ha_open
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_ha_open
+|= Type             | GLOBAL
+|= "SQL" definition | COM_HA_OPEN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | HA Open
+|= Description      | No. of HA open commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_ha_read
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_ha_read
+|= Type             | GLOBAL
+|= "SQL" definition | COM_HA_READ
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | HA Read
+|= Description      | No. of HA read commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_help
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_help
+|= Type             | GLOBAL
+|= "SQL" definition | COM_HELP
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Help
+|= Description      | No. of help commands executed
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_insert
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_insert
+|= Type             | GLOBAL
+|= "SQL" definition | COM_INSERT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Inserts
+|= Description      | No. of insert statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_insert_select
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_insert_select
+|= Type             | GLOBAL
+|= "SQL" definition | COM_INSERT_SELECT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Insert Selects
+|= Description      | No. of insert ... select statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_install_plugin
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_install_plugin
+|= Type             | GLOBAL
+|= "SQL" definition | COM_INSTALL_PLUGIN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Install Plugin
+|= Description      | No. of installations of plugins
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_kill
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_kill
+|= Type             | GLOBAL
+|= "SQL" definition | COM_KILL
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Kill Commands
+|= Description      | No. of kill commands executed
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_load
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_load
+|= Type             | GLOBAL
+|= "SQL" definition | COM_LOAD
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Load Commands
+|= Description      | No. of load commands executed
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_lock_tables
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_lock_tables
+|= Type             | GLOBAL
+|= "SQL" definition | COM_LOCK_TABLES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Lock Tables
+|= Description      | No. of explicit lock table commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_optimize
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_optimize
+|= Type             | GLOBAL
+|= "SQL" definition | COM_OPTIMIZE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Optimize Commands
+|= Description      | No. of optimize commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_preload_keys
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_preload_keys
+|= Type             | GLOBAL
+|= "SQL" definition | COM_PRELOAD_KEYS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Preload Keys
+|= Description      | No. of preload key commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_prepare_sql
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_prepare_sql
+|= Type             | GLOBAL
+|= "SQL" definition | COM_PREPARE_SQL
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Prepare SQL
+|= Description      | No. of prepared SQL commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_purge
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_purge
+|= Type             | GLOBAL
+|= "SQL" definition | COM_PURGE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Purge Commands
+|= Description      | No. of purge commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_purge_before_date
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_purge_before_date
+|= Type             | GLOBAL
+|= "SQL" definition | COM_PURGE_BEFORE_DATE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Purge Before Commands
+|= Description      | No, of purge before date commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_release_savepoint
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_release_savepoint
+|= Type             | GLOBAL
+|= "SQL" definition | COM_RELEASE_SAVEPOINT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Release Savepoint
+|= Description      | No of release savepoint commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_rename_table
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_rename_table
+|= Type             | GLOBAL
+|= "SQL" definition | COM_RENAME_TABLE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Rename Table
+|= Description      | No. of rename table commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_rename_user
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_rename_user
+|= Type             | GLOBAL
+|= "SQL" definition | COM_RENAME_USER
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Rename User
+|= Description      | No. of rename user commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_repair
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_repair
+|= Type             | GLOBAL
+|= "SQL" definition | COM_REPAIR
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Repair
+|= Description      | No. of repair commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_replace
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_replace
+|= Type             | GLOBAL
+|= "SQL" definition | COM_REPLACE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Replace
+|= Description      | No. of replace statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_replace_select
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_replace_select
+|= Type             | GLOBAL
+|= "SQL" definition | COM_REPLACE_SELECT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Replace Select
+|= Description      | No. of replace select statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_reset
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_reset
+|= Type             | GLOBAL
+|= "SQL" definition | COM_RESET
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Reset Commands
+|= Description      | No. of reset commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_resignal
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_resignal
+|= Type             | GLOBAL
+|= "SQL" definition | COM_RESIGNAL
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Resignal Commands
+|= Description      | No. of resignal commands executed
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_revoke
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_revoke
+|= Type             | GLOBAL
+|= "SQL" definition | COM_REVOKE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Revokes
+|= Description      | No. of revoke statements executed
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_revoke_all
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_revoke_all
+|= Type             | GLOBAL
+|= "SQL" definition | COM_REVOKE_ALL
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Revoke All
+|= Description      | No. of revoke all statements executed
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_rollback
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_rollback
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ROLLBACK
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Transaction Rollbacks
+|= Description      | No. of explicit transaction rollbacks
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_rollback_to_savepoint
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_rollback_to_savepoint
+|= Type             | GLOBAL
+|= "SQL" definition | COM_ROLLBACK_TO_SAVEPOINT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Rollback to savepoint
+|= Description      | No. of rollbacks to a transaction savepoint
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_savepoint
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_savepoint
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SAVEPOINT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Savepoint
+|= Description      | No. of savepoint commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_select
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_select
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SELECT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Select Statements
+|= Description      | No. of select statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_set_option
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_set_option
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SET_OPTION
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Set Option
+|= Description      | No. of set option statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_signal
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_signal
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SIGNAL
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Signal
+|= Description      | No. of signal statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_authors
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_authors
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_AUTHORS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Authors
+|= Description      | No. of show authors commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_binlog_events
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_binlog_events
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_BINLOG_EVENTS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Binlog Events
+|= Description      | No. of show binlog events
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_binlogs
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_binlogs
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_BINLOGS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Binlogs
+|= Description      | No. of show binlogs commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_charsets
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_charsets
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_CHARSETS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Charsets
+|= Description      | No. of show charsets commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_collations
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_collations
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_COLLATIONS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Collations
+|= Description      | No. of show collations commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_contributors
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_contributors
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_CONTRIBUTORS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Contributors
+|= Description      | No. of show Contributors commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_create_db
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_create_db
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_CREATE_DB
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Create Database
+|= Description      | No. of show create database commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_create_event
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_create_event
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_CREATE_EVENT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Create Event
+|= Description      | No. of show create event commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_create_func
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_create_func
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_CREATE_FUNC
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Create Function
+|= Description      | No. of show create function commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_create_proc
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_create_proc
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_CREATE_PROC
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Create Procedure
+|= Description      | No. of show create procedure commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_create_table
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_create_table
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_CREATE_TABLE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Create Table
+|= Description      | No. of show create table commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_create_trigger
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_create_trigger
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_CREATE_TRIGGER
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Create Trigger
+|= Description      | No. of show create trigger commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_databases
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_databases
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_DATABASES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Create Databases
+|= Description      | Show Create Databases
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_engine_logs
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_engine_logs
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_ENGINE_LOGS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Engine Logs
+|= Description      | No. of show engine logs
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_engine_mutex
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_engine_mutex
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_ENGINE_MUTEX
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Engine Mutex
+|= Description      | No. of show engine mutex commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_engine_status
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_engine_status
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_ENGINE_STATUS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Engine Status
+|= Description      | No. of show engine status commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_events
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_events
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_EVENTS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Events
+|= Description      | No. of show events commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_errors
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_errors
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_ERRORS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Errors
+|= Description      | No. of show errors commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_fields
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_fields
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_FIELDS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Fields
+|= Description      | No. of show fields commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_function_status
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_function_status
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_FUNCTION_STATUS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Show Function Status
+|= Description      | No. of show function status commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_grants
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_grants
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_GRANTS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Grants
+|= Description      | No. of show grants commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_keys
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_keys
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_KEYS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Keys
+|= Description      | No. of show keys commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_master_status
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_master_status
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_MASTER_STATUS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Master Status
+|= Description      | No. of show master status commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_open_tables
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_open_tables
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_OPEN_TABLES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Open Tables
+|= Description      | No. of show open tables commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_plugins
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_plugins
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_PLUGINS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Plugins
+|= Description      | No, of show plugins commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_privileges
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_privileges
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_PRIVILEGES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Privileges
+|= Description      | No. of show privileges commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_procedure_status
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_procedure_status
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_PROCEDURE_STATUS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Show Procedure Status
+|= Description      | No. of show procedure status commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_processlist
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_processlist
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_PROCESSLIST
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Processlist
+|= Description      | No. of show processlist commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_profile
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_profile
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_PROFILE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Profile
+|= Description      | No. of show profile commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_profiles
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_profiles
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_PROFILES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Profiles
+|= Description      | No. of show profiles commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_relaylog_events
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_relaylog_events
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_RELAYLOG_EVENTS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Show Relay Log Events
+|= Description      | No. of show relay log events commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_slave_hosts
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_slave_hosts
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_SLAVE_HOSTS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Slave Hosts
+|= Description      | No. of show slave hosts commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_slave_status
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_slave_status
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_SLAVE_STATUS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Slave Status
+|= Description      | No. of show slave status commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_status
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_status
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_STATUS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Status
+|= Description      | No. of show status commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_storage_engines
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_storage_engines
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_STORAGE_ENGINES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | Show Storage Engines
+|= Description      | No. of show storage engines commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_table_status
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_table_status
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_TABLE_STATUS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Table Status
+|= Description      | No. of show table status commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_tables
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_tables
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_TABLES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Tables
+|= Description      | No. of show tables commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_triggers
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_triggers
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_TRIGGERS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Triggers
+|= Description      | No. of show triggers commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_variables
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_variables
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_VARIABLES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show Variables
+|= Description      | No. of show variables commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_show_warnings
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_show_warnings
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SHOW_WARNINGS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Show warnings
+|= Description      | No. of show warnings commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_slave_start
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_slave_start
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SLAVE_START
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Slave Starts
+|= Description      | No. of slave starts
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_slave_stop
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_slave_stop
+|= Type             | GLOBAL
+|= "SQL" definition | COM_SLAVE_STOP
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Slave Stops
+|= Description      | No. of slave stops
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_stmt_close
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_stmt_close
+|= Type             | GLOBAL
+|= "SQL" definition | COM_STMT_CLOSE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Statement Close
+|= Description      | No. of statement close statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_stmt_execute
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_stmt_execute
+|= Type             | GLOBAL
+|= "SQL" definition | COM_STMT_EXECUTE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Statement Execute
+|= Description      | No. of statement execute commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_stmt_fetch
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_stmt_fetch
+|= Type             | GLOBAL
+|= "SQL" definition | COM_STMT_FETCH
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Statement Fetch
+|= Description      | No. of statement fetch statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_stmt_prepare
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_stmt_prepare
+|= Type             | GLOBAL
+|= "SQL" definition | COM_STMT_PREPARE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Statement Prepare
+|= Description      | No. of statement prepares
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_stmt_reprepare
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_stmt_reprepare
+|= Type             | GLOBAL
+|= "SQL" definition | COM_STMT_REPREPARE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Statement Reprepare
+|= Description      | No. of statement reprepare commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_stmt_reset
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_stmt_reset
+|= Type             | GLOBAL
+|= "SQL" definition | COM_STMT_RESET
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Statement Reset
+|= Description      | No. of statement reset statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_stmt_send_long_data
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_stmt_send_long_data
+|= Type             | GLOBAL
+|= "SQL" definition | COM_STMT_SEND_LONG_DATA
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Statement Send Long Data
+|= Description      | No. of statement send long data comands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_truncate
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_truncate
+|= Type             | GLOBAL
+|= "SQL" definition | COM_TRUNCATE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Statement Truncate
+|= Description      | No. of table truncations
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_uninstall_plugin
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_uninstall_plugin
+|= Type             | GLOBAL
+|= "SQL" definition | COM_UNINSTALL_PLUGIN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Statement Uninstall Plugins
+|= Description      | No. of uninstall plugin commands
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_unlock_tables
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_unlock_tables
+|= Type             | GLOBAL
+|= "SQL" definition | COM_UNLOCK_TABLES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Unlock Table
+|= Description      | No. of explicit table unlocks
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_update
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_update
+|= Type             | GLOBAL
+|= "SQL" definition | COM_UPDATE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Updates
+|= Description      | No. of update statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_update_multi
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_update_multi
+|= Type             | GLOBAL
+|= "SQL" definition | COM_UPDATE_MULTI
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Multiple Updates
+|= Description      | No. of multiple update statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_xa_commit
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_xa_commit
+|= Type             | GLOBAL
+|= "SQL" definition | COM_XA_COMMIT
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Distributed Commits
+|= Description      | No. of XA distribute commits
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_xa_end
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_xa_end
+|= Type             | GLOBAL
+|= "SQL" definition | COM_XA_END
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Distributed XA End
+|= Description      | No. of XA end statements executed
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_xa_prepare
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_xa_prepare
+|= Type             | GLOBAL
+|= "SQL" definition | COM_XA_PREPARE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Distributed XA Prepares
+|= Description      | No. of XA prepare statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_xa_recover
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_xa_recover
+|= Type             | GLOBAL
+|= "SQL" definition | COM_XA_RECOVER
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Distributed XA Recover
+|= Description      | No. of XA recover statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_xa_rollback
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_xa_rollback
+|= Type             | GLOBAL
+|= "SQL" definition | COM_XA_ROLLBACK
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Distributed Rollbacks
+|= Description      | No. of XA transaction rollbacks
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== com_xa_start
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | com_xa_start
+|= Type             | GLOBAL
+|= "SQL" definition | COM_XA_START
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Distributer XA Starts
+|= Description      | No. of XA transaction starts
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_pages_data
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_pages_data
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_PAGES_DATA
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Buffer Pool Data
+|= Description      | No. of dirty, clean and index pages in the buffer pool
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_pages_dirty
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_pages_dirty
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_PAGES_DIRTY
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Buffer Pool Dirty
+|= Description      | No. of dirty pages in the InnoDB buffer pool
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_pages_flushed
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_pages_flushed
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_PAGES_FLUSHED
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Buffer Pool Flushes
+|= Description      | No. of page flushes in the InnoDB buffer pool
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_pages_free
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_pages_free
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_PAGES_FREE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Buffer Pool Free
+|= Description      | No. of free pages in the InnoDB buffer pool
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_pages_misc
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_pages_misc
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_PAGES_MISC
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Buffer Pool Misc
+|= Description      | No. of pages in buffer pool allocated to admin tasks
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_pages_total
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_pages_total
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_PAGES_TOTAL
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Buffer Pool Total
+|= Description      | No. of buffers in the InnoDB buffer pool
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_read_ahead
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_read_ahead
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_READ_AHEAD
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Buffer Read Aheads
+|= Description      | No. of buffers read into InnoDB during readahead
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_read_ahead_evicted
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_read_ahead_evicted
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_READ_AHEAD_EVICTED
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Read Ahead Evictions
+|= Description      | No. of readahead InnoDB buffers evicted from the buffer pool
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_read_requests
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_read_requests
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_READ_REQUESTS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Buffer Logical Reads
+|= Description      | No. of logical reads of InnoDB buffers
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_reads
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_reads
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_READS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Buffer Reads
+|= Description      | No. of InnoDB buffer reads not satisfied from the pool
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_wait_free
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_wait_free
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_WAIT_FREE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Buffer Waits
+|= Description      | No. of waits for free InnoDB buffer
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_write_requests
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_write_requests
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_BUFFER_POOL_WRITE_REQUESTS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnDB Buffer Writes
+|= Description      | No. of write requests for innoDB buffers
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_buffer_pool_hit_ratio
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_buffer_pool_hit_ratio
+|= Type             | JS
+|= "SQL" definition | Number(globals.getStatus("INNODB_BUFFER_POOL_READ_REQUESTS")) / (Number(globals.getStatus("INNODB_BUFFER_POOL_READ_REQUESTS")) + Number(globals.getStatus("INNODB_BUFFER_POOL_READS"))) * 100
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | InnoDB Buffer Pool Hit Ratio
+|= Description      | Hit ratio fo rthe InnoDB Buffer Pool
+|= Decimals         | 2
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | %
+<</style>>
+
+----
+
+=== innodb_data_fsyncs
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_data_fsyncs
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_DATA_FSYNCS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Fsyncs
+|= Description      | No. of fsync calls made by InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_data_pending_fsyncs
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_data_pending_fsyncs
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_DATA_PENDING_FSYNCS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Pending Fsyncs
+|= Description      | No. of pending fsync operations for InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_data_pending_reads
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_data_pending_reads
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_DATA_PENDING_READS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Pending Reads
+|= Description      | No. of pending read requests in InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_data_pending_writes
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_data_pending_writes
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_DATA_PENDING_WRITES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Pending Writes
+|= Description      | No. of pending write requests for InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_data_read
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_data_read
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_DATA_READ
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Read
+|= Description      | Amount of data read by InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_data_reads
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_data_reads
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_DATA_READS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDb Reads
+|= Description      | No. of InnoDB read requests
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_data_writes
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_data_writes
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_DATA_WRITES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Writes
+|= Description      | No. of InnoDB write requests
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_data_written
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_data_written
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_DATA_WRITTEN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Writen
+|= Description      | Amount of data written by InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_dblwr_pages_written
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_dblwr_pages_written
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_DBLWR_PAGES_WRITTEN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Pages Double Writen
+|= Description      | No. of pages written by double writes
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_dblwr_writes
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_dblwr_writes
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_DBLWR_WRITES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Double Writes
+|= Description      | No. of double write operations performed by InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_log_waits
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_log_waits
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_LOG_WAITS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Log Waits
+|= Description      | No. of times log buffer was too small
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_log_write_requests
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_log_write_requests
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_LOG_WRITE_REQUESTS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Log Write Requests
+|= Description      | No. of log write requests
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_log_writes
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_log_writes
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_LOG_WRITES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Log Writes
+|= Description      | No. of physical log writes
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_os_log_fsyncs
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_os_log_fsyncs
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_OS_LOG_FSYNCS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Log Fsyncs
+|= Description      | No. of fsync calls made on the log
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_os_log_pending_fsyncs
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_os_log_pending_fsyncs
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_OS_LOG_PENDING_FSYNCS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Pending Log Fsyncs
+|= Description      | No. of pending fsync calls on the log
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_os_log_pending_writes
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_os_log_pending_writes
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_OS_LOG_PENDING_WRITES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Log Pending Writes
+|= Description      | No. of pending writes on the InnoDB log
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_os_log_written
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_os_log_written
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_OS_LOG_WRITTEN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Log Bytes Written
+|= Description      | No. of bytes written to the InnoDB log
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_pages_created
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_pages_created
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_PAGES_CREATED
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Pages
+|= Description      | No. of InnoDB pages created
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_pages_read
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_pages_read
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_PAGES_READ
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Pages Read
+|= Description      | No of InnoDB pages read
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_pages_written
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_pages_written
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_PAGES_WRITTEN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Pages Written
+|= Description      | No. of InnoDB pages written
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_row_lock_current_waits
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_row_lock_current_waits
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_ROW_LOCK_CURRENT_WAITS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Waiting Row Locks
+|= Description      | No. of row locks currently waiting
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_row_lock_time
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_row_lock_time
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_ROW_LOCK_TIME
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Total Lock Wait
+|= Description      | Total lock wait time
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | ms
+<</style>>
+
+----
+
+=== innodb_row_lock_time_avg
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_row_lock_time_avg
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_ROW_LOCK_TIME_AVG
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | InnoDB Avg. Row Lock
+|= Description      | Average time to acquire a row lock
+|= Decimals         | 0
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | ms
+<</style>>
+
+----
+
+=== innodb_row_lock_time_max
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_row_lock_time_max
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_ROW_LOCK_TIME_MAX
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Max Row Lock
+|= Description      | Maximum time to acquire a row lock
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | ms
+<</style>>
+
+----
+
+=== innodb_row_lock_waits
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_row_lock_waits
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_ROW_LOCK_WAITS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Row Lock Waits
+|= Description      | No. of times a row lock has been waited for
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_rows_deleted
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_rows_deleted
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_ROWS_DELETED
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Row Deletions
+|= Description      | No. of rows deleted in InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_rows_inserted
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_rows_inserted
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_ROWS_INSERTED
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Row Insertions
+|= Description      | No. of rows inserted in InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_rows_read
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_rows_read
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_ROWS_READ
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Row Read
+|= Description      | No. of rows read in InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== innodb_rows_updated
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | innodb_rows_updated
+|= Type             | GLOBAL
+|= "SQL" definition | INNODB_ROWS_UPDATED
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | InnoDB Row Updated
+|= Description      | No. of rows updated in InnoDB
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== key_blocks_not_flushed
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | key_blocks_not_flushed
+|= Type             | GLOBAL
+|= "SQL" definition | KEY_BLOCKS_NOT_FLUSHED
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Key Blocks Not Flushed
+|= Description      | No. of Key blocks requiring flushing
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== key_blocks_unused
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | key_blocks_unused
+|= Type             | GLOBAL
+|= "SQL" definition | KEY_BLOCKS_UNUSED
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Key Blocks Unused
+|= Description      | No. of unsused blocks in the key cache
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== key_blocks_used
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | key_blocks_used
+|= Type             | GLOBAL
+|= "SQL" definition | KEY_BLOCKS_USED
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Key Blocks Used
+|= Description      | No. of used blocks in the key cache
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== key_read_requests
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | key_read_requests
+|= Type             | GLOBAL
+|= "SQL" definition | KEY_READ_REQUESTS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Key Block Read Requests
+|= Description      | No. of logical key block read requests
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== key_reads
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | key_reads
+|= Type             | GLOBAL
+|= "SQL" definition | KEY_READS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Key Reads
+|= Description      | No. of physical key reads 
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== key_write_requests
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | key_write_requests
+|= Type             | GLOBAL
+|= "SQL" definition | KEY_WRITE_REQUESTS
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Key Write Requests
+|= Description      | No. of logical key writes
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== key_writes
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | key_writes
+|= Type             | GLOBAL
+|= "SQL" definition | KEY_WRITES
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Key Writes
+|= Description      | Number of physical key writes
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== open_files
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | open_files
+|= Type             | GLOBAL
+|= "SQL" definition | OPEN_FILES
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Open Files
+|= Description      | No. of open files
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== open_streams
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | open_streams
+|= Type             | GLOBAL
+|= "SQL" definition | OPEN_STREAMS
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Open Streams
+|= Description      | No. of open streams
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== open_table_definitions
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | open_table_definitions
+|= Type             | GLOBAL
+|= "SQL" definition | OPEN_TABLE_DEFINITIONS
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Open Table Definitions
+|= Description      | No. of open table definitions
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== open_tables
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | open_tables
+|= Type             | GLOBAL
+|= "SQL" definition | OPEN_TABLES
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Open Tables
+|= Description      | No. of open tables
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== select_full_join
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | select_full_join
+|= Type             | GLOBAL
+|= "SQL" definition | SELECT_FULL_JOIN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Select Full Joins
+|= Description      | No. of full joins in a select
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== select_full_range_join
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | select_full_range_join
+|= Type             | GLOBAL
+|= "SQL" definition | SELECT_FULL_RANGE_JOIN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Range Joins
+|= Description      | No. of range joins in a select
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== select_range
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | select_range
+|= Type             | GLOBAL
+|= "SQL" definition | SELECT_RANGE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Select Range
+|= Description      | No. of joins that used ranges
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== select_range_check
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | select_range_check
+|= Type             | GLOBAL
+|= "SQL" definition | SELECT_RANGE_CHECK
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Select Range Check
+|= Description      | No. of joins without keys
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== select_scan
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | select_scan
+|= Type             | GLOBAL
+|= "SQL" definition | SELECT_SCAN
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Select Scan
+|= Description      | No. of joins requiring a full scan
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== table_locks_immediate
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | table_locks_immediate
+|= Type             | GLOBAL
+|= "SQL" definition | TABLE_LOCKS_IMMEDIATE
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Table Lock Immediate
+|= Description      | No. of table locks granted imediately
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== table_locks_waited
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | table_locks_waited
+|= Type             | GLOBAL
+|= "SQL" definition | TABLE_LOCKS_WAITED
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    |  N
+|= Display Name     | Table Lock Waits
+|= Description      | No. of table locks that had to wait
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== DDL
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | DDL
+|= Type             | JS
+|= "SQL" definition | Number(globals.getStatus("COM_SELECT")) + Number(globals.getStatus("COM_INSERT")) + Number(globals.getStatus("COM_UPDATE"))
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | DDL Statements
+|= Description      | No. of DDL Statements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== DML
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | DML
+|= Type             | JS
+|= "SQL" definition | Number(globals.getStatus("COM_ALTER_TABLE")) + Number(globals.getStatus("COM_ALTER_DB")) + Number(globals.getStatus("COM_CREATE_TABLE")) + Number(globals.getStatus("COM_CREATE_DB"))
+|= Delta Monitor    | Y
+|= System Average   | Y
+|= Default Graph    | N
+|= Display Name     | DML Statements
+|= Description      | No. of DML Satements
+|= Decimals         | 0
+|= ChartType        | null
+|= Interval         | 30
+|= Unit             | null
+<</style>>
+
+----
+
+=== read_write_ratio
+<<style class="darkheader-nospace-borders-side">>
+|= Monitor Name     | read_write_ratio
+|= Type             | JS
+|= "SQL" definition | (Number(globals.getStatus("COM_SELECT")) * 100) / (Number(globals.getStatus("COM_SELECT")) + Number(globals.getStatus("COM_UPDATE")) + Number(globals.getStatus("COM_DELETE")))
+|= Delta Monitor    | N
+|= System Average   | Y
+|= Default Graph    | Y
+|= Display Name     | Read/Write Ratio
+|= Description      | Percentage Of  Read Statements
+|= Decimals         | 0
+|= ChartType        | LineChart
+|= Interval         | 30
+|= Unit             | %
+<</style>>
+
+
+
+
