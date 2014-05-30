@@ -1,3 +1,4 @@
+
 This page contains a complete list of the available Monitors.
 
 === nodestate
@@ -14,12 +15,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === ping
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | ping
 |= Type             | PING
 |= "SQL" definition | |
@@ -32,12 +33,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === clustersize
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | clustersize
 |= Type             | GLOBAL
 |= "SQL" definition | WSREP_CLUSTER_SIZE
@@ -50,12 +51,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === reppaused
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | reppaused
 |= Type             | JS
 |= "SQL" definition | Number(globals.getStatus("WSREP_FLOW_CONTROL_PAUSED")) * 100
@@ -68,12 +69,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | %
-<</style>>
+
 
 ----
 
 === parallelism
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | parallelism
 |= Type             | GLOBAL
 |= "SQL" definition | WSREP_CERT_DEPS_DISTANCE
@@ -86,12 +87,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === recvqueue
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | recvqueue
 |= Type             | GLOBAL
 |= "SQL" definition | WSREP_LOCAL_RECV_QUEUE_AVG
@@ -104,12 +105,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === flowcontrol
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | flowcontrol
 |= Type             | GLOBAL
 |= "SQL" definition | WSREP_FLOW_CONTROL_SENT
@@ -122,12 +123,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === sendqueue
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | sendqueue
 |= Type             | GLOBAL
 |= "SQL" definition | WSREP_LOCAL_SEND_QUEUE_AVG
@@ -140,12 +141,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === capacity
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | capacity
 |= Type             | JS
 |= "SQL" definition | (Number(globals.getStatus("THREADS_CONNECTED")) * 100) / Number(globals.getVariable("MAX_CONNECTIONS"))
@@ -158,12 +159,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === connections
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | connections
 |= Type             | GLOBAL
 |= "SQL" definition | THREADS_CONNECTED
@@ -176,12 +177,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === traffic
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | traffic
 |= Type             | JS
 |= "SQL" definition | (Number(globals.getStatus("BYTES_RECEIVED")) + Number(globals.getStatus("BYTES_SENT"))) / 512
@@ -194,12 +195,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | Kb/min
-<</style>>
+
 
 ----
 
 === availability
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | availability
 |= Type             | SQL
 |= "SQL" definition | select 100
@@ -212,12 +213,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_admin
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_admin
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ADMIN_COMMANDS
@@ -230,12 +231,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_assign_keycache
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_assign_keycache
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ASSIGN_TO_KEYCACHE
@@ -248,12 +249,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_alter_db
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_alter_db
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ALTER_DB
@@ -266,12 +267,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_alter_db_upgrade
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_alter_db_upgrade
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ALTER_DB_UPGRADE
@@ -284,12 +285,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_alter_event
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_alter_event
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ALTER_EVENT
@@ -302,12 +303,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_alter_function
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_alter_function
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ALTER_FUNCTION
@@ -320,12 +321,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_alter_procedure
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_alter_procedure
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ALTER_PROCEDURE
@@ -338,12 +339,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_alter_server
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_alter_server
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ALTER_SERVER
@@ -356,12 +357,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_alter_table
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_alter_table
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ALTER_TABLE
@@ -374,12 +375,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_alter_tablespace
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_alter_tablespace
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ALTER_TABLESPACE
@@ -392,12 +393,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_analyze
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_analyze
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ANALYZE
@@ -410,12 +411,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_begin
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_begin
 |= Type             | GLOBAL
 |= "SQL" definition | COM_BEGIN
@@ -428,12 +429,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_binlog
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_binlog
 |= Type             | GLOBAL
 |= "SQL" definition | COM_BINLOG
@@ -446,12 +447,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_call_procedure
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_call_procedure
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CALL_PROCEDURE
@@ -464,12 +465,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_change_db
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_change_db
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CHANGE_DB
@@ -482,12 +483,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_change_master
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_change_master
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CHANGE_MASTER
@@ -500,12 +501,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_check
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_check
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CHECK
@@ -518,12 +519,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_checksum
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_checksum
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CHECKSUM
@@ -536,12 +537,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_commit
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_commit
 |= Type             | GLOBAL
 |= "SQL" definition | COM_COMMIT
@@ -554,12 +555,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_create_db
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_db
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CREATE_DB
@@ -572,12 +573,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_create_event
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_event
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CREATE_EVENT
@@ -590,12 +591,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_create_function
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_function
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CREATE_FUNCTION
@@ -608,12 +609,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_create_index
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_index
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CREATE_INDEX
@@ -626,12 +627,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_create_procedure
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_procedure
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CREATE_PROCEDURE
@@ -644,12 +645,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_create_server
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_server
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CREATE_SERVER
@@ -662,12 +663,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_create_table
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_table
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CREATE_TABLE
@@ -680,12 +681,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_create_triggerGLOBAL
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_triggerGLOBAL
 |= Type             | COM_CREATE_TRIGGER
 |= "SQL" definition | Y
@@ -697,12 +698,12 @@ This page contains a complete list of the available Monitors.
 |= Decimals         | null
 |= ChartType        | 30
 |= Interval         | null
-|= Unit             | <</style>>
+|= Unit             | 
 
 ----
 
 === com_create_udf
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_udf
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CREATE_UDF
@@ -715,12 +716,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_create_user
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_user
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CREATE_USER
@@ -733,12 +734,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_create_view
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_create_view
 |= Type             | GLOBAL
 |= "SQL" definition | COM_CREATE_VIEW
@@ -751,12 +752,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_dealloc_sql
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_dealloc_sql
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DEALLOC_SQL
@@ -769,12 +770,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_delete
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_delete
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DELETE
@@ -787,12 +788,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_delete_multi
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_delete_multi
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DELETE_MULTI
@@ -805,12 +806,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_do
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_do
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DO
@@ -823,12 +824,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_drop_db
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_drop_db
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DROP_DB
@@ -841,12 +842,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_drop_event
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_drop_event
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DROP_EVENT
@@ -859,12 +860,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_drop_function
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_drop_function
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DROP_FUNCTION
@@ -877,12 +878,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_drop_index
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_drop_index
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DROP_INDEX
@@ -895,12 +896,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_drop_procedure
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_drop_procedure
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DROP_PROCEDURE
@@ -913,12 +914,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_drop_server
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_drop_server
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DROP_SERVER
@@ -931,12 +932,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_drop_table
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_drop_table
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DROP_TABLE
@@ -949,12 +950,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_drop_trigger
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_drop_trigger
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DROP_TRIGGER
@@ -967,12 +968,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_drop_user
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_drop_user
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DROP_USER
@@ -985,12 +986,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_drop_view
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_drop_view
 |= Type             | GLOBAL
 |= "SQL" definition | COM_DROP_VIEW
@@ -1003,12 +1004,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_empty_query
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_empty_query
 |= Type             | GLOBAL
 |= "SQL" definition | COM_EMPTY_QUERY
@@ -1021,12 +1022,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_execute_sql
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_execute_sql
 |= Type             | GLOBAL
 |= "SQL" definition | COM_EXECUTE_SQL
@@ -1039,12 +1040,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_flush
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_flush
 |= Type             | GLOBAL
 |= "SQL" definition | COM_FLUSH
@@ -1057,12 +1058,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_grant
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_grant
 |= Type             | GLOBAL
 |= "SQL" definition | COM_GRANT
@@ -1075,12 +1076,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_ha_close
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_ha_close
 |= Type             | GLOBAL
 |= "SQL" definition | COM_HA_CLOSE
@@ -1093,12 +1094,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_ha_open
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_ha_open
 |= Type             | GLOBAL
 |= "SQL" definition | COM_HA_OPEN
@@ -1111,12 +1112,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_ha_read
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_ha_read
 |= Type             | GLOBAL
 |= "SQL" definition | COM_HA_READ
@@ -1129,12 +1130,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_help
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_help
 |= Type             | GLOBAL
 |= "SQL" definition | COM_HELP
@@ -1147,12 +1148,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_insert
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_insert
 |= Type             | GLOBAL
 |= "SQL" definition | COM_INSERT
@@ -1165,12 +1166,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_insert_select
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_insert_select
 |= Type             | GLOBAL
 |= "SQL" definition | COM_INSERT_SELECT
@@ -1183,12 +1184,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_install_plugin
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_install_plugin
 |= Type             | GLOBAL
 |= "SQL" definition | COM_INSTALL_PLUGIN
@@ -1201,12 +1202,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_kill
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_kill
 |= Type             | GLOBAL
 |= "SQL" definition | COM_KILL
@@ -1219,12 +1220,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_load
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_load
 |= Type             | GLOBAL
 |= "SQL" definition | COM_LOAD
@@ -1237,12 +1238,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_lock_tables
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_lock_tables
 |= Type             | GLOBAL
 |= "SQL" definition | COM_LOCK_TABLES
@@ -1255,12 +1256,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_optimize
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_optimize
 |= Type             | GLOBAL
 |= "SQL" definition | COM_OPTIMIZE
@@ -1273,12 +1274,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_preload_keys
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_preload_keys
 |= Type             | GLOBAL
 |= "SQL" definition | COM_PRELOAD_KEYS
@@ -1291,12 +1292,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_prepare_sql
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_prepare_sql
 |= Type             | GLOBAL
 |= "SQL" definition | COM_PREPARE_SQL
@@ -1309,12 +1310,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_purge
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_purge
 |= Type             | GLOBAL
 |= "SQL" definition | COM_PURGE
@@ -1327,12 +1328,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_purge_before_date
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_purge_before_date
 |= Type             | GLOBAL
 |= "SQL" definition | COM_PURGE_BEFORE_DATE
@@ -1345,12 +1346,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_release_savepoint
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_release_savepoint
 |= Type             | GLOBAL
 |= "SQL" definition | COM_RELEASE_SAVEPOINT
@@ -1363,12 +1364,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_rename_table
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_rename_table
 |= Type             | GLOBAL
 |= "SQL" definition | COM_RENAME_TABLE
@@ -1381,12 +1382,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_rename_user
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_rename_user
 |= Type             | GLOBAL
 |= "SQL" definition | COM_RENAME_USER
@@ -1399,12 +1400,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_repair
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_repair
 |= Type             | GLOBAL
 |= "SQL" definition | COM_REPAIR
@@ -1417,12 +1418,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_replace
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_replace
 |= Type             | GLOBAL
 |= "SQL" definition | COM_REPLACE
@@ -1435,12 +1436,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_replace_select
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_replace_select
 |= Type             | GLOBAL
 |= "SQL" definition | COM_REPLACE_SELECT
@@ -1453,12 +1454,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_reset
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_reset
 |= Type             | GLOBAL
 |= "SQL" definition | COM_RESET
@@ -1471,12 +1472,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_resignal
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_resignal
 |= Type             | GLOBAL
 |= "SQL" definition | COM_RESIGNAL
@@ -1489,12 +1490,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_revoke
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_revoke
 |= Type             | GLOBAL
 |= "SQL" definition | COM_REVOKE
@@ -1507,12 +1508,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_revoke_all
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_revoke_all
 |= Type             | GLOBAL
 |= "SQL" definition | COM_REVOKE_ALL
@@ -1525,12 +1526,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_rollback
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_rollback
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ROLLBACK
@@ -1543,12 +1544,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_rollback_to_savepoint
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_rollback_to_savepoint
 |= Type             | GLOBAL
 |= "SQL" definition | COM_ROLLBACK_TO_SAVEPOINT
@@ -1561,12 +1562,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_savepoint
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_savepoint
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SAVEPOINT
@@ -1579,12 +1580,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_select
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_select
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SELECT
@@ -1597,12 +1598,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_set_option
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_set_option
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SET_OPTION
@@ -1615,12 +1616,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_signal
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_signal
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SIGNAL
@@ -1633,12 +1634,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_authors
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_authors
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_AUTHORS
@@ -1651,12 +1652,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_binlog_events
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_binlog_events
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_BINLOG_EVENTS
@@ -1669,12 +1670,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_binlogs
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_binlogs
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_BINLOGS
@@ -1687,12 +1688,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_charsets
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_charsets
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_CHARSETS
@@ -1705,12 +1706,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_collations
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_collations
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_COLLATIONS
@@ -1723,12 +1724,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_contributors
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_contributors
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_CONTRIBUTORS
@@ -1741,12 +1742,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_create_db
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_create_db
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_CREATE_DB
@@ -1759,12 +1760,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_create_event
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_create_event
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_CREATE_EVENT
@@ -1777,12 +1778,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_create_func
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_create_func
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_CREATE_FUNC
@@ -1795,12 +1796,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_create_proc
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_create_proc
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_CREATE_PROC
@@ -1813,12 +1814,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_create_table
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_create_table
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_CREATE_TABLE
@@ -1831,12 +1832,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_create_trigger
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_create_trigger
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_CREATE_TRIGGER
@@ -1849,12 +1850,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_databases
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_databases
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_DATABASES
@@ -1867,12 +1868,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_engine_logs
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_engine_logs
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_ENGINE_LOGS
@@ -1885,12 +1886,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_engine_mutex
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_engine_mutex
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_ENGINE_MUTEX
@@ -1903,12 +1904,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_engine_status
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_engine_status
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_ENGINE_STATUS
@@ -1921,12 +1922,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_events
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_events
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_EVENTS
@@ -1939,12 +1940,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_errors
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_errors
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_ERRORS
@@ -1957,12 +1958,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_fields
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_fields
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_FIELDS
@@ -1975,12 +1976,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_function_status
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_function_status
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_FUNCTION_STATUS
@@ -1993,12 +1994,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_grants
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_grants
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_GRANTS
@@ -2011,12 +2012,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_keys
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_keys
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_KEYS
@@ -2029,12 +2030,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_master_status
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_master_status
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_MASTER_STATUS
@@ -2047,12 +2048,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_open_tables
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_open_tables
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_OPEN_TABLES
@@ -2065,12 +2066,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_plugins
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_plugins
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_PLUGINS
@@ -2083,12 +2084,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_privileges
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_privileges
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_PRIVILEGES
@@ -2101,12 +2102,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_procedure_status
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_procedure_status
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_PROCEDURE_STATUS
@@ -2119,12 +2120,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_processlist
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_processlist
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_PROCESSLIST
@@ -2137,12 +2138,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_profile
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_profile
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_PROFILE
@@ -2155,12 +2156,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_profiles
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_profiles
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_PROFILES
@@ -2173,12 +2174,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_relaylog_events
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_relaylog_events
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_RELAYLOG_EVENTS
@@ -2191,12 +2192,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_slave_hosts
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_slave_hosts
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_SLAVE_HOSTS
@@ -2209,12 +2210,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_slave_status
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_slave_status
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_SLAVE_STATUS
@@ -2227,12 +2228,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_status
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_status
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_STATUS
@@ -2245,12 +2246,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_storage_engines
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_storage_engines
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_STORAGE_ENGINES
@@ -2263,12 +2264,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_table_status
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_table_status
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_TABLE_STATUS
@@ -2281,12 +2282,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_tables
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_tables
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_TABLES
@@ -2299,12 +2300,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_triggers
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_triggers
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_TRIGGERS
@@ -2317,12 +2318,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_variables
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_variables
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_VARIABLES
@@ -2335,12 +2336,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_show_warnings
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_show_warnings
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SHOW_WARNINGS
@@ -2353,12 +2354,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_slave_start
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_slave_start
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SLAVE_START
@@ -2371,12 +2372,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_slave_stop
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_slave_stop
 |= Type             | GLOBAL
 |= "SQL" definition | COM_SLAVE_STOP
@@ -2389,12 +2390,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_stmt_close
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_stmt_close
 |= Type             | GLOBAL
 |= "SQL" definition | COM_STMT_CLOSE
@@ -2407,12 +2408,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_stmt_execute
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_stmt_execute
 |= Type             | GLOBAL
 |= "SQL" definition | COM_STMT_EXECUTE
@@ -2425,12 +2426,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_stmt_fetch
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_stmt_fetch
 |= Type             | GLOBAL
 |= "SQL" definition | COM_STMT_FETCH
@@ -2443,12 +2444,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_stmt_prepare
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_stmt_prepare
 |= Type             | GLOBAL
 |= "SQL" definition | COM_STMT_PREPARE
@@ -2461,12 +2462,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_stmt_reprepare
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_stmt_reprepare
 |= Type             | GLOBAL
 |= "SQL" definition | COM_STMT_REPREPARE
@@ -2479,12 +2480,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_stmt_reset
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_stmt_reset
 |= Type             | GLOBAL
 |= "SQL" definition | COM_STMT_RESET
@@ -2497,12 +2498,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_stmt_send_long_data
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_stmt_send_long_data
 |= Type             | GLOBAL
 |= "SQL" definition | COM_STMT_SEND_LONG_DATA
@@ -2515,12 +2516,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_truncate
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_truncate
 |= Type             | GLOBAL
 |= "SQL" definition | COM_TRUNCATE
@@ -2533,12 +2534,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_uninstall_plugin
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_uninstall_plugin
 |= Type             | GLOBAL
 |= "SQL" definition | COM_UNINSTALL_PLUGIN
@@ -2551,12 +2552,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_unlock_tables
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_unlock_tables
 |= Type             | GLOBAL
 |= "SQL" definition | COM_UNLOCK_TABLES
@@ -2569,12 +2570,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_update
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_update
 |= Type             | GLOBAL
 |= "SQL" definition | COM_UPDATE
@@ -2587,12 +2588,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_update_multi
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_update_multi
 |= Type             | GLOBAL
 |= "SQL" definition | COM_UPDATE_MULTI
@@ -2605,12 +2606,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_xa_commit
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_xa_commit
 |= Type             | GLOBAL
 |= "SQL" definition | COM_XA_COMMIT
@@ -2623,12 +2624,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_xa_end
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_xa_end
 |= Type             | GLOBAL
 |= "SQL" definition | COM_XA_END
@@ -2641,12 +2642,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_xa_prepare
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_xa_prepare
 |= Type             | GLOBAL
 |= "SQL" definition | COM_XA_PREPARE
@@ -2659,12 +2660,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_xa_recover
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_xa_recover
 |= Type             | GLOBAL
 |= "SQL" definition | COM_XA_RECOVER
@@ -2677,12 +2678,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_xa_rollback
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_xa_rollback
 |= Type             | GLOBAL
 |= "SQL" definition | COM_XA_ROLLBACK
@@ -2695,12 +2696,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === com_xa_start
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | com_xa_start
 |= Type             | GLOBAL
 |= "SQL" definition | COM_XA_START
@@ -2713,12 +2714,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_pages_data
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_pages_data
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_PAGES_DATA
@@ -2731,12 +2732,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_pages_dirty
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_pages_dirty
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_PAGES_DIRTY
@@ -2749,12 +2750,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_pages_flushed
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_pages_flushed
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_PAGES_FLUSHED
@@ -2767,12 +2768,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_pages_free
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_pages_free
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_PAGES_FREE
@@ -2785,12 +2786,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_pages_misc
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_pages_misc
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_PAGES_MISC
@@ -2803,12 +2804,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_pages_total
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_pages_total
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_PAGES_TOTAL
@@ -2821,12 +2822,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_read_ahead
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_read_ahead
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_READ_AHEAD
@@ -2839,12 +2840,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_read_ahead_evicted
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_read_ahead_evicted
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_READ_AHEAD_EVICTED
@@ -2857,12 +2858,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_read_requests
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_read_requests
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_READ_REQUESTS
@@ -2875,12 +2876,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_reads
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_reads
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_READS
@@ -2893,12 +2894,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_wait_free
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_wait_free
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_WAIT_FREE
@@ -2911,12 +2912,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_write_requests
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_write_requests
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_BUFFER_POOL_WRITE_REQUESTS
@@ -2929,12 +2930,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_buffer_pool_hit_ratio
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_buffer_pool_hit_ratio
 |= Type             | JS
 |= "SQL" definition | Number(globals.getStatus("INNODB_BUFFER_POOL_READ_REQUESTS")) / (Number(globals.getStatus("INNODB_BUFFER_POOL_READ_REQUESTS")) + Number(globals.getStatus("INNODB_BUFFER_POOL_READS"))) * 100
@@ -2947,12 +2948,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | %
-<</style>>
+
 
 ----
 
 === innodb_data_fsyncs
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_data_fsyncs
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_DATA_FSYNCS
@@ -2965,12 +2966,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_data_pending_fsyncs
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_data_pending_fsyncs
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_DATA_PENDING_FSYNCS
@@ -2983,12 +2984,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_data_pending_reads
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_data_pending_reads
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_DATA_PENDING_READS
@@ -3001,12 +3002,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_data_pending_writes
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_data_pending_writes
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_DATA_PENDING_WRITES
@@ -3019,12 +3020,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_data_read
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_data_read
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_DATA_READ
@@ -3037,12 +3038,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_data_reads
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_data_reads
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_DATA_READS
@@ -3055,12 +3056,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_data_writes
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_data_writes
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_DATA_WRITES
@@ -3073,12 +3074,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_data_written
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_data_written
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_DATA_WRITTEN
@@ -3091,12 +3092,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_dblwr_pages_written
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_dblwr_pages_written
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_DBLWR_PAGES_WRITTEN
@@ -3109,12 +3110,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_dblwr_writes
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_dblwr_writes
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_DBLWR_WRITES
@@ -3127,12 +3128,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_log_waits
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_log_waits
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_LOG_WAITS
@@ -3145,12 +3146,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_log_write_requests
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_log_write_requests
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_LOG_WRITE_REQUESTS
@@ -3163,12 +3164,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_log_writes
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_log_writes
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_LOG_WRITES
@@ -3181,12 +3182,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_os_log_fsyncs
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_os_log_fsyncs
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_OS_LOG_FSYNCS
@@ -3199,12 +3200,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_os_log_pending_fsyncs
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_os_log_pending_fsyncs
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_OS_LOG_PENDING_FSYNCS
@@ -3217,12 +3218,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_os_log_pending_writes
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_os_log_pending_writes
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_OS_LOG_PENDING_WRITES
@@ -3235,12 +3236,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_os_log_written
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_os_log_written
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_OS_LOG_WRITTEN
@@ -3253,12 +3254,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_pages_created
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_pages_created
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_PAGES_CREATED
@@ -3271,12 +3272,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_pages_read
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_pages_read
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_PAGES_READ
@@ -3289,12 +3290,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_pages_written
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_pages_written
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_PAGES_WRITTEN
@@ -3307,12 +3308,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_row_lock_current_waits
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_row_lock_current_waits
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_ROW_LOCK_CURRENT_WAITS
@@ -3325,12 +3326,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_row_lock_time
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_row_lock_time
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_ROW_LOCK_TIME
@@ -3343,12 +3344,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | ms
-<</style>>
+
 
 ----
 
 === innodb_row_lock_time_avg
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_row_lock_time_avg
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_ROW_LOCK_TIME_AVG
@@ -3361,12 +3362,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | ms
-<</style>>
+
 
 ----
 
 === innodb_row_lock_time_max
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_row_lock_time_max
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_ROW_LOCK_TIME_MAX
@@ -3379,12 +3380,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | ms
-<</style>>
+
 
 ----
 
 === innodb_row_lock_waits
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_row_lock_waits
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_ROW_LOCK_WAITS
@@ -3397,12 +3398,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_rows_deleted
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_rows_deleted
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_ROWS_DELETED
@@ -3415,12 +3416,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_rows_inserted
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_rows_inserted
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_ROWS_INSERTED
@@ -3433,12 +3434,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_rows_read
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_rows_read
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_ROWS_READ
@@ -3451,12 +3452,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === innodb_rows_updated
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | innodb_rows_updated
 |= Type             | GLOBAL
 |= "SQL" definition | INNODB_ROWS_UPDATED
@@ -3469,12 +3470,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === key_blocks_not_flushed
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | key_blocks_not_flushed
 |= Type             | GLOBAL
 |= "SQL" definition | KEY_BLOCKS_NOT_FLUSHED
@@ -3487,12 +3488,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === key_blocks_unused
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | key_blocks_unused
 |= Type             | GLOBAL
 |= "SQL" definition | KEY_BLOCKS_UNUSED
@@ -3505,12 +3506,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === key_blocks_used
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | key_blocks_used
 |= Type             | GLOBAL
 |= "SQL" definition | KEY_BLOCKS_USED
@@ -3523,12 +3524,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === key_read_requests
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | key_read_requests
 |= Type             | GLOBAL
 |= "SQL" definition | KEY_READ_REQUESTS
@@ -3541,12 +3542,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === key_reads
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | key_reads
 |= Type             | GLOBAL
 |= "SQL" definition | KEY_READS
@@ -3559,12 +3560,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === key_write_requests
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | key_write_requests
 |= Type             | GLOBAL
 |= "SQL" definition | KEY_WRITE_REQUESTS
@@ -3577,12 +3578,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === key_writes
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | key_writes
 |= Type             | GLOBAL
 |= "SQL" definition | KEY_WRITES
@@ -3595,12 +3596,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === open_files
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | open_files
 |= Type             | GLOBAL
 |= "SQL" definition | OPEN_FILES
@@ -3613,12 +3614,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === open_streams
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | open_streams
 |= Type             | GLOBAL
 |= "SQL" definition | OPEN_STREAMS
@@ -3631,12 +3632,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === open_table_definitions
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | open_table_definitions
 |= Type             | GLOBAL
 |= "SQL" definition | OPEN_TABLE_DEFINITIONS
@@ -3649,12 +3650,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === open_tables
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | open_tables
 |= Type             | GLOBAL
 |= "SQL" definition | OPEN_TABLES
@@ -3667,12 +3668,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === select_full_join
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | select_full_join
 |= Type             | GLOBAL
 |= "SQL" definition | SELECT_FULL_JOIN
@@ -3685,12 +3686,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === select_full_range_join
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | select_full_range_join
 |= Type             | GLOBAL
 |= "SQL" definition | SELECT_FULL_RANGE_JOIN
@@ -3703,12 +3704,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === select_range
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | select_range
 |= Type             | GLOBAL
 |= "SQL" definition | SELECT_RANGE
@@ -3721,12 +3722,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === select_range_check
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | select_range_check
 |= Type             | GLOBAL
 |= "SQL" definition | SELECT_RANGE_CHECK
@@ -3739,12 +3740,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === select_scan
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | select_scan
 |= Type             | GLOBAL
 |= "SQL" definition | SELECT_SCAN
@@ -3757,12 +3758,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === table_locks_immediate
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | table_locks_immediate
 |= Type             | GLOBAL
 |= "SQL" definition | TABLE_LOCKS_IMMEDIATE
@@ -3775,12 +3776,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === table_locks_waited
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | table_locks_waited
 |= Type             | GLOBAL
 |= "SQL" definition | TABLE_LOCKS_WAITED
@@ -3793,12 +3794,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === DDL
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | DDL
 |= Type             | JS
 |= "SQL" definition | Number(globals.getStatus("COM_SELECT")) + Number(globals.getStatus("COM_INSERT")) + Number(globals.getStatus("COM_UPDATE"))
@@ -3811,12 +3812,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === DML
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | DML
 |= Type             | JS
 |= "SQL" definition | Number(globals.getStatus("COM_ALTER_TABLE")) + Number(globals.getStatus("COM_ALTER_DB")) + Number(globals.getStatus("COM_CREATE_TABLE")) + Number(globals.getStatus("COM_CREATE_DB"))
@@ -3829,12 +3830,12 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | null
 |= Interval         | 30
 |= Unit             | null
-<</style>>
+
 
 ----
 
 === read_write_ratio
-<<style class="darkheader-nospace-borders-side">>
+
 |= Monitor Name     | read_write_ratio
 |= Type             | JS
 |= "SQL" definition | (Number(globals.getStatus("COM_SELECT")) * 100) / (Number(globals.getStatus("COM_SELECT")) + Number(globals.getStatus("COM_UPDATE")) + Number(globals.getStatus("COM_DELETE")))
@@ -3847,7 +3848,7 @@ This page contains a complete list of the available Monitors.
 |= ChartType        | LineChart
 |= Interval         | 30
 |= Unit             | %
-<</style>>
+
 
 
 
