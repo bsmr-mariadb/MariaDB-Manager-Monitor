@@ -30,9 +30,9 @@ import java.util.List;
 
 import com.skysql.java.AboutMe;
 import com.skysql.java.Configuration;
+import com.skysql.java.Configuration.DEFAULT_SECTION;
 import com.skysql.java.Logging;
 import com.skysql.java.MonData;
-import com.skysql.java.Configuration.DEFAULT_SECTION;
 
 /**
  * The main class of the query router, this comprises the main function itself,

@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>com.skysql.java</groupId>
 			<artifactId>libMariaDB-Manager-java</artifactId>
-			<version>[0.1,)</version>
+			<version>[0.5,)</version>
 		</dependency>
 	</dependencies>
 	<description>MariaDB-Manager-Monitor is the monitoring component of the MariaDB-Manager project. It provides a confirgurable monitoring service in Java that interacts with the MariaDB-Manager-API to provide monitoring data on a set of servers within a MariaDB Galera Cluster.
