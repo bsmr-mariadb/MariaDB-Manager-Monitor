@@ -1,5 +1,5 @@
 /*
- * This file is distributed as part of the MariaDB Enterprise.  It is free
+ * This file is distributed as part of the MariaDB Manager.  It is free
  * software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * version 2.
@@ -21,17 +21,17 @@ package com.skysql.monitor;
 import java.util.*;
 
 import com.skysql.java.Logging;
-import com.skysql.monitor.mondata;
+import com.skysql.java.MonData;
 
 /**
- * Standalone program for setting the node state. No longer used.
+ * Standalone program for setting the Node state. No longer used.
  * 
  * @author Mark Riddoch
  *
  */
 public class SetNodeState {
 	
-	mondata		m_confdb;
+	MonData		m_confdb;
 	int			m_systemID;
 	int			m_nodeid;
 	
@@ -39,7 +39,7 @@ public class SetNodeState {
 	{
 		if (args.length != 4)
 		{
-			Logging.error("Usage: SetNodeState <System ID> <node ID> <dbfile> <state>");
+			Logging.error("Usage: SetNodeState <System ID> <Node ID> <dbfile> <state>");
 			System.exit(1);
 		}
 		SetNodeState obj = new SetNodeState(new Integer(args[0]).intValue(), new Integer(args[1]).intValue(), args[2]);
@@ -48,7 +48,7 @@ public class SetNodeState {
 	
 	public SetNodeState(int systemID, int nodeID, String dbfile)
 	{
-		m_confdb = new mondata(systemID);
+		m_confdb = new MonData(systemID);
 		m_nodeid = nodeID;
 		m_systemID = systemID;
 	}
@@ -58,13 +58,13 @@ public class SetNodeState {
 		int monid = m_confdb.getNamedMonitor("Node State");
 		if (monid == -1)
 		{
-			Logging.error("Can't find monitor \"Node State\".");
+			Logging.error("Can't find Monitor \"Node State\".");
 			System.exit(1);
 		}
 		int stateid = m_confdb.getNodeStateId(state);
 		if (stateid == -1)
 		{
-			Logging.error("Unknown node state " + state);
+			Logging.error("Unknown Node state " + state);
 			Logging.error("Valid states are:");
 			List<String> states = m_confdb.getNodeValidStates();
 			Iterator<String> it = states.iterator();

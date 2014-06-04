@@ -1,5 +1,5 @@
 /*
- * This file is distributed as part of the MariaDB Enterprise.  It is free
+ * This file is distributed as part of the MariaDB Manager.  It is free
  * software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * version 2.
@@ -14,6 +14,9 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * Copyright 2012-2014 SkySQL Corporation Ab
+ * 
+ * Author: Massimo Siani, Mark Riddoch
+ * Date: July 2013
  */
 
 package com.skysql.monitor;
@@ -29,6 +32,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.SimpleBindings;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
  * The Galera Probe Monitor class.
@@ -37,29 +41,30 @@ import com.skysql.java.Logging;
  * variables. It decodes the value of a subset of session variables into a
  * single 
  * 
- * @author Massimo Siani, Mark Riddoch
+ * @author Massimo Siani
+ * @author Mark Riddoch
  *
  */
-public class RhinoMonitor extends monitor {
+public class RhinoMonitor extends Monitor {
 	/**
-     * The singleton class associated with this node that manages the
+     * The singleton class associated with this Node that manages the
      * collection and storage of global variables and global status
      * data from the database server being monitored.
      */
-	private globalStatusObject		m_global;
+	private GlobalStatusObject		m_global;
 
 	/**
-	 * Constructor for the RhinoMonitor class. Set the monitor and the
-	 * globalStatusObject object.
+	 * Constructor for the RhinoMonitor class. Set the Monitor and the
+	 * GlobalStatusObject object.
 	 * 
 	 * @param db		the API interface
-	 * @param id		the monitor id
-	 * @param mon_node	the node object
+	 * @param id		the Monitor id
+	 * @param mon_node	the Node object
 	 */
-	public RhinoMonitor(mondata db, int id, node mon_node) {
+	public RhinoMonitor(MonData db, int id, Node mon_node) {
 		super(db, id, mon_node);
 		m_sql = m_sql.replace("\\", "");
-		m_global = globalStatusObject.getInstance(mon_node);
+		m_global = GlobalStatusObject.getInstance(mon_node);
 	}
 	
 	/**
@@ -69,7 +74,7 @@ public class RhinoMonitor extends monitor {
 	 */
 	public void probe (boolean verbose) {
 		if (m_sql.isEmpty()) {
-			Logging.warn("    Empty SQL field, monitor will not execute.");
+			Logging.warn("    Empty SQL field, Monitor will not execute.");
 			return;
 		}
 		String value = runJavaScriptString();
@@ -111,7 +116,7 @@ public class RhinoMonitor extends monitor {
 		try {
 			ScriptEngine engine = new ScriptEngineManager().getEngineByName("javascript");
 			Bindings bindings = new SimpleBindings();
-			HashMap<String, globalStatusObject> jsBindings= new HashMap<String, globalStatusObject>(1);
+			HashMap<String, GlobalStatusObject> jsBindings= new HashMap<String, GlobalStatusObject>(1);
 			jsBindings.put("globals", m_global);
 			bindings.putAll(jsBindings);
 
@@ -124,7 +129,7 @@ public class RhinoMonitor extends monitor {
 			}
 		} catch (Exception e) {
 			if (m_confdb.getNodeState(m_node.getID()).equalsIgnoreCase("down")) {
-				Logging.error("Cannot execute this monitor: node "
+				Logging.error("Cannot execute this Monitor: Node "
 						+ m_confdb.getNodeName(m_node.getID()) + " is down.");
 			} else {
 				Logging.error("Error in JavaScript: " + e.getMessage());

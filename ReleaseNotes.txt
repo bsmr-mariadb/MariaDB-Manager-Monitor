@@ -1,6 +1,6 @@
 #  Part of MariaDB Manager package.
 #
-# This file is distributed as part of MariaDB Manager.  It is free
+# This file is distributed as part of MariaDB Manager. It is free
 # software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation,
 # version 2.
@@ -24,6 +24,60 @@
 
 
 CHANGELOG
+
+* Tue May 13 2014 Massimo Siani <massimo.siani@skysql.com>
+- LSBize mariadb-manager-monitor
+
+* Tue Apr 29 2014 Massimo Siani <massimo.siani@skysql.com>
+- Fix .spec
+
+* Mon Apr 28 2014 Massimo Siani <massimo.siani@skysql.com>
+- Do not check for /etc/mariadbmanager/manager.ini
+
+* Fri Apr 25 2014 Massimo Siani <massimo.siani@skysql.com>
+- Small script fix.
+- Remove a node object from the Global Object when the API returns it again.
+- Debian: do not create the configuration file, nor its folder.
+
+* Thu Apr 24 2014 Massimo Siani <massimo.siani@skysql.com>
+- Fix spelling.
+
+* Wed Apr 23 2014 Massimo Siani <massimo.siani@skysql.com>
+- Created release-1.0.2
+
+* Thu Apr 17 2014 Massimo Siani <massimo.siani@skysql.com>
+- Create section [monitor] in /etc/mariadbmanager/manager.ini if does not exist.
+- Update API key generation scripts.
+
+* Wed Apr 16 2014 Massimo Siani <massimo.siani@skysql.com>
+- Load all the current configuration options from /etc/mariadbmanager/manager.ini
+
+* Tue Apr 15 2014 Massimo Siani <massimo.siani@skysql.com>
+- Start implementing support for manager.ini
+
+* Mon Apr 14 2014 Massimo Siani <massimo.siani@skysql.com>
+- Add the version date, and register it in the API.
+- Naming now follows standard conventions.
+- Move the API client to the Library.
+
+* Fri Apr 11 2014 Massimo Siani <massimo.siani@skysql.com>
+- Fixes for Debian
+- Manage Java 6
+- Merge debian branch into develop
+
+* Tue Apr 08 2014 Massimo Siani <massimo.siani@skysql.com>
+- Rename mariadb-enterprise-monitor to mariadb-manager-monitor
+- There is no need to update the version every 30 seconds, set to 5 minutes
+
+* Thu Mar 27 2014 Massimo Siani <massimo.siani@skysql.com>
+- Add database information with the system state
+- Update libMariaDB-Manager-java dependency
+
+* Wed Mar 26 2014 Massimo Siani <massimo.siani@skysql.com>
+- Register the release number in the API, register the Java Library
+
+* Wed Mar 12 2014 Massimo Siani	<massimo.siani@skysql.com>
+- Change MariaDB Enterprise to MariaDB Manager
 
 * Thu Feb 27 2014 Massimo Siani <massimo.siani@skysql.com>
 - Merge develop and release-1.0.1

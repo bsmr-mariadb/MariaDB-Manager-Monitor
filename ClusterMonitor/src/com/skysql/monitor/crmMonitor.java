@@ -1,5 +1,5 @@
 /*
- * This file is distributed as part of the MariaDB Enterprise.  It is free
+ * This file is distributed as part of the MariaDB Manager.  It is free
  * software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * version 2.
@@ -21,8 +21,9 @@ package com.skysql.monitor;
 import java.io.*;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 /**
- * Monitors the output of crm status bynode. This is a specialist monitor
+ * Monitors the output of crm status bynode. This is a specialist Monitor
  * class designed for use with the SkySQL Data Suite environment with a master
  * slave MySQL cluster under the control of pacemaker.
  * 
@@ -49,7 +50,7 @@ import com.skysql.java.Logging;
  * Node node1: online
  * 	resMySQL:2	(ocf::custom:mysql) Started 
  * 	ApachePhpMyAdmin:2	(ocf::heartbeat:apache) Started 
- * 	SkySQL-monitor	(lsb:skysql_monitor) Started 
+ * 	SkySQL-Monitor	(lsb:skysql_monitor) Started 
  * 	console-fs	(ocf::custom:Filesystem) Started 
  * 	Tomcat7	(ocf::heartbeat:tomcat) Started 
  * 
@@ -57,15 +58,15 @@ import com.skysql.java.Logging;
  * 
  * @author Mark Riddoch
  */
-public class crmMonitor extends monitor {
+public class crmMonitor extends Monitor {
 	
 	/**
 	 * Constructor - all work is done by the superclass
 	 * @param db		The database handler
-	 * @param id		The ID of the monitor
-	 * @param mon_node	The node to monitor
+	 * @param id		The ID of the Monitor
+	 * @param mon_node	The Node to Monitor
 	 */
-	public crmMonitor(mondata db, int id, node mon_node)
+	public crmMonitor(MonData db, int id, Node mon_node)
 	{
 		super(db, id, mon_node);
 	}
@@ -73,7 +74,7 @@ public class crmMonitor extends monitor {
 	/**
 	 * The probe method, called once per probe cycle.
 	 * 
-	 * This is a system only probe, so only runs if the node number is -1
+	 * This is a system only probe, so only runs if the Node number is -1
 	 * 
 	 * @param verbose The verbosity to log with
 	 */
@@ -98,7 +99,7 @@ public class crmMonitor extends monitor {
 					Logging.info(line);
 				if (line.matches("Node.*"))
 				{
-					int beginIndex = line.indexOf("node");
+					int beginIndex = line.indexOf("Node");
 					int endIndex = line.indexOf(":");
 					Integer node = new Integer(line.substring(beginIndex + 4, endIndex));
 					nodeNo = node.intValue();
@@ -119,11 +120,11 @@ public class crmMonitor extends monitor {
 					{
 						if (line.matches(".*demote.*"))	// Ignore failed demotes
 							continue;
-						if (line.matches(".*monitor.*"))	// Ignore failed monitors
+						if (line.matches(".*Monitor.*"))	// Ignore failed monitors
 							continue;
 						int beginIndex = line.lastIndexOf(": ");
 						state = line.substring(beginIndex + 2);
-						beginIndex = line.indexOf("node=node");
+						beginIndex = line.indexOf("Node=Node");
 						int endIndex = line.indexOf(",");
 						Integer node = new Integer(line.substring(beginIndex + 9, endIndex));
 						nodeNo = node.intValue();
@@ -160,10 +161,10 @@ public class crmMonitor extends monitor {
 	}
 	
 	/**
-	 * Set the node state by mapping the state parsed from the crm command
+	 * Set the Node state by mapping the state parsed from the crm command
 	 * into an internal state
 	 *  
-	 * @param nodeNo	The node number to set state for
+	 * @param nodeNo	The Node number to set state for
 	 * @param state		CRM state string
 	 * @param verbose	Logging verbosity
 	 */
@@ -183,12 +184,12 @@ public class crmMonitor extends monitor {
 		try {
 			m_confdb.setNodeState(nodeNo, (new Integer(value)).intValue());
 		} catch (Exception ex) {
-			Logging.error("Can not set node state of " + value + " or node " + nodeNo);
+			Logging.error("Can not set Node state of " + value + " or Node " + nodeNo);
 		}
 	}
 
 	/**
-	 * Disables system values for this monitor
+	 * Disables system values for this Monitor
 	 */
 	public boolean hasSystemValue()
 	{

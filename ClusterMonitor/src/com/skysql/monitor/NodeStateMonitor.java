@@ -1,5 +1,5 @@
 /*
- * This file is distributed as part of the MariaDB Enterprise.  It is free
+ * This file is distributed as part of the MariaDB Manager.  It is free
  * software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * version 2.
@@ -20,31 +20,32 @@
 package com.skysql.monitor;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
- * nodeStateMonitor - a monitor class that implements a SQL based method to update the state of a node within
+ * NodeStateMonitor - a Monitor class that implements a SQL based method to update the state of a Node within
  * the monitored set of systems. The result set will contain a single value which is the state to use for the
- * particular node.
+ * particular Node.
  * 
  * @author Mark Riddoch
  */
-public class nodeStateMonitor extends monitor {
+public class NodeStateMonitor extends Monitor {
 	
 	/**
-	 * Constructor for the node state monitor, all the work is done in the
+	 * Constructor for the Node state Monitor, all the work is done in the
 	 * super class 
 	 * 
 	 * @param db		The monitoring database
-	 * @param id		The ID of the monitor
-	 * @param mon_node	The node being monitored
+	 * @param id		The ID of the Monitor
+	 * @param mon_node	The Node being monitored
 	 */
-	public nodeStateMonitor(mondata db, int id, node mon_node)
+	public NodeStateMonitor(MonData db, int id, Node mon_node)
 	{
 		super(db, id, mon_node);
 	}
 	
 	/**
-	 * The probe entry for the monitor
+	 * The probe entry for the Monitor
 	 * 
 	 * @param verbose	The logging verbosity level
 	 */
@@ -54,7 +55,7 @@ public class nodeStateMonitor extends monitor {
 			return;
 		String value = m_node.execute(m_sql);
 		int nodeNo = m_node.getID();
-		if (value == null) 	/* Failed to get status return from node */
+		if (value == null) 	/* Failed to get status return from Node */
 		{
 			value = "100";	/* Temporary kludge to have a stopped state - need to get this from config */
 		}
@@ -65,14 +66,14 @@ public class nodeStateMonitor extends monitor {
 		try {
 			m_confdb.setNodeState(nodeNo, (new Integer(value)).intValue());
 		} catch (Exception ex) {
-			Logging.error("Can not set node state of " + value + " or node " + nodeNo);
+			Logging.error("Can not set Node state of " + value + " or Node " + nodeNo);
 		}
 		saveObservation(value);
 		m_lastValue = value;
 	}
 	
 	/**
-	 * The node state has no corresponding system value
+	 * The Node state has no corresponding system value
 	 * 
 	 * @return false
 	 */

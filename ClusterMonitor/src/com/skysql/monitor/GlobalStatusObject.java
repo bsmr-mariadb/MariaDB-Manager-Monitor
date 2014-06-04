@@ -1,5 +1,5 @@
 /*
- * This file is distributed as part of the MariaDB Enterprise.  It is free
+ * This file is distributed as part of the MariaDB Manager.  It is free
  * software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * version 2.
@@ -20,12 +20,14 @@ package com.skysql.monitor;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.skysql.java.Logging;
+
 
 /**
  * A modified singleton pattern implementation of a class to fetch and distribute
  * global status and global variables.
  * 
- * An instance is created for each node that is being monitored, calls are made
+ * An instance is created for each Node that is being monitored, calls are made
  * to retrieve particular values, using the VARIABLE_NAME of the status or
  * variable required. The class will fetch all values from the global_status and
  * global_variables table and cache them for a predefined period of time. This allows
@@ -35,13 +37,13 @@ import java.util.HashMap;
  * @author Mark Riddoch
  *
  */
-public class globalStatusObject {
+public class GlobalStatusObject {
 	
 	/**
-	 * The hashtable of instances of the globalStatusObject. The table is indexed by the node
-	 * class of the node being monitored.
+	 * The hashtable of instances of the GlobalStatusObject. The table is indexed by the Node
+	 * class of the Node being monitored.
 	 */
-	private static final HashMap<node,globalStatusObject> instances = new HashMap<node,globalStatusObject>();
+	private static final HashMap<Node, GlobalStatusObject> INSTANCES = new HashMap<Node, GlobalStatusObject>();
 	
 	/**
 	 * The length of time to cache the global_status or global_variables data
@@ -68,38 +70,66 @@ public class globalStatusObject {
 	private long					m_fetchTime;
 	
 	/**
-	 * The node we are monitoring
+	 * The Node we are monitoring
 	 */
-	private node					m_node;
+	private Node					m_node;
 	
 	/**
-	 * Private constructor for globalStatusObject
+	 * Private constructor for GlobalStatusObject
 	 * 
-	 * @param mon_node The node we are monitoring
+	 * @param nodeObject The Node we are monitoring
 	 */
-	private globalStatusObject(node mon_node) {
+	private GlobalStatusObject(Node nodeObject) {
 		m_globalStatus = new HashMap<String, String>();
 		m_globalVariables = new HashMap<String, String>();
 		m_fetchTime = 0;
-		m_node = mon_node;
+		m_node = nodeObject;
+	}
+	
+	/**
+	 * Cleans all the cached information and referenced objects
+	 * corresponding to the nodes of the given system.
+	 * Call this method before getting the instances of all
+	 * the nodes in the given system, to avoid memory leaks.
+	 * @param systemId		the system ID of the nodes to be removed from the cache
+	 */
+	public static void cleanUp(int systemId) {
+		if (INSTANCES == null || INSTANCES.isEmpty()) {
+			return;
+		}
+		for (Node node : INSTANCES.keySet()) {
+			if (systemId == node.getSystemID()) {
+				INSTANCES.remove(node);
+			}
+		}
 	}
 	
 	/**
 	 * The get instance entry point will return the instance that is monitoring
-	 * the node passed in. If there is no instance for this node then an 
+	 * the Node passed in. If there is no instance for this Node then an 
 	 * instance will be created.
 	 * 
-	 * @param mon_node	The node to monitor
+	 * @param nodeObject	The Node to Monitor
 	 * @return The globalStatus Object for this database instance
 	 */
-	public static globalStatusObject getInstance(node mon_node) {
-		globalStatusObject inst;
+	public static GlobalStatusObject getInstance(Node nodeObject) {
+		GlobalStatusObject inst;
 		
-		if ((inst = instances.get(mon_node)) != null)
+		if ((inst = INSTANCES.get(nodeObject)) != null)
 			return inst;
 		
-		inst = new globalStatusObject(mon_node);
-		instances.put(mon_node, inst);
+		int systemId = nodeObject.getSystemID();
+		int nodeId = nodeObject.getID();
+		if (INSTANCES != null && ! INSTANCES.isEmpty()) {
+			for (Node node : INSTANCES.keySet()) {
+				if (systemId == node.getSystemID() && nodeId == node.getID()) {
+					INSTANCES.remove(node);
+					break;
+				}
+			}
+		}
+		inst = new GlobalStatusObject(nodeObject);
+		INSTANCES.put(nodeObject, inst);
 		return inst;
 	}
 	

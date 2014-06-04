@@ -1,8 +1,8 @@
 #!/bin/sh
 #
-# Part of MariaDB Enterprise package.
+# Part of MariaDB Manager package.
 #
-# This file is distributed as part of the SkySQL MariaDB Enterprise package.
+# This file is distributed as part of the MariaDB Manager package.
 # It is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
 # Foundation, version 2.
@@ -26,7 +26,17 @@
 # Returns     : 0 = OK - 1 = Warning
 # 
 # chkconfig: 2345 80 20
-# description: Starts the MariaDB-Enterprise Monitor
+# description: Starts the MariaDB-Manager Monitor
+#
+### BEGIN INIT INFO
+# Provides:          mariadb-manager-monitor
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start mariadb-manager-monitor at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
 
 ## variables
 vMonitorDir=/usr/local/skysql/monitor

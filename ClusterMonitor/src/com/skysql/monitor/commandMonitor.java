@@ -1,5 +1,5 @@
 /*
- * This file is distributed as part of the MariaDB Enterprise.  It is free
+ * This file is distributed as part of the MariaDB Manager.  It is free
  * software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * version 2.
@@ -22,17 +22,18 @@ import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
- * The commandMonitor is an instance of a monitor class designed to execute
+ * The commandMonitor is an instance of a Monitor class designed to execute
  * external programs as sources of monitoring data.
  * 
  * @author Mark Riddoch
  *
  */
-public class commandMonitor extends monitor {
+public class commandMonitor extends Monitor {
 	
-	/** The monitor ID */
+	/** The Monitor ID */
 	private int			m_id;	
 	/** The rate to poll, i.e. number of cycles
 	 *  between polls
@@ -43,15 +44,15 @@ public class commandMonitor extends monitor {
 	// private String		m_nodeIP;
 	
 	/**
-	 * The constructor for the command monitor. Must of the work is
-	 * down by the super class, monitor, we only need to set a couple
+	 * The constructor for the command Monitor. Must of the work is
+	 * down by the super class, Monitor, we only need to set a couple
 	 * of local member variables.
 	 * 
 	 * @param db		The Monitor database
-	 * @param id		The ID of the monitor 
-	 * @param mon_node	The node we are monitoring
+	 * @param id		The ID of the Monitor 
+	 * @param mon_node	The Node we are monitoring
 	 */
-	public commandMonitor(mondata db, int id, node mon_node)
+	public commandMonitor(MonData db, int id, Node mon_node)
 	{
 		super(db, id, mon_node);
 		m_id = id;
@@ -67,7 +68,7 @@ public class commandMonitor extends monitor {
 	 * relatively expensive.
 	 * 
 	 * TODO: The command is run locally currently, it should be run on
-	 * the node m_node
+	 * the Node m_node
 	 * 
 	 * @param verbose	Verbose or normal logging required
 	 */
@@ -90,7 +91,7 @@ public class commandMonitor extends monitor {
 		}
 		catch (Exception ex)
 		{
-			Logging.error("Command monitor exception: " + ex.getMessage() + " in monitor " + m_id);
+			Logging.error("Command Monitor exception: " + ex.getMessage() + " in Monitor " + m_id);
 		}
 		saveObservation(value);
 		m_lastValue = value;

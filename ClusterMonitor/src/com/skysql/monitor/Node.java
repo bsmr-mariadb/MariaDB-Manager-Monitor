@@ -1,5 +1,5 @@
 /*
- * This file is distributed as part of the MariaDB Enterprise.  It is free
+ * This file is distributed as part of the MariaDB Manager.  It is free
  * software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * version 2.
@@ -14,6 +14,9 @@
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * Copyright 2012-2014 SkySQL Corporation Ab
+ * 
+ * Author: Mark Riddoch, Massimo Siani
+ * Date: February 2013
  */
 
 package com.skysql.monitor;
@@ -29,36 +32,39 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.skysql.java.Credential;
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
- * The node interface in the monitor. Each instance of a node represents a database that 
+ * The Node interface in the Monitor. Each instance of a Node represents a database that 
  * is being monitored. This class provides a mechanism to connect to the monitored database,
- * a means to execute SQL on that database and basic reachability tests for the node.
+ * a means to execute SQL on that database and basic reachability tests for the Node.
  * A Node instance retrieves the list of monitors to be run, stores the results, and
  * uses the bulk update API to minimize the overhead.
  * 
  * Node connections are implemented as threads in order not to delay the execution of the
- * main monitor. Connections are closed if the thread is stuck.
+ * main Monitor. Connections are closed if the thread is stuck.
  * 
- * @author Mark Riddoch, Massimo Siani
+ * @author Mark Riddoch
+ * @author Massimo Siani
  *
  */
-public class node implements Runnable {
+public class Node implements Runnable {
 	/**
-	 * The database URL to connect to the node
+	 * The database URL to connect to the Node
 	 */
 	private String		m_URL;
 	/**
-	 * The node address.
+	 * The Node address.
 	 */
 	private String		m_address;
 	/**
-	 * System ID of the node
+	 * System ID of the Node
 	 */
 	private int			m_systemID;
 	/**
-	 * The nodes node number
+	 * The nodes Node number
 	 */
 	private int			m_nodeNo;
 	/**
@@ -80,7 +86,7 @@ public class node implements Runnable {
 	/**
 	 * The SQLite monitoring database
 	 */
-	private mondata		m_confdb;
+	private MonData		m_confdb;
 	/**
 	 * Attempts to connect to the database. If more are necessary, reset the connection
 	 */
@@ -88,7 +94,7 @@ public class node implements Runnable {
 	/**
 	 * Store observed values, and send them to the API only when all the monitors
 	 * have returned their result. Use bulk updates for this.
-	 * Integer numbers are the monitor id's, Strings are the values.
+	 * Integer numbers are the Monitor id's, Strings are the values.
 	 */
 	private LinkedHashMap<Integer, String>	m_observedValues;
 	
@@ -99,7 +105,7 @@ public class node implements Runnable {
 	 * @param systemID	The System ID
 	 * @param nodeNo	The Node ID
 	 */
-	public node(mondata confDB, int systemID, int nodeNo)
+	public Node(MonData confDB, int systemID, int nodeNo)
 	{
 		m_connected = false;
 		m_connecting = false;
@@ -114,11 +120,11 @@ public class node implements Runnable {
 		}
 		if (m_address == null)
 		{
-			Logging.error("Unable to obtain address for node " + nodeNo);
+			Logging.error("Unable to obtain address for Node " + nodeNo);
 		}
 		m_URL = "jdbc:mysql://" + m_address + ":3306/";
 		connect();
-		Logging.info("Created node: " + this);
+		Logging.info("Created Node: " + this);
 	}
 
 	/**
@@ -166,7 +172,7 @@ public class node implements Runnable {
 		m_connecting = true;
 		if (m_address == null)
 		{
-			Logging.error("Unable to obtain address for node " + m_nodeNo);
+			Logging.error("Unable to obtain address for Node " + m_nodeNo);
 		}
 		m_URL = "jdbc:mysql://" + m_address + ":3306/";
 		m_conthread = new Thread(this);
@@ -237,9 +243,9 @@ public class node implements Runnable {
 	}
 	
 	/**
-	 * Get the node ID of the node
+	 * Get the Node ID of the Node
 	 * 
-	 * @return The node ID
+	 * @return The Node ID
 	 */
 	public int getID()
 	{
@@ -247,7 +253,7 @@ public class node implements Runnable {
 	}
 	
 	/**
-	 * Get the System ID of the node
+	 * Get the System ID of the Node
 	 * 
 	 * @return The System ID
 	 */
@@ -257,8 +263,8 @@ public class node implements Runnable {
 	}
 	
 	/**
-	 * Perform a basic ICMP Ping reachability test on the node
-	 * @return True if the node is reachable
+	 * Perform a basic ICMP Ping reachability test on the Node
+	 * @return True if the Node is reachable
 	 */
 	public boolean isReachable()
 	{
@@ -315,7 +321,7 @@ public class node implements Runnable {
 	}
 	
 	/**
-	 * Save an observed value for a monitor in a local buffer.
+	 * Save an observed value for a Monitor in a local buffer.
 	 * 
 	 * @param observation	The observed value
 	 * @return	True if the value is correctly buffered
@@ -331,7 +337,7 @@ public class node implements Runnable {
 	}
 	
 	/**
-	 * Send all the buffered observations about this node to the API in one shot.
+	 * Send all the buffered observations about this Node to the API in one shot.
 	 * 
 	 * @return True if the update is performed
 	 */

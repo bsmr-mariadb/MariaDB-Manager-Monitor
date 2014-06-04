@@ -1,5 +1,5 @@
 /*
- * This file is distributed as part of the MariaDB Enterprise.  It is free
+ * This file is distributed as part of the MariaDB Manager.  It is free
  * software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * version 2.
@@ -13,7 +13,10 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * Copyright 2012-2014 SkySQL Corporation Ab
+ * Copyright 2013-2014 SkySQL Corporation Ab
+ * 
+ * Author: Massimo Siani
+ * Date: July 2013
  */
 
 package com.skysql.monitor;
@@ -29,35 +32,36 @@ import java.util.List;
 import java.util.Set;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
- * Handle the membership of each node in a system, set the node
+ * Handle the membership of each Node in a system, set the Node
  * and the system states. Use the global variables retrieved
  * from Galera.
- * Since the node state can only be determined by looking at all
+ * Since the Node state can only be determined by looking at all
  * the nodes of the system this class is a system singleton class.
- * This singleton gathers the state of each node, and return the
- * node state for the calling node as well as setting the system
+ * This singleton gathers the state of each Node, and return the
+ * Node state for the calling Node as well as setting the system
  * state.
  * 
  * @author Massimo Siani
  *
  */
-public class GaleraStatusMonitor extends monitor {
+public class GaleraStatusMonitor extends Monitor {
 	/**
 	 * The instances of the class. The key is the systemID.
 	 */
-	private static volatile HashMap<Integer, List<node>>	INSTANCES;
+	private static volatile HashMap<Integer, List<Node>>	INSTANCES;
 	/**
 	 * The ID of the system passed to the constructor. Necessary to
 	 * add the system to the INSTANCES variable.
 	 */
 	private int							m_systemID;
 	/**
-	 * The globalStatusObject that contains the global status
+	 * The GlobalStatusObject that contains the global status
 	 * and variables from Galera.
 	 */
-	private globalStatusObject			m_globalStatus;
+	private GlobalStatusObject			m_globalStatus;
 	/**
 	 * The lapse before a system can be checked again. It needs
 	 * to avoid multiple nodes from the same system to ask to
@@ -69,7 +73,7 @@ public class GaleraStatusMonitor extends monitor {
 	 */
 	private static HashMap<Integer, Long>		m_updatedSystems;
 	/**
-	 * The node state -> node state ID map.
+	 * The Node state -> Node state ID map.
 	 */
 	private static HashMap<NodeStates, Integer>			m_nodeStates = null;
 	/**
@@ -86,13 +90,13 @@ public class GaleraStatusMonitor extends monitor {
 	 * 
 	 * @return	the table (system id, list of nodes)
 	 */
-	private synchronized HashMap<Integer, List<node>> getInstances() {
+	private synchronized HashMap<Integer, List<Node>> getInstances() {
 		if (INSTANCES == null) {
-			INSTANCES = new HashMap<Integer, List<node>>();
+			INSTANCES = new HashMap<Integer, List<Node>>();
 			m_updatedSystems = new HashMap<Integer, Long>();
 		}
 		if (INSTANCES.get(m_systemID) == null) {
-			m_updatedSystems.put(m_systemID, now() - UPDATE_THRESHOLD);   // next time the monitor will run
+			m_updatedSystems.put(m_systemID, now() - UPDATE_THRESHOLD);   // next time the Monitor will run
 		}
 		return INSTANCES;
 	}
@@ -101,10 +105,10 @@ public class GaleraStatusMonitor extends monitor {
 	 * Constructor for the class.
 	 * 
 	 * @param db			an instance of the db handling class
-	 * @param id			the monitor id
-	 * @param mon_node		the instance of the node
+	 * @param id			the Monitor id
+	 * @param mon_node		the instance of the Node
 	 */
-	public GaleraStatusMonitor(mondata db, int id, node mon_node) {
+	public GaleraStatusMonitor(MonData db, int id, Node mon_node) {
 		super(db, id, mon_node);
 		m_systemID = mon_node.getSystemID();
 		setInstance(mon_node);
@@ -115,17 +119,17 @@ public class GaleraStatusMonitor extends monitor {
 	 * Initialize the system singleton. Add the system id to the
 	 * table of known system id's and loads the associated nodes.
 	 * 
-	 * @param mon_node	the node to be added to the instance
+	 * @param mon_node	the Node to be added to the instance
 	 */
-	private synchronized void setInstance(node mon_node) {
-		List<node> nodeList = getInstances().get(mon_node.getSystemID());
+	private synchronized void setInstance(Node mon_node) {
+		List<Node> nodeList = getInstances().get(mon_node.getSystemID());
 		if (nodeList != null) {
-			List<node> nodeListb = new ArrayList<node>();
+			List<Node> nodeListb = new ArrayList<Node>();
 			nodeListb.addAll(nodeList);
-			Iterator<node> nodeIt = nodeList.iterator();
+			Iterator<Node> nodeIt = nodeList.iterator();
 			boolean found = false;
 			while (nodeIt.hasNext()) {
-				node n = nodeIt.next();
+				Node n = nodeIt.next();
 				if (mon_node.getID() == n.getID()) {
 					nodeListb.remove(n);
 					nodeListb.add(mon_node);
@@ -136,14 +140,14 @@ public class GaleraStatusMonitor extends monitor {
 			nodeList = nodeListb;
 		}
 		else {
-			nodeList = new ArrayList<node>();
+			nodeList = new ArrayList<Node>();
 			nodeList.add(mon_node);
 		}
 		getInstances().put(mon_node.getSystemID(), nodeList);
 	}
 	
 	/**
-	 * Generate a map to the node states that are not computed from a query.
+	 * Generate a map to the Node states that are not computed from a query.
 	 */
 	private void setNodeStates() {
 		if (m_nodeStates == null) {
@@ -170,37 +174,29 @@ public class GaleraStatusMonitor extends monitor {
 	
 	/**
 	 * Check the nodes and assign them their state. Also assign the system state,
-	 * based on the result of the node states probe.
+	 * based on the result of the Node states probe.
 	 * Overrides the method in the parent class.
 	 * 
 	 * @param verbose
 	 */
 	public synchronized void probe(boolean verbose) {
-		if (now() - m_updatedSystems.get(m_node.getSystemID()) <= UPDATE_THRESHOLD)
+		if (now() - m_updatedSystems.get(m_node.getSystemID()) <= UPDATE_THRESHOLD) {
 			return;
-		Iterator<node> nodeIt = getInstances().get(m_node.getSystemID()).iterator();
-		HashMap<String, List<node>> hmUUID = new HashMap<String, List<node>>();
-		HashMap<node, String> hmIncAddress = new HashMap<node, String>();
+		}
+		Iterator<Node> nodeIt = getInstances().get(m_node.getSystemID()).iterator();
+		HashMap<String, List<Node>> hmUUID = new HashMap<String, List<Node>>();
+		HashMap<Node, String> hmIncAddress = new HashMap<Node, String>();
 		while (nodeIt.hasNext()) {
-			node n = nodeIt.next();
-			m_globalStatus = globalStatusObject.getInstance(n);
-			List<node> nodeList = new ArrayList<node>();
+			Node n = nodeIt.next();
+			m_globalStatus = GlobalStatusObject.getInstance(n);
+			String dbType = getDbType();
+			String dbVersion = getDbVersion();
+			if (dbType != null && dbVersion != null) {
+				m_confdb.setNodeDatabaseProperties(n.getID(), dbType, dbVersion);
+			}
+			List<Node> nodeList = new ArrayList<Node>();
 			try {
 				String nodeStateString = m_globalStatus.getStatus("wsrep_local_state");
-//				Credential cred = m_confdb.getNodeMonitorCredentials(n.getID());
-//				String mysqlCmd = "mysql -u" + cred.getUsername() + " -p" + cred.getPassword()
-//						+ " -e \"show status like 'wsrep_local_state'\" | grep wsrep | cut -f2";
-//				String sshCmd = "ssh -i /var/www/.ssh/id_rsa skysqlagent@" + m_confdb.getNodePrivateIP(n.getID()) + " "
-//						+ mysqlCmd + "";
-//				Process p = Runtime.getRuntime().exec(sshCmd);
-//				p.waitFor();
-//				BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//				String nodeStateString = null;
-//				String line;
-//				while ((line = reader.readLine()) != null) {
-//					nodeStateString = line;
-//				}
-//				reader.close();
 				Integer nodeStateID;
 				if (nodeStateString != null) {
 					nodeStateID = Integer.parseInt(nodeStateString) + 100;
@@ -233,14 +229,14 @@ public class GaleraStatusMonitor extends monitor {
 		if (hmUUID.keySet().size() == 1) {
 			// only one UUID: next check is incoming address
 			if (checkIncomingAddress(hmIncAddress)) {
-				for (node n : hmIncAddress.keySet()) {
+				for (Node n : hmIncAddress.keySet()) {
 					m_confdb.setNodeState(n.getID(), m_nodeStates.get(NodeStates.JOINED));
 				}
 				notFinished = false;
 			}
 		}
 		if (notFinished) {
-			for (node n : isMajority(hmUUID, hmIncAddress)) {
+			for (Node n : isMajority(hmUUID, hmIncAddress)) {
 				m_confdb.setNodeState(n.getID(), m_nodeStates.get(NodeStates.JOINED));
 				hmIncAddress.remove(n);
 			}
@@ -248,7 +244,7 @@ public class GaleraStatusMonitor extends monitor {
 		if (notFinished) {
 			nodeIt = hmIncAddress.keySet().iterator();
 			while (nodeIt.hasNext()) {
-				node n = nodeIt.next();
+				Node n = nodeIt.next();
 				m_confdb.setNodeState(n.getID(), m_nodeStates.get(NodeStates.INCORRECTLYJOINED));
 			}
 		}
@@ -295,11 +291,11 @@ public class GaleraStatusMonitor extends monitor {
 	 * @return	true if and only if all the nodes appear in all the other nodes'
 	 * INCOMING_ADDRESSES variable
 	 */
-	private boolean checkIncomingAddress(HashMap<node, String> incomingAddress) {
+	private boolean checkIncomingAddress(HashMap<Node, String> incomingAddress) {
 		boolean isCluster = true;
-		Set<node> nodeSet = incomingAddress.keySet();
-		Set<node> nodeSetb = new HashSet<node>(incomingAddress.keySet());
-		for (node n : nodeSet) {
+		Set<Node> nodeSet = incomingAddress.keySet();
+		Set<Node> nodeSetb = new HashSet<Node>(incomingAddress.keySet());
+		for (Node n : nodeSet) {
 			String hostname = m_confdb.getNodeHostName(n.getID());
 			String IP = m_confdb.getNodePrivateIP(n.getID());
 			try {
@@ -311,7 +307,7 @@ public class GaleraStatusMonitor extends monitor {
 				hostname = IP;
 			}
 			nodeSetb.remove(n);
-			for (node m : nodeSetb) {
+			for (Node m : nodeSetb) {
 				isCluster = isCluster
 						&& (incomingAddress.get(m).contains(hostname) || incomingAddress.get(m).contains(IP));
 				if (! isCluster) break;
@@ -324,25 +320,25 @@ public class GaleraStatusMonitor extends monitor {
 	/**
 	 * If there is a majority of nodes correctly joined.
 	 * 
-	 * @param hmIncAddress	an HashMap of (node, incoming_addresses variable)
+	 * @param hmIncAddress	an HashMap of (Node, incoming_addresses variable)
 	 * @param hmUUID		an HashMap of (UUID, list of nodes with that UUID)
 	 * 
 	 * @return	The list of nodes in the main cluster, an empty list if no main cluster exists
 	 */
-	private List<node> isMajority(HashMap<String, List<node>> hmUUID, HashMap<node, String> hmIncAddress) {
-		HashMap<Integer, List<node>> nodePartitions = new HashMap<Integer, List<node>>();
+	private List<Node> isMajority(HashMap<String, List<Node>> hmUUID, HashMap<Node, String> hmIncAddress) {
+		HashMap<Integer, List<Node>> nodePartitions = new HashMap<Integer, List<Node>>();
 		Integer partitionNo = 1;
 		int totalSize = 0;
 		for (String UUID : hmUUID.keySet()) {
-			List<node> toIterateOn = hmUUID.get(UUID);
-			List<node> toIterateOnb = new ArrayList<node>(hmUUID.get(UUID));
+			List<Node> toIterateOn = hmUUID.get(UUID);
+			List<Node> toIterateOnb = new ArrayList<Node>(hmUUID.get(UUID));
 			totalSize += toIterateOn.size();
-			for (node n : toIterateOn) {		// do not use toIterateOn here, only below
+			for (Node n : toIterateOn) {		// do not use toIterateOn here, only below
 				toIterateOnb.remove(n);
 				String hostname = m_confdb.getNodeHostName(n.getID());
-				List<node> partitionNodes = new ArrayList<node>();
+				List<Node> partitionNodes = new ArrayList<Node>();
 				partitionNodes.add(n);
-				for (node m : toIterateOnb) {
+				for (Node m : toIterateOnb) {
 					if (hmIncAddress.get(m).contains(hostname)) {
 						partitionNodes.add(m);
 					}
@@ -352,12 +348,30 @@ public class GaleraStatusMonitor extends monitor {
 			}
 		}
 		for (Integer i : nodePartitions.keySet()) {
-			List<node> nl = nodePartitions.get(i);
+			List<Node> nl = nodePartitions.get(i);
 			if (nl.size() > totalSize/2) {
 				return nl;
 			}
 		}
-		return new ArrayList<node>();
+		return new ArrayList<Node>();
+	}
+	
+	/**
+	 * Retrieves the database type.
+	 * 
+	 * @return		the database type
+	 */
+	private String getDbType() {
+		return m_globalStatus.getVariable("version_comment");
+	}
+	
+	/**
+	 * Retrieves the database version.
+	 * 
+	 * @return		the database version
+	 */
+	private String getDbVersion() {
+		return m_globalStatus.getVariable("version");
 	}
 	
 	/**
@@ -377,7 +391,7 @@ public class GaleraStatusMonitor extends monitor {
 	}
 	
 	/**
-	 * The monitor has a system value as well as individual node values
+	 * The Monitor has a system value as well as individual Node values
 	 * 
 	 * @return True if there is a system value
 	 */

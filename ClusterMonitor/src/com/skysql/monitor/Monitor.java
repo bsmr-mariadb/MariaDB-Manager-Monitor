@@ -1,5 +1,5 @@
 /*
- * This file is distributed as part of the MariaDB Enterprise.  It is free
+ * This file is distributed as part of the MariaDB Manager.  It is free
  * software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * version 2.
@@ -19,23 +19,24 @@
 package com.skysql.monitor;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
- * The base monitor class, it is from this class that all monitors are derived. 
- * The monitor class provides an SQL monitor that executes a SQL statement on 
+ * The base Monitor class, it is from this class that all monitors are derived. 
+ * The Monitor class provides an SQL Monitor that executes a SQL statement on 
  * the monitored database, this statement returns a single row and single column
- * result set that is the value of the monitor.
+ * result set that is the value of the Monitor.
  * 
  * @author Mark Riddoch
  *
  */
-public class monitor {
+public class Monitor {
 	/**
 	 * The configuration database
 	 */
-	protected mondata		m_confdb;
+	protected MonData		m_confdb;
 	/**
-	 * The ID of the monitor
+	 * The ID of the Monitor
 	 */
 	protected int			m_monitor_id;
 	/**
@@ -43,9 +44,9 @@ public class monitor {
 	 */
 	protected String		m_monitor_key;
 	/**
-	 * The node being monitored
+	 * The Node being monitored
 	 */
-	protected node			m_node;
+	protected Node			m_node;
 	/**
 	 * The SQL to execute
 	 */
@@ -55,31 +56,31 @@ public class monitor {
 	 */
 	protected String		m_lastValue;
 	/**
-	 * Is this a system averaged monitor
+	 * Is this a system averaged Monitor
 	 */
 	protected boolean 		m_systemAverage;
 	/**
-	 * The monitor interval
+	 * The Monitor interval
 	 */
 	protected Integer		m_interval;
 	/**
-	 * The monitor should record differences between the consecutive
+	 * The Monitor should record differences between the consecutive
 	 * probe cycles.
 	 */
 	protected boolean		m_delta;
 	/**
-	 * The last value probed if this is a delta monitor
+	 * The last value probed if this is a delta Monitor
 	 */
 	protected Float			m_lastAbsValue = null;
 	
 	/**
-	 * The monitor constructor
+	 * The Monitor constructor
 	 * 
 	 * @param db		The database handle for the monitoring database
-	 * @param id		The ID of the monitor
-	 * @param mon_node	The node being monitored
+	 * @param id		The ID of the Monitor
+	 * @param mon_node	The Node being monitored
 	 */
-	public monitor(mondata db, int id, node mon_node)
+	public Monitor(MonData db, int id, Node mon_node)
 	{
 		m_confdb = db;
 		m_monitor_id = id;
@@ -94,8 +95,17 @@ public class monitor {
 	}
 	
 	/**
+	 * Gets the Monitor interval.
+	 * 
+	 * @return		the Monitor interval
+	 */
+	public int getInterval() {
+		return m_interval;
+	}
+	
+	/**
 	 * The probe function, called once per probe cycle.
-	 * This is the method that get overridden by the custom monitor classes
+	 * This is the method that get overridden by the custom Monitor classes
 	 * 
 	 * @param verbose	Logging level
 	 */
@@ -117,7 +127,7 @@ public class monitor {
 	}
 	
 	/**
-	 * Save an observed value for the monitor
+	 * Save an observed value for the Monitor
 	 * 
 	 * @param observation	The observed value
 	 * @return	True if updated
@@ -128,7 +138,7 @@ public class monitor {
 	}
 	
 	/**
-	 * Return the previous value the monitor reported
+	 * Return the previous value the Monitor reported
 	 * 
 	 * @return The previous value
 	 */
@@ -138,7 +148,7 @@ public class monitor {
 	}
 	
 	/**
-	 * Return the ID of the monitor
+	 * Return the ID of the Monitor
 	 * 
 	 * @return The monitorID
 	 */
@@ -150,12 +160,12 @@ public class monitor {
 	/**
 	 * @param m_node the m_node to set
 	 */
-	public void setNode(node node) {
+	public void setNode(Node node) {
 		this.m_node = node;
 	}
 
 	/**
-	 * The monitor has a system value as well as individual node values
+	 * The Monitor has a system value as well as individual Node values
 	 * 
 	 * @return True if there is a system value
 	 */
@@ -168,7 +178,7 @@ public class monitor {
 	 * The system value may be either the sum of all the nodes in the system or
 	 * the average of the nodes in the system
 	 * 
-	 * @return True if the system value of the monitor is an average of all the nodes
+	 * @return True if the system value of the Monitor is an average of all the nodes
 	 */
 	public boolean isSystemAverage()
 	{

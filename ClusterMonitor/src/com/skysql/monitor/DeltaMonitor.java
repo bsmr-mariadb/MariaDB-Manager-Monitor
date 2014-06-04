@@ -1,5 +1,5 @@
 /*
- * This file is distributed as part of the MariaDB Enterprise.  It is free
+ * This file is distributed as part of the MariaDB Manager.  It is free
  * software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation,
  * version 2.
@@ -20,34 +20,35 @@ package com.skysql.monitor;
 import java.text.DecimalFormat;
 
 import com.skysql.java.Logging;
+import com.skysql.java.MonData;
 
 /**
- * The deltaMonitor is an monitor class that monitors SQL values, the recorded
+ * The DeltaMonitor is an Monitor class that monitors SQL values, the recorded
  * value is the difference from the previous value monitored and the current
- * monitor.
+ * Monitor.
  * 
  * @author Mark Riddoch
  *
  */
-public class deltaMonitor extends monitor {
+public class DeltaMonitor extends Monitor {
 	/**
-	 * The last value that the monitor monitored
+	 * The last value that the Monitor monitored
 	 */
 //	private		Long		lastAbsValue = null;
 	
 	/**
 	 * Monitor constructor - all the work is done in the super class
 	 * @param db		Handle on the database
-	 * @param id		The ID of the monitor
-	 * @param mon_node	The node beign monitored
+	 * @param id		The ID of the Monitor
+	 * @param mon_node	The Node beign monitored
 	 */
-	public deltaMonitor(mondata db, int id, node mon_node)
+	public DeltaMonitor(MonData db, int id, Node mon_node)
 	{
 		super(db, id, mon_node);
 	}
 	
 	/**
-	 * The probe function for the monitor
+	 * The probe function for the Monitor
 	 * 
 	 * @param verbose 	Enable verbose logging of true
 	 */

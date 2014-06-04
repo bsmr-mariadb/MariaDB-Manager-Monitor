@@ -43,15 +43,17 @@
 									<exclude>com.skysql.java:libMariaDB*</exclude>
 								</excludes>
 							</artifactSet>
+							<!--
 							<minimizeJar>true</minimizeJar>
 							<filters>
 								<filter>
-									<artifact>org.jumpmind.symmetric.jdbc:mariadb-java-client</artifact>
+									<artifact>org.mariadb.jdbc:mariadb-java-client</artifact>
 									<includes>
 										<include>**</include>
 									</includes>
 								</filter>
 							</filters>
+							-->
 						</configuration>
 					</execution>
 				</executions>
@@ -68,14 +70,14 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.jumpmind.symmetric.jdbc</groupId>
+			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
-			<version>[1.1.1,)</version>
+			<version>[1.1.7,)</version>
 		</dependency>
 		<dependency>
 			<groupId>com.skysql.java</groupId>
 			<artifactId>libMariaDB-Manager-java</artifactId>
-			<version>[0.1,)</version>
+			<version>[0.5,)</version>
 		</dependency>
 	</dependencies>
 	<description>MariaDB-Manager-Monitor is the monitoring component of the MariaDB-Manager project. It provides a confirgurable monitoring service in Java that interacts with the MariaDB-Manager-API to provide monitoring data on a set of servers within a MariaDB Galera Cluster.
